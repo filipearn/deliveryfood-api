@@ -44,14 +44,13 @@ public class StateController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<State> update(@PathVariable Long id, @RequestBody State state){
-        state = stateService.update(id, state);
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody State state){
 
-        if(state != null){
+        try{
+            state = stateService.update(id, state);
             return ResponseEntity.ok().body(state);
-        }
-        else{
-            return ResponseEntity.notFound().build();
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 

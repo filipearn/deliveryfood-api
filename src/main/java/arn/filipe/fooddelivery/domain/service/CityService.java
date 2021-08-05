@@ -28,55 +28,50 @@ public class CityService {
     }
 
     public City findById(Long id){
-        Optional<City> city = cityRepository.findById(id);
-
-        return city.orElse(null);
+        return cityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("City with id %d not found.", id)));
     }
 
     public City save(City city){
         Long stateId = city.getState().getId();
-        Optional<State> state = stateRepository.findById(stateId);
+        State state = stateRepository.findById(stateId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("State with id %d not found.", stateId)));
 
-        if(state.isEmpty()){
-            throw new EntityNotFoundException(
-                    String.format("State with id %d not found.", stateId));
-        }
+        city.setState(state);
 
         return cityRepository.save(city);
     }
 
     public City update(Long id, City city){
-        Optional<City> cityToUpdate = cityRepository.findById(id);
         Long stateId = city.getState().getId();
-        Optional<State> state = stateRepository.findById(stateId);
+        State state = stateRepository.findById(stateId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("State with id %d not found.", stateId)));
 
-        if(state.isEmpty()){
-            throw new EntityNotFoundException(
-                    String.format("State with id %d not found.", stateId));
-        }
+        City cityToUpdate = cityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("City with id %d not found.", id)));
 
-        if(cityToUpdate.isPresent()){
-            BeanUtils.copyProperties(city, cityToUpdate.get(), "id");
-            return cityRepository.save(cityToUpdate.get());
-        }
-        return null;
+        city.setState(state);
 
+        BeanUtils.copyProperties(city, cityToUpdate, "id");
+
+        return cityRepository.save(cityToUpdate);
     }
 
     public void delete(Long id){
-        if (cityRepository.findById(id).isPresent()) {
-            try {
-                cityRepository.deleteById(id);
-            } catch (DataIntegrityViolationException e) {
-                throw new EntityInUseException(
-                        String.format("City with id %d can't be removed. Resource in use.", id));
-            }
-        }
-        else{
-            throw new EntityNotFoundException(
-                    String.format("City with id %d not found.", id));
-        }
+        cityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("City with id %d not found.", id)));
 
+        try {
+            cityRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new EntityInUseException(
+                    String.format("City with id %d can't be removed. Resource in use.", id));
+        }
     }
 
 

@@ -7,12 +7,8 @@ import arn.filipe.fooddelivery.domain.repository.KitchenRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -32,33 +28,31 @@ public class KitchenService {
     }
 
     public Kitchen findById(Long id){
-        Optional<Kitchen> kitchen = kitchenRepository.findById(id);
-
-        return kitchen.orElse(null);
+        return kitchenRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Kitchen with id %d not found.", id)));
     }
 
     public Kitchen update(Long id, Kitchen kitchen){
-        Optional<Kitchen> kitchenToUpdate = kitchenRepository.findById(id);
-        if(kitchenToUpdate.isPresent()){
-            BeanUtils.copyProperties(kitchen, kitchenToUpdate.get(), "id");
-            return kitchenRepository.save(kitchenToUpdate.get());
-        }
-        return null;
+        Kitchen kitchenToUpdate = kitchenRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Kitchen with id %d not found.", id)));
+
+        BeanUtils.copyProperties(kitchen, kitchenToUpdate, "id");
+        return kitchenRepository.save(kitchenToUpdate);
     }
 
 
     public void delete(Long id) {
-        if (kitchenRepository.findById(id).isPresent()) {
-            try {
-                kitchenRepository.deleteById(id);
-            } catch (DataIntegrityViolationException e) {
-                throw new EntityInUseException(
-                        String.format("Kitchen with id %d can't be removed. Resource in use.", id));
-            }
-        }
-        else{
-            throw new EntityNotFoundException(
-                    String.format("Kitchen with id %d not found.", id));
+        kitchenRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Kitchen with id %d not found.", id)));
+
+        try {
+            kitchenRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new EntityInUseException(
+                    String.format("Kitchen with id %d can't be removed. Resource in use.", id));
         }
     }
 }

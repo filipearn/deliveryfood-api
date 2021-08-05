@@ -10,7 +10,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StateService {
@@ -27,35 +26,30 @@ public class StateService {
     }
 
     public State findById(Long id) {
-        Optional<State> state =  stateRepository.findById(id);
-
-        return state.orElse(null);
+        return stateRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("State with id %d not found.", id)));
     }
 
     public State update(Long id, State state) {
-        Optional<State> stateToUpdate = stateRepository.findById(id);
+        State stateToUpdate = stateRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("State with id %d not found.", id)));
 
-        if(stateToUpdate.isPresent()){
-            BeanUtils.copyProperties(state, stateToUpdate.get(), "id");
-            return stateRepository.save(stateToUpdate.get());
-        }
-        else{
-            return null;
-        }
+        BeanUtils.copyProperties(state, stateToUpdate, "id");
+
+        return stateRepository.save(stateToUpdate);
     }
 
     public void delete(Long id) {
-        if (stateRepository.findById(id).isPresent()) {
-            try {
-                stateRepository.deleteById(id);
-            } catch (DataIntegrityViolationException e) {
-                throw new EntityInUseException(
-                        String.format("State with id %d can't be removed. Resource in use.", id));
-            }
-        }
-        else{
-            throw new EntityNotFoundException(
-                    String.format("State with id %d not found.", id));
+        stateRepository.findById(id)
+                .orElseThrow(() ->  new EntityNotFoundException(
+                        String.format("State with id %d not found.", id)));
+        try {
+            stateRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new EntityInUseException(
+                    String.format("State with id %d can't be removed. Resource in use.", id));
         }
     }
 
