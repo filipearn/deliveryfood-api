@@ -69,6 +69,8 @@ public class RestaurantController {
         try{
             restaurantService.delete(id);
             return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.notFound().build();
         } catch (EntityInUseException e){
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }

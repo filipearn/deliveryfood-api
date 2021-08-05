@@ -1,6 +1,7 @@
 package arn.filipe.fooddelivery.api.controller;
 
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
+import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.service.KitchenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,8 @@ public class KitchenController {
         try{
             kitchenService.delete(id);
             return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.notFound().build();
         } catch (EntityInUseException e){
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }

@@ -1,6 +1,7 @@
 package arn.filipe.fooddelivery.domain.service;
 
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
+import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.repository.KitchenRepository;
 import org.springframework.beans.BeanUtils;
@@ -43,11 +44,10 @@ public class KitchenService {
     }
 
     public Kitchen update(Long id, Kitchen kitchen){
-        Kitchen kitchenToUpdate;
-        if(kitchenRepository.findById(id).isPresent()){
-            kitchenToUpdate = kitchenRepository.findById(id).get();
-            BeanUtils.copyProperties(kitchen, kitchenToUpdate, "id");
-            return kitchenRepository.save(kitchenToUpdate);
+        Optional<Kitchen> kitchenToUpdate = kitchenRepository.findById(id);
+        if(kitchenToUpdate.isPresent()){
+            BeanUtils.copyProperties(kitchen, kitchenToUpdate.get(), "id");
+            return kitchenRepository.save(kitchenToUpdate.get());
         }
         return null;
     }
@@ -61,6 +61,10 @@ public class KitchenService {
                 throw new EntityInUseException(
                         String.format("Kitchen with id %d can't be removed. Resource in use.", id));
             }
+        }
+        else{
+            throw new EntityNotFoundException(
+                    String.format("Kitchen with id %d not found.", id));
         }
     }
 }

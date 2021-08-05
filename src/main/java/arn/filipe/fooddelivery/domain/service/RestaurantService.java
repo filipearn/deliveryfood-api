@@ -48,7 +48,7 @@ public class RestaurantService {
     }
 
     public Restaurant update(Long id, Restaurant restaurant){
-        Restaurant restaurantToUpdate;
+        Optional<Restaurant> restaurantToUpdate = restaurantRepository.findById(id);
         Long kitchenId = restaurant.getKitchen().getId();
         Optional<Kitchen> kitchen = kitchenRepository.findById(kitchenId);
 
@@ -57,10 +57,9 @@ public class RestaurantService {
                     String.format("Kitchen with id %d not found.", kitchenId));
         }
 
-        if(restaurantRepository.findById(id).isPresent()){
-            restaurantToUpdate = restaurantRepository.findById(id).get();
-            BeanUtils.copyProperties(restaurant, restaurantToUpdate, "id");
-            return restaurantRepository.save(restaurantToUpdate);
+        if(restaurantToUpdate.isPresent()){
+            BeanUtils.copyProperties(restaurant, restaurantToUpdate.get(), "id");
+            return restaurantRepository.save(restaurantToUpdate.get());
         }
         return null;
     }
@@ -72,8 +71,12 @@ public class RestaurantService {
                 restaurantRepository.deleteById(id);
             } catch (DataIntegrityViolationException e) {
                 throw new EntityInUseException(
-                        String.format("restaurant with id %d can't be removed. Resource in use.", id));
+                        String.format("Restaurant with id %d can't be removed. Resource in use.", id));
             }
+        }
+        else{
+            throw new EntityNotFoundException(
+                    String.format("Restaurant with id %d not found.", id));
         }
     }
 }
