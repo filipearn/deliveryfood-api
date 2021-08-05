@@ -29,12 +29,7 @@ public class StateService {
     public State findById(Long id) {
         Optional<State> state =  stateRepository.findById(id);
 
-        if(state.isPresent()){
-            return state.get();
-        }
-        else{
-            return null;
-        }
+        return state.orElse(null);
     }
 
     public State update(Long id, State state) {

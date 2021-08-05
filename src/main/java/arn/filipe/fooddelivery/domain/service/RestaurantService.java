@@ -44,7 +44,9 @@ public class RestaurantService {
     }
 
     public Restaurant findById(Long id){
-        return restaurantRepository.getById(id);
+        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
+
+        return restaurant.orElse(null);
     }
 
     public Restaurant update(Long id, Restaurant restaurant){

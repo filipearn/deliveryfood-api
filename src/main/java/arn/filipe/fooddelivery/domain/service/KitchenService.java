@@ -34,13 +34,7 @@ public class KitchenService {
     public Kitchen findById(Long id){
         Optional<Kitchen> kitchen = kitchenRepository.findById(id);
 
-        if(kitchen.isPresent()){
-            return kitchen.get();
-        }
-        else
-        {
-            return null;
-        }
+        return kitchen.orElse(null);
     }
 
     public Kitchen update(Long id, Kitchen kitchen){
