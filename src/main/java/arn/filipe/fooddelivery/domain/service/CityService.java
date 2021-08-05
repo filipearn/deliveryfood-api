@@ -30,15 +30,18 @@ public class CityService {
     public City findById(Long id){
         Optional<City> city = cityRepository.findById(id);
 
-        if(city.isPresent()){
-            return city.get();
-        }
-        else{
-            return null;
-        }
+        return city.orElse(null);
     }
 
     public City save(City city){
+        Long stateId = city.getState().getId();
+        Optional<State> state = stateRepository.findById(stateId);
+
+        if(state.isEmpty()){
+            throw new EntityNotFoundException(
+                    String.format("State with id %d not found.", stateId));
+        }
+
         return cityRepository.save(city);
     }
 

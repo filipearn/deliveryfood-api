@@ -36,10 +36,13 @@ public class CityController {
     }
 
     @PostMapping
-    public ResponseEntity<City> findById(@RequestBody City city){
-        city = cityService.save(city);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(city);
+    public ResponseEntity<?> save(@RequestBody City city){
+        try{
+            city = cityService.save(city);
+            return ResponseEntity.status(HttpStatus.CREATED).body(city);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")

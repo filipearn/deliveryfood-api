@@ -23,7 +23,6 @@ public class KitchenController {
         return kitchenService.listAll();
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @GetMapping("/{id}")
     public ResponseEntity<Kitchen> findById(@PathVariable Long id){
         Kitchen kitchen = kitchenService.findById(id);
@@ -37,10 +36,11 @@ public class KitchenController {
         }
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Kitchen save(@RequestBody Kitchen kitchen){
-        return kitchenService.save(kitchen);
+    public ResponseEntity<Kitchen> save(@RequestBody Kitchen kitchen){
+        kitchen = kitchenService.save(kitchen);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(kitchen);
     }
 
     @PutMapping("/{id}")
