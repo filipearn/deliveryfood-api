@@ -5,10 +5,12 @@ import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -23,7 +25,6 @@ public class RestaurantController {
         return restaurantService.listAll();
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> findById(@PathVariable Long id){
         Restaurant restaurant = restaurantService.findById(id);
@@ -33,6 +34,30 @@ public class RestaurantController {
         }
         else{
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/name-and-kitchen")
+    public List<Restaurant> findByNameAndKitchen(String name, Long kitchenId){
+        return restaurantService.findByNameAndKitchen(name, kitchenId);
+    }
+
+    @GetMapping("/name-and-freighRate")
+    public List<Restaurant> findByNameAndfreighRate(String name, BigDecimal freighRateInicial, BigDecimal freighRateFinal){
+        return restaurantService.findByNameAndfreighRate(name, freighRateInicial, freighRateFinal);
+    }
+
+    @GetMapping("/free-shipping")
+    public List<Restaurant> withFreeShipping(String name){
+        return restaurantService.withFreeShipping(name);
+    }
+
+    @GetMapping("/first")
+    public ResponseEntity<?> findFirst(){
+        try{
+            return ResponseEntity.ok().body(restaurantService.findFirst());
+        } catch (EmptyResultDataAccessException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 

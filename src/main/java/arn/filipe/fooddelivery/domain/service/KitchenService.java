@@ -55,4 +55,12 @@ public class KitchenService {
                     String.format("Kitchen with id %d can't be removed. Resource in use.", id));
         }
     }
+
+    public List<Kitchen> findByName(String name) {
+        return kitchenRepository.findByName(name);
+    }
+
+    public List<Kitchen> findByNameContaining(String name) {
+        return kitchenRepository.findByNameContaining(name);
+    }
 }

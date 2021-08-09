@@ -36,6 +36,11 @@ public class KitchenController {
         }
     }
 
+    @GetMapping("/by-name")
+    public List<Kitchen> findByNameContaining(String name){
+        return kitchenService.findByNameContaining(name);
+    }
+
     @PostMapping
     public ResponseEntity<Kitchen> save(@RequestBody Kitchen kitchen){
         kitchen = kitchenService.save(kitchen);
