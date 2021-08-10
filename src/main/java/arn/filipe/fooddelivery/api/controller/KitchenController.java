@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.controller;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
+import arn.filipe.fooddelivery.domain.model.Product;
 import arn.filipe.fooddelivery.domain.service.KitchenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,15 +25,12 @@ public class KitchenController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Kitchen> findById(@PathVariable Long id){
-        Kitchen kitchen = kitchenService.findById(id);
-
-        if(kitchen != null){
+    public ResponseEntity<?> findById(@PathVariable Long id){
+        try{
+            Kitchen kitchen = kitchenService.findById(id);
             return ResponseEntity.ok().body(kitchen);
-        }
-        else
-        {
-            return ResponseEntity.notFound().build();
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -49,26 +47,24 @@ public class KitchenController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Kitchen> update(@PathVariable Long id, @RequestBody Kitchen kitchen){
-        kitchen = kitchenService.update(id, kitchen);
-
-        if(kitchen != null){
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Kitchen kitchen){
+        try{
+            kitchen = kitchenService.update(id, kitchen);
             return ResponseEntity.ok().body(kitchen);
-        }
-        else{
-            return ResponseEntity.notFound().build();
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Kitchen> delete(@PathVariable Long id){
+    public ResponseEntity<?> delete(@PathVariable Long id){
         try{
             kitchenService.delete(id);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (EntityInUseException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
 
     }

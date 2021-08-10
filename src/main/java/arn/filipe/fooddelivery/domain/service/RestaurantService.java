@@ -69,7 +69,7 @@ public class RestaurantService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Restaurant with id %d not found.", id)));
 
-        BeanUtils.copyProperties(restaurant, restaurantToUpdate, "id", "paymentWay", "address", "registrationDate");
+        BeanUtils.copyProperties(restaurant, restaurantToUpdate, "id", "paymentWay", "address", "registrationDate", "products");
 
         restaurantToUpdate.setKitchen(kitchen);
 

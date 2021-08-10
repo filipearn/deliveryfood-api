@@ -27,6 +27,7 @@ public class Restaurant {
 
     private BigDecimal freighRate;
 
+    @JsonIgnore
     private Boolean active;
 
     @JsonIgnore
@@ -42,6 +43,10 @@ public class Restaurant {
     @ManyToOne
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "restaurant")
+    private List<Product> products = new ArrayList<>();
 
     @JsonIgnore
     @Embedded

@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.controller;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.City;
+import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,14 +25,12 @@ public class CityController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<City> findById(@PathVariable Long id){
-        City city = cityService.findById(id);
-
-        if(city != null){
+    public ResponseEntity<?> findById(@PathVariable Long id){
+        try{
+            City city = cityService.findById(id);
             return ResponseEntity.ok().body(city);
-        }
-        else{
-            return ResponseEntity.notFound().build();
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -47,33 +46,24 @@ public class CityController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody City city){
-        City cityToUpdate;
         try{
-            cityToUpdate = cityService.update(id, city);
-
-            if(cityToUpdate != null){
-                return ResponseEntity.ok().body(city);
-            }
-            else{
-                return ResponseEntity.notFound().build();
-            }
+            city = cityService.update(id, city);
+            return ResponseEntity.ok().body(city);
 
         } catch (EntityNotFoundException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         try{
             cityService.delete(id);
-
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (EntityInUseException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 
