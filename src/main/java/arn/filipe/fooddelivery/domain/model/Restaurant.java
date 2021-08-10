@@ -1,6 +1,7 @@
 package arn.filipe.fooddelivery.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,7 +41,9 @@ public class Restaurant {
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime updateDate;
 
-    @ManyToOne
+    //@JsonIgnoreProperties({"hibernateLazyInitializer"})
+    //@JsonIgnore
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
 
@@ -52,7 +55,7 @@ public class Restaurant {
     @Embedded
     private Address address;
 
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToMany
     @JoinTable(name = "restaurant_payment_way",
     joinColumns = @JoinColumn(name = "restaurant_id"),
