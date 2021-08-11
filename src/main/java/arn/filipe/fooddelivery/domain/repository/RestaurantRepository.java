@@ -17,6 +17,6 @@ public interface RestaurantRepository
     //Get restaurants using orm query on orm.xml (META_INF) file
     List<Restaurant> queryByNameAndKitchen(String name, @Param("id") Long kitchen);
 
-    @Query("from Restaurant r join fetch r.kitchen left join fetch r.paymentWay")
+    @Query("from Restaurant r join fetch r.kitchen")
     List<Restaurant> findAll();
 }

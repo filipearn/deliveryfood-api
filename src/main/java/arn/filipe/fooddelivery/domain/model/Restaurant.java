@@ -24,6 +24,7 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     private BigDecimal freighRate;
@@ -42,8 +43,8 @@ public class Restaurant {
     private LocalDateTime updateDate;
 
     //@JsonIgnoreProperties({"hibernateLazyInitializer"})
-    //@JsonIgnore
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
 
@@ -55,7 +56,7 @@ public class Restaurant {
     @Embedded
     private Address address;
 
-    //@JsonIgnore
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "restaurant_payment_way",
     joinColumns = @JoinColumn(name = "restaurant_id"),
