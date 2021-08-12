@@ -2,6 +2,7 @@ package arn.filipe.fooddelivery.domain.service;
 
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
+import arn.filipe.fooddelivery.domain.exception.ProductNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.model.Product;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
@@ -10,6 +11,7 @@ import arn.filipe.fooddelivery.domain.repository.RestaurantRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,6 @@ import java.util.List;
 public class ProductService {
 
     public static final String PRODUCT_IN_USE = "Product with id %d can't be removed. Resource in use.";
-    public static final String PRODUCT_NOT_FOUND = "Product with id %d not found.";
     @Autowired
     private ProductRepository productRepository;
 
@@ -62,9 +63,8 @@ public class ProductService {
     public void delete(Long id) {
         try {
             productRepository.deleteById(id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(
-                    String.format(PRODUCT_NOT_FOUND, id));
+        } catch (EmptyResultDataAccessException e) {
+            throw new ProductNotFoundException(id);
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(
                     String.format(PRODUCT_IN_USE, id));
@@ -73,7 +73,7 @@ public class ProductService {
 
     private Product verifyIfExistsOrThrow(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
+                .orElseThrow(() -> new ProductNotFoundException(
                         String.format("Product with id %d not found.", id)));
     }
 }

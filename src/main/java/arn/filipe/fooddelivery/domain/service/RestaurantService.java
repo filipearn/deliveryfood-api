@@ -2,6 +2,7 @@ package arn.filipe.fooddelivery.domain.service;
 
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
+import arn.filipe.fooddelivery.domain.exception.RestaurantNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.repository.KitchenRepository;
@@ -74,9 +75,8 @@ public class RestaurantService {
     public void delete(Long id) {
         try {
             restaurantRepository.deleteById(id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(
-                    String.format(RESTAURANT_NOT_FOUND, id));
+        } catch (EmptyResultDataAccessException e) {
+            throw new RestaurantNotFoundException(id);
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(
                     String.format(RESTAURANT_IN_USER, id));
@@ -91,7 +91,6 @@ public class RestaurantService {
 
     private Restaurant verifyIfExistsOrThrow(Long id) {
         return restaurantRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(RESTAURANT_NOT_FOUND, id)));
+                .orElseThrow(() -> new RestaurantNotFoundException(id));
     }
 }

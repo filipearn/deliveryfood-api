@@ -2,11 +2,13 @@ package arn.filipe.fooddelivery.domain.service;
 
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
+import arn.filipe.fooddelivery.domain.exception.KitchenNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.repository.KitchenRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 
@@ -16,7 +18,6 @@ import java.util.Optional;
 @Service
 public class KitchenService {
 
-    public static final String KITCHEN_NOT_FOUND = "Kitchen with id %d not found.";
     public static final String KITCHEN_IN_USE = "Kitchen with id %d can't be removed. Resource in use.";
 
     @Autowired
@@ -47,9 +48,8 @@ public class KitchenService {
     public void delete(Long id) {
         try {
             kitchenRepository.deleteById(id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(
-                    String.format(KITCHEN_NOT_FOUND, id));
+        } catch (EmptyResultDataAccessException e) {
+            throw new KitchenNotFoundException(id);
         }
         catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(
@@ -67,7 +67,6 @@ public class KitchenService {
 
     private Kitchen verifyIfExistsOrThrow(Long id) {
         return kitchenRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(KITCHEN_NOT_FOUND, id)));
+                .orElseThrow(() -> new KitchenNotFoundException(id));
     }
 }
