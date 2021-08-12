@@ -12,32 +12,31 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CityService {
+
+    public static final String CITY_NOT_FOUND = "City with id %d not found.";
+    public static final String CITY_IN_USE = "City with id %d can't be removed. Resource in use.";
 
     @Autowired
     private CityRepository cityRepository;
 
     @Autowired
-    private StateRepository stateRepository;
+    private StateService stateService;
 
     public List<City> listAll(){
         return cityRepository.findAll();
     }
 
     public City findById(Long id){
-        return cityRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("City with id %d not found.", id)));
+        return verifyIfExistsOrThrow(id);
     }
 
     public City save(City city){
         Long stateId = city.getState().getId();
-        State state = stateRepository.findById(stateId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("State with id %d not found.", stateId)));
+
+        State state = stateService.findById(stateId);
 
         city.setState(state);
 
@@ -46,13 +45,9 @@ public class CityService {
 
     public City update(Long id, City city){
         Long stateId = city.getState().getId();
-        State state = stateRepository.findById(stateId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("State with id %d not found.", stateId)));
+        State state = stateService.findById(stateId);
 
-        City cityToUpdate = cityRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("City with id %d not found.", id)));
+        City cityToUpdate = verifyIfExistsOrThrow(id);
 
         city.setState(state);
 
@@ -62,16 +57,21 @@ public class CityService {
     }
 
     public void delete(Long id){
-        cityRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("City with id %d not found.", id)));
-
         try {
             cityRepository.deleteById(id);
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(
+                    String.format(CITY_NOT_FOUND, id));
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(
-                    String.format("City with id %d can't be removed. Resource in use.", id));
+                    String.format(CITY_IN_USE, id));
         }
+    }
+
+    private City verifyIfExistsOrThrow(Long id) {
+        return cityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(CITY_NOT_FOUND, id)));
     }
 
 

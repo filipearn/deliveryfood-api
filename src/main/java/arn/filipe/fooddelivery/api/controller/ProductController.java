@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Product;
@@ -25,44 +26,32 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id){
-        try{
-            Product product = productService.findById(id);
-            return ResponseEntity.ok().body(product);
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public Product findById(@PathVariable Long id){
+        return productService.findById(id);
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody Product product){
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product save(@RequestBody Product product){
         try{
-            product = productService.save(product);
-            return ResponseEntity.status(HttpStatus.CREATED).body(product);
+            return productService.save(product);
         } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Product product){
+    public Product update(@PathVariable Long id, @RequestBody Product product){
         try{
-            product = productService.update(id, product);
-            return ResponseEntity.ok().body(product);
+            return productService.update(id, product);
         } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Long id){
-        try{
-            productService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (EntityInUseException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id){
+        productService.delete(id);
     }
 }

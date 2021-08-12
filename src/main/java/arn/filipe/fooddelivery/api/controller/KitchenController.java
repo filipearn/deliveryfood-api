@@ -3,7 +3,6 @@ package arn.filipe.fooddelivery.api.controller;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
-import arn.filipe.fooddelivery.domain.model.Product;
 import arn.filipe.fooddelivery.domain.service.KitchenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,13 +24,8 @@ public class KitchenController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id){
-        try{
-            Kitchen kitchen = kitchenService.findById(id);
-            return ResponseEntity.ok().body(kitchen);
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public Kitchen findById(@PathVariable Long id){
+         return kitchenService.findById(id);
     }
 
     @GetMapping("/by-name")
@@ -40,33 +34,20 @@ public class KitchenController {
     }
 
     @PostMapping
-    public ResponseEntity<Kitchen> save(@RequestBody Kitchen kitchen){
-        kitchen = kitchenService.save(kitchen);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(kitchen);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Kitchen save(@RequestBody Kitchen kitchen){
+        return kitchenService.save(kitchen);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Kitchen kitchen){
-        try{
-            kitchen = kitchenService.update(id, kitchen);
-            return ResponseEntity.ok().body(kitchen);
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public Kitchen update(@PathVariable Long id, @RequestBody Kitchen kitchen){
+            return kitchenService.update(id, kitchen);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        try{
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
             kitchenService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (EntityInUseException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
-
     }
 
 }

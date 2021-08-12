@@ -19,19 +19,19 @@ import java.util.Optional;
 
 @Service
 public class RestaurantService {
-    
+
+    public static final String RESTAURANT_NOT_FOUND = "Restaurant with id %d not found.";
+    public static final String RESTAURANT_IN_USER = "Restaurant with id %d can't be removed. Resource in use.";
     @Autowired
     private RestaurantRepository restaurantRepository;
 
     @Autowired
-    private KitchenRepository kitchenRepository;
+    private KitchenService kitchenService;
 
     public Restaurant save(Restaurant restaurant){
         Long kitchenId = restaurant.getKitchen().getId();
 
-        Kitchen kitchen = kitchenRepository.findById(kitchenId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Kitchen with id %d not found.", kitchenId)));
+        Kitchen kitchen = kitchenService.findById(kitchenId);
 
         restaurant.setKitchen(kitchen);
         return restaurantRepository.save(restaurant);
@@ -42,9 +42,7 @@ public class RestaurantService {
     }
 
     public Restaurant findById(Long id){
-        return restaurantRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                    String.format("Restaurant with id %d not found.", id)));
+        return verifyIfExistsOrThrow(id);
     }
 
     public List<Restaurant> findByNameAndKitchen(String name, Long kitchenId){
@@ -61,13 +59,9 @@ public class RestaurantService {
 
     public Restaurant update(Long id, Restaurant restaurant){
         Long kitchenId = restaurant.getKitchen().getId();
-        Kitchen kitchen = kitchenRepository.findById(kitchenId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Kitchen with id %d not found.", kitchenId)));
+        Kitchen kitchen = kitchenService.findById(kitchenId);
 
-        Restaurant restaurantToUpdate = restaurantRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Restaurant with id %d not found.", id)));
+        Restaurant restaurantToUpdate = verifyIfExistsOrThrow(id);
 
         BeanUtils.copyProperties(restaurant, restaurantToUpdate, "id", "paymentWay", "address", "registrationDate", "products");
 
@@ -78,21 +72,26 @@ public class RestaurantService {
 
 
     public void delete(Long id) {
-        restaurantRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Restaurant with id %d not found.", id)));
-
         try {
             restaurantRepository.deleteById(id);
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(
+                    String.format(RESTAURANT_NOT_FOUND, id));
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(
-                    String.format("Restaurant with id %d can't be removed. Resource in use.", id));
+                    String.format(RESTAURANT_IN_USER, id));
         }
     }
 
     public Restaurant findFirst() {
         return restaurantRepository.findFirst().orElseThrow(
                 () -> new EmptyResultDataAccessException(
-                        String.format("No restaurant found."), 1));
+                        String.format(RESTAURANT_NOT_FOUND), 1));
+    }
+
+    private Restaurant verifyIfExistsOrThrow(Long id) {
+        return restaurantRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(RESTAURANT_NOT_FOUND, id)));
     }
 }

@@ -16,6 +16,9 @@ import java.util.Optional;
 @Service
 public class KitchenService {
 
+    public static final String KITCHEN_NOT_FOUND = "Kitchen with id %d not found.";
+    public static final String KITCHEN_IN_USE = "Kitchen with id %d can't be removed. Resource in use.";
+
     @Autowired
     private KitchenRepository kitchenRepository;
 
@@ -28,15 +31,13 @@ public class KitchenService {
     }
 
     public Kitchen findById(Long id){
-        return kitchenRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Kitchen with id %d not found.", id)));
+        return verifyIfExistsOrThrow(id);
     }
 
+
+
     public Kitchen update(Long id, Kitchen kitchen){
-        Kitchen kitchenToUpdate = kitchenRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Kitchen with id %d not found.", id)));
+        Kitchen kitchenToUpdate = verifyIfExistsOrThrow(id);
 
         BeanUtils.copyProperties(kitchen, kitchenToUpdate, "id");
         return kitchenRepository.save(kitchenToUpdate);
@@ -44,15 +45,15 @@ public class KitchenService {
 
 
     public void delete(Long id) {
-        kitchenRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Kitchen with id %d not found.", id)));
-
         try {
             kitchenRepository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(
+                    String.format(KITCHEN_NOT_FOUND, id));
+        }
+        catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(
-                    String.format("Kitchen with id %d can't be removed. Resource in use.", id));
+                    String.format(KITCHEN_IN_USE, id));
         }
     }
 
@@ -62,5 +63,11 @@ public class KitchenService {
 
     public List<Kitchen> findByNameContaining(String name) {
         return kitchenRepository.findByNameContaining(name);
+    }
+
+    private Kitchen verifyIfExistsOrThrow(Long id) {
+        return kitchenRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(KITCHEN_NOT_FOUND, id)));
     }
 }

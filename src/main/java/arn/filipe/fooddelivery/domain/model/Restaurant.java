@@ -43,7 +43,6 @@ public class Restaurant {
     private LocalDateTime updateDate;
 
     //@JsonIgnoreProperties({"hibernateLazyInitializer"})
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;

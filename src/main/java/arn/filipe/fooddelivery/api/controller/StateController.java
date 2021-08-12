@@ -26,43 +26,25 @@ public class StateController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id){
-        try{
-            State state = stateService.findById(id);
-            return ResponseEntity.ok().body(state);
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public State findById(@PathVariable Long id){
+        return stateService.findById(id);
     }
 
     @PostMapping
-    public ResponseEntity<State> save(@RequestBody State state){
-        state = stateService.save(state);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(state);
+    @ResponseStatus(HttpStatus.CREATED)
+    public State save(@RequestBody State state){
+        return stateService.save(state);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody State state){
-
-        try{
-            state = stateService.update(id, state);
-            return ResponseEntity.ok().body(state);
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public State update(@PathVariable Long id, @RequestBody State state){
+        return stateService.update(id, state);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        try{
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
             stateService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (EntityInUseException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
     }
 
 

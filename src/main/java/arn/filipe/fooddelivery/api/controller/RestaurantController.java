@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
@@ -27,13 +28,8 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id){
-        try{
-            Restaurant restaurant = restaurantService.findById(id);
-            return ResponseEntity.ok().body(restaurant);
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public Restaurant findById(@PathVariable Long id){
+            return restaurantService.findById(id);
     }
 
     @GetMapping("/name-and-kitchen")
@@ -61,38 +57,28 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody Restaurant restaurant){
+    @ResponseStatus(HttpStatus.CREATED)
+    public Restaurant save(@RequestBody Restaurant restaurant){
         try{
-            restaurant = restaurantService.save(restaurant);
-            return ResponseEntity.status(HttpStatus.CREATED).body(restaurant);
+            return restaurantService.save(restaurant);
         } catch (EntityNotFoundException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
-
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Restaurant restaurant){
+    public Restaurant update(@PathVariable Long id, @RequestBody Restaurant restaurant){
         try{
-            restaurant = restaurantService.update(id, restaurant);
-            return ResponseEntity.ok().body(restaurant);
+            return restaurantService.update(id, restaurant);
         } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        throw new BusinessException(e.getMessage());
         }
-
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        try{
-            restaurantService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (EntityInUseException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
-
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        restaurantService.delete(id);
     }
 
 }

@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.City;
@@ -25,46 +26,33 @@ public class CityController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id){
-        try{
-            City city = cityService.findById(id);
-            return ResponseEntity.ok().body(city);
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public City findById(@PathVariable Long id){
+        return cityService.findById(id);
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody City city){
+    @ResponseStatus(HttpStatus.CREATED)
+    public City save(@RequestBody City city){
         try{
-            city = cityService.save(city);
-            return ResponseEntity.status(HttpStatus.CREATED).body(city);
+            return cityService.save(city);
         } catch (EntityNotFoundException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody City city){
+    public City update(@PathVariable Long id, @RequestBody City city){
         try{
-            city = cityService.update(id, city);
-            return ResponseEntity.ok().body(city);
-
+            return cityService.update(id, city);
         } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            throw new BusinessException(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        try{
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
             cityService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (EntityInUseException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
     }
 
 

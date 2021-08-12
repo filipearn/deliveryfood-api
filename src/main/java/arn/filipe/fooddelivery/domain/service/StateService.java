@@ -14,6 +14,8 @@ import java.util.List;
 @Service
 public class StateService {
 
+    public static final String STATE_NOT_FOUND = "State with id %d not found.";
+    public static final String STATE_IN_USE = "State with id %d can't be removed. Resource in use.";
     @Autowired
     private StateRepository stateRepository;
 
@@ -26,15 +28,11 @@ public class StateService {
     }
 
     public State findById(Long id) {
-        return stateRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("State with id %d not found.", id)));
+        return verifyIfExistsOrThrow(id);
     }
 
     public State update(Long id, State state) {
-        State stateToUpdate = stateRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("State with id %d not found.", id)));
+        State stateToUpdate = verifyIfExistsOrThrow(id);
 
         BeanUtils.copyProperties(state, stateToUpdate, "id");
 
@@ -42,15 +40,21 @@ public class StateService {
     }
 
     public void delete(Long id) {
-        stateRepository.findById(id)
-                .orElseThrow(() ->  new EntityNotFoundException(
-                        String.format("State with id %d not found.", id)));
         try {
             stateRepository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(
+                    String.format(STATE_NOT_FOUND, id));
+        }catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(
-                    String.format("State with id %d can't be removed. Resource in use.", id));
+                    String.format(STATE_IN_USE, id));
         }
+    }
+
+    private State verifyIfExistsOrThrow(Long id) {
+        return stateRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(STATE_NOT_FOUND, id)));
     }
 
 
