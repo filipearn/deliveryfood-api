@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.controller;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
+import arn.filipe.fooddelivery.domain.exception.StateNotFoundException;
 import arn.filipe.fooddelivery.domain.model.City;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.service.CityService;
@@ -35,7 +36,7 @@ public class CityController {
     public City save(@RequestBody City city){
         try{
             return cityService.save(city);
-        } catch (EntityNotFoundException e){
+        } catch (StateNotFoundException e){
             throw new BusinessException(e.getMessage());
         }
     }
@@ -44,7 +45,7 @@ public class CityController {
     public City update(@PathVariable Long id, @RequestBody City city){
         try{
             return cityService.update(id, city);
-        } catch (EntityNotFoundException e){
+        } catch (StateNotFoundException e){
             throw new BusinessException(e.getMessage());
         }
     }
