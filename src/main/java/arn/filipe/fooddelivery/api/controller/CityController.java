@@ -37,7 +37,7 @@ public class CityController {
         try{
             return cityService.save(city);
         } catch (StateNotFoundException e){
-            throw new BusinessException(e.getMessage());
+            throw new BusinessException(e.getMessage(), e);
         }
     }
 
@@ -46,7 +46,7 @@ public class CityController {
         try{
             return cityService.update(id, city);
         } catch (StateNotFoundException e){
-            throw new BusinessException(e.getMessage());
+            throw new BusinessException(e.getMessage(), e);
         }
     }
 

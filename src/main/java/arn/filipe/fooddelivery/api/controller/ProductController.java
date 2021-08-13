@@ -37,7 +37,7 @@ public class ProductController {
         try{
             return productService.save(product);
         } catch (RestaurantNotFoundException e){
-            throw new BusinessException(e.getMessage());
+            throw new BusinessException(e.getMessage(), e);
         }
     }
 
@@ -46,7 +46,7 @@ public class ProductController {
         try{
             return productService.update(id, product);
         } catch (RestaurantNotFoundException e){
-            throw new BusinessException(e.getMessage());
+            throw new BusinessException(e.getMessage(), e);
         }
     }
 

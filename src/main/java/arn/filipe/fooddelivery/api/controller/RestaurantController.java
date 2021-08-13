@@ -63,7 +63,7 @@ public class RestaurantController {
         try{
             return restaurantService.save(restaurant);
         } catch (KitchenNotFoundException e){
-            throw new BusinessException(e.getMessage());
+            throw new BusinessException(e.getMessage(), e);
         }
     }
 
@@ -72,7 +72,7 @@ public class RestaurantController {
         try{
             return restaurantService.update(id, restaurant);
         } catch (KitchenNotFoundException e){
-        throw new BusinessException(e.getMessage());
+        throw new BusinessException(e.getMessage(), e);
         }
     }
 
