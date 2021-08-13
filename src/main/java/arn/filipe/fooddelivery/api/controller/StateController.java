@@ -31,7 +31,6 @@ public class StateController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public State save(@RequestBody State state){
         return stateService.save(state);
     }
@@ -42,7 +41,6 @@ public class StateController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id){
             stateService.delete(id);
     }

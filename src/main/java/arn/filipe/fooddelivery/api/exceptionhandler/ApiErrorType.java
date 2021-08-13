@@ -5,10 +5,12 @@ import lombok.Getter;
 @Getter
 public enum ApiErrorType {
 
-    ENTITY_NOT_FOUND("/entity-not-found", "Entity not found"),
+    GENERIC_SYSTEM_ERROR("/system-error", "System error"),
+    RESOURCE_NOT_FOUND("/resource-not-found", "Resource not found"),
     ENTITY_IN_USE("/entity-in-use", "Entity in use"),
     BUSINESS_ERROR("/business-error", "Business exception"),
-    INVALID_MESSAGE("/invalid-message", "Invalid sent message");
+    INVALID_MESSAGE("/invalid-message", "Invalid sent message"),
+    INVALID_PARAMETER("/invalid-parameter", "Invalid parameter");
 
     private String uri;
     private String title;
