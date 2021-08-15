@@ -1,0 +1,9 @@
+{
+  "name": "Cerveja Walls",
+  "description": "Cerveja artesanal",
+  "price": 9.99,
+  "restaurant": {
+    "id": 1
+  },
+  "active": true
+}

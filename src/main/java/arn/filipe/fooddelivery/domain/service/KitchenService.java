@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class KitchenService {
     @Autowired
     private KitchenRepository kitchenRepository;
 
+    @Transactional
     public Kitchen save(Kitchen kitchen){
         return kitchenRepository.save(kitchen);
     }
@@ -36,7 +38,7 @@ public class KitchenService {
     }
 
 
-
+    @Transactional
     public Kitchen update(Long id, Kitchen kitchen){
         Kitchen kitchenToUpdate = verifyIfExistsOrThrow(id);
 
@@ -44,7 +46,7 @@ public class KitchenService {
         return kitchenRepository.save(kitchenToUpdate);
     }
 
-
+    @Transactional
     public void delete(Long id) {
         try {
             kitchenRepository.deleteById(id);

@@ -1,10 +1,8 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.core.validation.ValidationException;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
-import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
-import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.KitchenNotFoundException;
-import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -17,9 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,6 +37,9 @@ public class RestaurantController {
     public List<Restaurant> listAll(){
         return restaurantService.listAll();
     }
+
+    @Autowired
+    private SmartValidator validator;
 
     @GetMapping("/{id}")
     public Restaurant findById(@PathVariable Long id){
@@ -68,7 +72,7 @@ public class RestaurantController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurant save(@RequestBody Restaurant restaurant){
+    public Restaurant save(@RequestBody @Valid Restaurant restaurant){
         try{
             return restaurantService.save(restaurant);
         } catch (KitchenNotFoundException e){
@@ -77,7 +81,7 @@ public class RestaurantController {
     }
 
     @PutMapping("/{id}")
-    public Restaurant update(@PathVariable Long id, @RequestBody Restaurant restaurant){
+    public Restaurant update(@PathVariable Long id, @RequestBody @Valid Restaurant restaurant){
         try{
             return restaurantService.update(id, restaurant);
         } catch (KitchenNotFoundException e){
@@ -92,7 +96,19 @@ public class RestaurantController {
 
         merge(fields, actualRestaurant, request);
 
+        validate(actualRestaurant, "restaurant");
+
         return update(id, actualRestaurant);
+    }
+
+    private void validate(Restaurant restaurant, String objectName) {
+
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurant,objectName);
+        validator.validate(restaurant, bindingResult);
+
+        if(bindingResult.hasErrors()){
+            throw new ValidationException(bindingResult);
+        }
     }
 
     private void merge(Map<String, Object> originData, Restaurant destinationRestaurant,

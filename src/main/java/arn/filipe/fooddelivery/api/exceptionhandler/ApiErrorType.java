@@ -10,7 +10,8 @@ public enum ApiErrorType {
     ENTITY_IN_USE("/entity-in-use", "Entity in use"),
     BUSINESS_ERROR("/business-error", "Business exception"),
     INVALID_MESSAGE("/invalid-message", "Invalid sent message"),
-    INVALID_PARAMETER("/invalid-parameter", "Invalid parameter");
+    INVALID_PARAMETER("/invalid-parameter", "Invalid parameter"),
+    INVALID_DATA("/invalid-data", "Invalid data");
 
     private String uri;
     private String title;

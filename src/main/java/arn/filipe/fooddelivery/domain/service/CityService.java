@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class CityService {
         return verifyIfExistsOrThrow(id);
     }
 
+    @Transactional
     public City save(City city){
         Long stateId = city.getState().getId();
 
@@ -44,6 +46,7 @@ public class CityService {
         return cityRepository.save(city);
     }
 
+    @Transactional
     public City update(Long id, City city){
         Long stateId = city.getState().getId();
         State state = stateService.findById(stateId);
@@ -57,6 +60,7 @@ public class CityService {
         return cityRepository.save(cityToUpdate);
     }
 
+    @Transactional
     public void delete(Long id){
         try {
             cityRepository.deleteById(id);

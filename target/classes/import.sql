@@ -1,4 +1,4 @@
-insert into kitchen (id, name) values (1, 'Tilandesa');
+insert into kitchen (id, name) values (1, 'Tailandesa');
 insert into kitchen (id, name) values (2, 'Indiana');
 insert into kitchen (id, name) values (3, 'Argentina');
 insert into kitchen (id, name) values (4, 'Brasileira');

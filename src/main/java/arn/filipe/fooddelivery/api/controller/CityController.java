@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -33,7 +34,7 @@ public class CityController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public City save(@RequestBody City city){
+    public City save(@RequestBody @Valid City city){
         try{
             return cityService.save(city);
         } catch (StateNotFoundException e){
@@ -42,7 +43,7 @@ public class CityController {
     }
 
     @PutMapping("/{id}")
-    public City update(@PathVariable Long id, @RequestBody City city){
+    public City update(@PathVariable Long id, @RequestBody @Valid City city){
         try{
             return cityService.update(id, city);
         } catch (StateNotFoundException e){

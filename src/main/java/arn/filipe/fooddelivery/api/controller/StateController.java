@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,12 +32,12 @@ public class StateController {
     }
 
     @PostMapping
-    public State save(@RequestBody State state){
+    public State save(@RequestBody @Valid State state){
         return stateService.save(state);
     }
 
     @PutMapping("/{id}")
-    public State update(@PathVariable Long id, @RequestBody State state){
+    public State update(@PathVariable Long id, @RequestBody @Valid State state){
         return stateService.update(id, state);
     }
 

@@ -15,6 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class ProductService {
         return verifyIfExistsOrThrow(id);
     }
 
+    @Transactional
     public Product save(Product product) {
         Long restaurantId = product.getRestaurant().getId();
 
@@ -46,6 +48,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    @Transactional
     public Product update(Long id, Product product) {
         Long restaurantId = product.getRestaurant().getId();
 
@@ -60,6 +63,7 @@ public class ProductService {
         return productRepository.save(productToUpdate);
     }
 
+    @Transactional
     public void delete(Long id) {
         try {
             productRepository.deleteById(id);

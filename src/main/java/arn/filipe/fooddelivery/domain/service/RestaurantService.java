@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,6 +30,7 @@ public class RestaurantService {
     @Autowired
     private KitchenService kitchenService;
 
+    @Transactional
     public Restaurant save(Restaurant restaurant){
         Long kitchenId = restaurant.getKitchen().getId();
 
@@ -58,6 +60,7 @@ public class RestaurantService {
         return restaurantRepository.withFreeShipping(name);
     }
 
+    @Transactional
     public Restaurant update(Long id, Restaurant restaurant){
         Long kitchenId = restaurant.getKitchen().getId();
         Kitchen kitchen = kitchenService.findById(kitchenId);
@@ -71,7 +74,7 @@ public class RestaurantService {
         return restaurantRepository.save(restaurantToUpdate);
     }
 
-
+    @Transactional
     public void delete(Long id) {
         try {
             restaurantRepository.deleteById(id);

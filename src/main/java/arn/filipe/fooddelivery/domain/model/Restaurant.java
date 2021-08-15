@@ -1,19 +1,24 @@
 package arn.filipe.fooddelivery.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import arn.filipe.fooddelivery.core.validation.FreighRate;
+import arn.filipe.fooddelivery.core.validation.Groups;
+import arn.filipe.fooddelivery.core.validation.ZeroValueIncludeDescription;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import javax.validation.groups.ConvertGroup;
+import javax.validation.groups.Default;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@ZeroValueIncludeDescription(valueField = "FreighRate", descriptionField = "name", requiredDescription = "Free shipping")
 @Entity
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -24,38 +29,39 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
+    @PositiveOrZero(message = "{FreighRate.invalid}")
+    @FreighRate
+    @NotNull
+    @Column(nullable = false)
     private BigDecimal freighRate;
 
-    @JsonIgnore
     private Boolean active;
 
-    @JsonIgnore
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime registrationDate;
 
-    @JsonIgnore
     @UpdateTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime updateDate;
 
-    //@JsonIgnoreProperties({"hibernateLazyInitializer"})
+    @Valid
+    @ConvertGroup(from = Default.class, to= Groups.KitchenId.class)
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "restaurant")
     private List<Product> products = new ArrayList<>();
 
-    @JsonIgnore
     @Embedded
     private Address address;
 
-    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "restaurant_payment_way",
     joinColumns = @JoinColumn(name = "restaurant_id"),
