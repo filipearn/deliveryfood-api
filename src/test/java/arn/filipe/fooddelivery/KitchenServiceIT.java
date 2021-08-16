@@ -1,6 +1,5 @@
 package arn.filipe.fooddelivery;
 
-import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
@@ -162,7 +161,7 @@ class KitchenServiceIT {
 
 		Restaurant restaurant = new Restaurant();
 		restaurant.setName("Komb Hamburgueria");
-		restaurant.setFreighRate(new BigDecimal(10));
+		restaurant.setFreightRate(new BigDecimal(10));
 		restaurant.setKitchen(kitchen);
 
 		restaurantService.save(restaurant);

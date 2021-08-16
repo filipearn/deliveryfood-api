@@ -47,6 +47,7 @@ public class StateService {
     public void delete(Long id) {
         try {
             stateRepository.deleteById(id);
+            stateRepository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new StateNotFoundException(id);
         }catch (DataIntegrityViolationException e) {
@@ -55,7 +56,7 @@ public class StateService {
         }
     }
 
-    private State verifyIfExistsOrThrow(Long id) {
+    public State verifyIfExistsOrThrow(Long id) {
         return stateRepository.findById(id)
                 .orElseThrow(() -> new StateNotFoundException(id));
     }

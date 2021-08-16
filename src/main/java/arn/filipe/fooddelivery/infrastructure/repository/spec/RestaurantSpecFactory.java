@@ -9,7 +9,7 @@ public class RestaurantSpecFactory {
 
     public static Specification<Restaurant> freeShipping(){
         return (root, query, builder) ->
-                builder.equal(root.get("freighRate"), BigDecimal.ZERO);
+                builder.equal(root.get("freightRate"), BigDecimal.ZERO);
     }
 
     public static Specification<Restaurant> withSimilarName(String name){

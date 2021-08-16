@@ -9,7 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class PurchaseOrder {
     private BigDecimal subTotal;
 
     @Column(nullable = false)
-    private BigDecimal freighRate;
+    private BigDecimal freightRate;
 
     @Column(nullable = false)
     private BigDecimal totalValue;
@@ -37,13 +37,13 @@ public class PurchaseOrder {
 
     @CreationTimestamp
     @Column(nullable = false)
-    private LocalDateTime registrationDate;
+    private OffsetDateTime registrationDate;
 
-    private LocalDateTime confirmationDate;
+    private OffsetDateTime confirmationDate;
 
-    private LocalDateTime cancellationDate;
+    private OffsetDateTime cancellationDate;
 
-    private LocalDateTime deliveryDate;
+    private OffsetDateTime deliveryDate;
 
     @ManyToOne
     @JoinColumn(name = "user_client_id", nullable = false)

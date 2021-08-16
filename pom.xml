@@ -15,6 +15,7 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>16</java.version>
+		<modelmapper.version>2.3.0</modelmapper.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -69,6 +70,11 @@
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>${modelmapper.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

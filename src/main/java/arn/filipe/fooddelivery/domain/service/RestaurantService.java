@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.domain.service;
 
+import arn.filipe.fooddelivery.api.model.RestaurantModel;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.RestaurantNotFoundException;
@@ -52,8 +53,8 @@ public class RestaurantService {
         return restaurantRepository.queryByNameAndKitchen(name, kitchenId);
     }
 
-    public List<Restaurant> findByNameAndfreighRate(String name, BigDecimal freighRateInicial, BigDecimal freighRateFinal){
-        return restaurantRepository.customizedFind(name, freighRateInicial, freighRateFinal);
+    public List<Restaurant> findByNameAndFreightRate(String name, BigDecimal freightRateInitial, BigDecimal freightRateFinal){
+        return restaurantRepository.customizedFind(name, freightRateInitial, freightRateFinal);
     }
 
     public List<Restaurant> withFreeShipping(String name){
@@ -78,6 +79,7 @@ public class RestaurantService {
     public void delete(Long id) {
         try {
             restaurantRepository.deleteById(id);
+            restaurantRepository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new RestaurantNotFoundException(id);
         } catch (DataIntegrityViolationException e) {
@@ -92,7 +94,7 @@ public class RestaurantService {
                         String.format(RESTAURANT_NOT_FOUND), 1));
     }
 
-    private Restaurant verifyIfExistsOrThrow(Long id) {
+    public Restaurant verifyIfExistsOrThrow(Long id) {
         return restaurantRepository.findById(id)
                 .orElseThrow(() -> new RestaurantNotFoundException(id));
     }

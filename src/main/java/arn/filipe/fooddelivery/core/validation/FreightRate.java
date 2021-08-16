@@ -7,10 +7,10 @@ import javax.validation.constraints.PositiveOrZero;
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 @javax.validation.Constraint(validatedBy = {})
 @PositiveOrZero
-public @interface FreighRate {
+public @interface FreightRate {
 
     @OverridesAttribute(constraint = PositiveOrZero.class, name = "message")
-    java.lang.String message() default "{FreighRate.invalid}";
+    java.lang.String message() default "{FreightRate.invalid}";
 
     java.lang.Class<?>[] groups() default {};
 

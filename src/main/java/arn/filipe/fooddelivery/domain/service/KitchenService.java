@@ -1,7 +1,9 @@
 package arn.filipe.fooddelivery.domain.service;
 
+import arn.filipe.fooddelivery.api.assembler.KitchenModelAssembler;
+import arn.filipe.fooddelivery.api.model.KitchenModel;
+import arn.filipe.fooddelivery.api.model.input.KitchenInput;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
-import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.KitchenNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.repository.KitchenRepository;
@@ -14,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class KitchenService {
@@ -50,6 +51,7 @@ public class KitchenService {
     public void delete(Long id) {
         try {
             kitchenRepository.deleteById(id);
+            kitchenRepository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new KitchenNotFoundException(id);
         }
@@ -67,7 +69,7 @@ public class KitchenService {
         return kitchenRepository.findByNameContaining(name);
     }
 
-    private Kitchen verifyIfExistsOrThrow(Long id) {
+    public Kitchen verifyIfExistsOrThrow(Long id) {
         return kitchenRepository.findById(id)
                 .orElseThrow(() -> new KitchenNotFoundException(id));
     }

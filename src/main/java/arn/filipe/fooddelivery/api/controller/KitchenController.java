@@ -1,5 +1,9 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.api.assembler.KitchenInputDisassembler;
+import arn.filipe.fooddelivery.api.assembler.KitchenModelAssembler;
+import arn.filipe.fooddelivery.api.model.KitchenModel;
+import arn.filipe.fooddelivery.api.model.input.KitchenInput;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
@@ -19,30 +23,42 @@ public class KitchenController {
     @Autowired
     private KitchenService kitchenService;
 
+    @Autowired
+    private KitchenInputDisassembler kitchenInputDisassembler;
+
+    @Autowired
+    private KitchenModelAssembler kitchenModelAssembler;
+
     @GetMapping
-    public List<Kitchen> listAll(){
-        return kitchenService.listAll();
+    public List<KitchenModel> listAll(){
+        return kitchenModelAssembler.toCollectionModel(kitchenService.listAll());
     }
 
     @GetMapping("/{id}")
-    public Kitchen findById(@PathVariable Long id){
-         return kitchenService.findById(id);
+    public KitchenModel findById(@PathVariable Long id){
+         return kitchenModelAssembler.toModel(kitchenService.findById(id));
     }
 
     @GetMapping("/by-name")
-    public List<Kitchen> findByNameContaining(String name){
-        return kitchenService.findByNameContaining(name);
+    public List<KitchenModel> findByNameContaining(String name){
+        return kitchenModelAssembler.toCollectionModel(kitchenService.findByNameContaining(name));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Kitchen save(@RequestBody @Valid Kitchen kitchen){
-        return kitchenService.save(kitchen);
+    public KitchenModel save(@RequestBody @Valid KitchenInput kitchenInput){
+        Kitchen kitchen = kitchenInputDisassembler.toDomainObject(kitchenInput);
+
+        return kitchenModelAssembler.toModel(kitchenService.save(kitchen));
     }
 
     @PutMapping("/{id}")
-    public Kitchen update(@PathVariable Long id, @RequestBody @Valid Kitchen kitchen){
-            return kitchenService.update(id, kitchen);
+    public KitchenModel update(@PathVariable Long id, @RequestBody @Valid KitchenInput kitchenInput){
+        Kitchen kitchen = kitchenService.verifyIfExistsOrThrow(id);
+
+        kitchenInputDisassembler.copyToDomainObject(kitchenInput, kitchen);
+
+        return kitchenModelAssembler.toModel(kitchenService.save(kitchen));
     }
 
     @DeleteMapping("/{id}")

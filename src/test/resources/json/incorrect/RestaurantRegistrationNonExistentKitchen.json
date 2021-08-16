@@ -1,6 +1,6 @@
 {
   "name" : "KOMB HAMBURGUERIA",
-  "freighRate": "10",
+  "freightRate": "10",
   "kitchen": {
     "id": -1
   }

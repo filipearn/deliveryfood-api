@@ -25,16 +25,16 @@ public class RestaurantRepositoryImpl implements CustomizedRestaurantRespository
 
     @Override
     public List<Restaurant> customizedFind(String name,
-                                 BigDecimal freighRateInitial,
-                                 BigDecimal freighRateFinal){
+                                 BigDecimal freightRateInitial,
+                                 BigDecimal freightRateFinal){
 
         var jpql = "from Restaurant where name like :name " +
-                "and freighRate between :freighRateInitial and :freighRateFinal";
+                "and freightRate between :freightRateInitial and :freightRateFinal";
 
         return manager.createQuery(jpql, Restaurant.class)
                 .setParameter("name", "%" + name + "%")
-                .setParameter("freighRateInitial", freighRateInitial)
-                .setParameter("freighRateFinal", freighRateFinal)
+                .setParameter("freightRateInitial", freightRateInitial)
+                .setParameter("freightRateFinal", freightRateFinal)
                 .getResultList();
     }
 

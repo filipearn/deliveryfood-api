@@ -67,6 +67,7 @@ public class ProductService {
     public void delete(Long id) {
         try {
             productRepository.deleteById(id);
+            productRepository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new ProductNotFoundException(id);
         } catch (DataIntegrityViolationException e) {
@@ -75,7 +76,7 @@ public class ProductService {
         }
     }
 
-    private Product verifyIfExistsOrThrow(Long id) {
+    public Product verifyIfExistsOrThrow(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(
                         String.format("Product with id %d not found.", id)));

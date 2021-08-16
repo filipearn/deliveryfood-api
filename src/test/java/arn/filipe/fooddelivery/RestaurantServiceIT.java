@@ -1,6 +1,5 @@
 package arn.filipe.fooddelivery;
 
-import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.model.Product;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
@@ -79,7 +78,7 @@ class RestaurantServiceIT {
         jsonOPassoRestaurantRegistration = ResourceUtils.getContentFromResource("/json/incorrect/RestaurantRegistrationCorrect.json");
         jsonRestaurantRegistrationWithoutRestaurantName = ResourceUtils.getContentFromResource("/json/incorrect/RestaurantRegistrationWithoutRestaurantName.json");
         jsonRestaurantRegistrationWithoutKitchen = ResourceUtils.getContentFromResource("/json/incorrect/RestaurantRegistrationWithoutKitchen.json");
-        jsonRestaurantRegistrationWithoutFreithRate = ResourceUtils.getContentFromResource("/json/incorrect/RestaurantRegistrationWithoutFreighRate.json");
+        jsonRestaurantRegistrationWithoutFreithRate = ResourceUtils.getContentFromResource("/json/incorrect/RestaurantRegistrationWithoutFreightRate.json");
         jsonRestaurantRegistrationNonExistentKitchen = ResourceUtils.getContentFromResource("/json/incorrect/RestaurantRegistrationNonExistentKitchen.json");
 
         //Correct
@@ -136,7 +135,7 @@ class RestaurantServiceIT {
     }
 
     @Test
-    public void mustReturnStatus400_WhenRegisterRestaurantWithoutFreighRate(){
+    public void mustReturnStatus400_WhenRegisterRestaurantWithoutFreightRate(){
         given()
             .body(jsonRestaurantRegistrationWithoutFreithRate)
             .contentType(ContentType.JSON)
@@ -239,13 +238,13 @@ class RestaurantServiceIT {
         //Insert Restaurant
         kombRestaurant = new Restaurant();
         kombRestaurant.setName("KOMB HAMBURGUERIA");
-        kombRestaurant.setFreighRate(new BigDecimal(10));
+        kombRestaurant.setFreightRate(new BigDecimal(10));
         kombRestaurant.setKitchen(italianKitchen);
         kombRestaurant = restaurantRepository.save(kombRestaurant);
 
         comidaMineiraRestaurant = new Restaurant();
         comidaMineiraRestaurant.setName("COMIDA MINEIRA");
-        comidaMineiraRestaurant.setFreighRate(new BigDecimal(5));
+        comidaMineiraRestaurant.setFreightRate(new BigDecimal(5));
         comidaMineiraRestaurant.setKitchen(brazilianKitchen);
         comidaMineiraRestaurant = restaurantRepository.save(comidaMineiraRestaurant);
 

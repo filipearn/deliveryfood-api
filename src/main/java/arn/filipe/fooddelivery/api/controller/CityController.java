@@ -1,15 +1,16 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.api.assembler.CityModelAssembler;
+import arn.filipe.fooddelivery.api.assembler.CityInputDisassembler;
+import arn.filipe.fooddelivery.api.model.CityModel;
+import arn.filipe.fooddelivery.api.model.input.CityInput;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
-import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
-import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.StateNotFoundException;
 import arn.filipe.fooddelivery.domain.model.City;
-import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.service.CityService;
+import arn.filipe.fooddelivery.domain.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,30 +23,47 @@ public class CityController {
     @Autowired
     private CityService cityService;
 
+    @Autowired
+    private CityInputDisassembler cityInputDisassembler;
+
+    @Autowired
+    private CityModelAssembler cityInputAssembler;
+
+    @Autowired
+    private StateService stateService;
+
     @GetMapping
-    public List<City> listAll(){
-        return cityService.listAll();
+    public List<CityModel> listAll(){
+        return cityInputAssembler.toCollectionModel(cityService.listAll());
     }
 
     @GetMapping("/{id}")
-    public City findById(@PathVariable Long id){
-        return cityService.findById(id);
+    public CityModel findById(@PathVariable Long id){
+        return cityInputAssembler.toModel(cityService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public City save(@RequestBody @Valid City city){
+    public CityModel save(@RequestBody @Valid CityInput cityInput){
         try{
-            return cityService.save(city);
+            City city = cityInputDisassembler.toDomainObject(cityInput);
+
+            return cityInputAssembler.toModel(cityService.save(city));
         } catch (StateNotFoundException e){
             throw new BusinessException(e.getMessage(), e);
         }
     }
 
     @PutMapping("/{id}")
-    public City update(@PathVariable Long id, @RequestBody @Valid City city){
+    public CityModel update(@PathVariable Long id, @RequestBody @Valid CityInput cityInput){
         try{
-            return cityService.update(id, city);
+            City city = cityService.verifyIfExistsOrThrow(id);
+
+            cityInputDisassembler.copyToDomainObject(cityInput, city);
+
+            city = cityService.save(city);
+
+            return cityInputAssembler.toModel(city);
         } catch (StateNotFoundException e){
             throw new BusinessException(e.getMessage(), e);
         }

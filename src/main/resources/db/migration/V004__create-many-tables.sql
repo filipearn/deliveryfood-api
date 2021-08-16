@@ -28,7 +28,7 @@ create table restaurant (
 
 id bigint not null auto_increment,
 active tinyint(1),
-freigh_rate decimal(10,2),
+freight_rate decimal(10,2),
 name varchar(60)  not null,
 registration_date datetime not null,
 update_date datetime not null,

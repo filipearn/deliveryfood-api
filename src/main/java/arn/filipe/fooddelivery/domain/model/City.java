@@ -14,7 +14,6 @@ import javax.validation.groups.Default;
 @Data
 public class City {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

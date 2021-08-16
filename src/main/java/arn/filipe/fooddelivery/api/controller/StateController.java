@@ -1,5 +1,9 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.api.assembler.StateInputDisassembler;
+import arn.filipe.fooddelivery.api.assembler.StateModelAssembler;
+import arn.filipe.fooddelivery.api.model.StateModel;
+import arn.filipe.fooddelivery.api.model.input.StateInput;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
@@ -21,24 +25,36 @@ public class StateController {
     @Autowired
     private StateService stateService;
 
+    @Autowired
+    private StateInputDisassembler stateInputDisassembler;
+
+    @Autowired
+    private StateModelAssembler stateModelAssembler;
+
     @GetMapping
-    public List<State> listAll(){
-        return stateService.findAll();
+    public List<StateModel> listAll(){
+        return stateModelAssembler.toCollectionModel(stateService.findAll());
     }
 
     @GetMapping("/{id}")
-    public State findById(@PathVariable Long id){
-        return stateService.findById(id);
+    public StateModel findById(@PathVariable Long id){
+        return stateModelAssembler.toModel(stateService.findById(id));
     }
 
     @PostMapping
-    public State save(@RequestBody @Valid State state){
-        return stateService.save(state);
+    public StateModel save(@RequestBody @Valid StateInput stateInput){
+        State state = stateInputDisassembler.toDomainObject(stateInput);
+
+        return stateModelAssembler.toModel(stateService.save(state));
     }
 
     @PutMapping("/{id}")
-    public State update(@PathVariable Long id, @RequestBody @Valid State state){
-        return stateService.update(id, state);
+    public StateModel update(@PathVariable Long id, @RequestBody @Valid StateInput stateInput){
+        State state = stateService.verifyIfExistsOrThrow(id);
+
+        stateInputDisassembler.copyToDomainObject(stateInput, state);
+
+        return stateModelAssembler.toModel(stateService.save(state));
     }
 
     @DeleteMapping("/{id}")

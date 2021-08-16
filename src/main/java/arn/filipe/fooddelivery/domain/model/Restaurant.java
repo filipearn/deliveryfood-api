@@ -1,6 +1,6 @@
 package arn.filipe.fooddelivery.domain.model;
 
-import arn.filipe.fooddelivery.core.validation.FreighRate;
+import arn.filipe.fooddelivery.core.validation.FreightRate;
 import arn.filipe.fooddelivery.core.validation.Groups;
 import arn.filipe.fooddelivery.core.validation.ZeroValueIncludeDescription;
 import lombok.Data;
@@ -14,11 +14,12 @@ import javax.validation.constraints.*;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@ZeroValueIncludeDescription(valueField = "FreighRate", descriptionField = "name", requiredDescription = "Free shipping")
+@ZeroValueIncludeDescription(valueField = "FreightRate", descriptionField = "name", requiredDescription = "Free shipping")
 @Entity
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -33,21 +34,21 @@ public class Restaurant {
     @Column(nullable = false)
     private String name;
 
-    @PositiveOrZero(message = "{FreighRate.invalid}")
-    @FreighRate
+    @PositiveOrZero(message = "{FreightRate.invalid}")
+    @FreightRate
     @NotNull
     @Column(nullable = false)
-    private BigDecimal freighRate;
+    private BigDecimal freightRate;
 
     private Boolean active;
 
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
-    private LocalDateTime registrationDate;
+    private OffsetDateTime registrationDate;
 
     @UpdateTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
-    private LocalDateTime updateDate;
+    private OffsetDateTime updateDate;
 
     @Valid
     @ConvertGroup(from = Default.class, to= Groups.KitchenId.class)

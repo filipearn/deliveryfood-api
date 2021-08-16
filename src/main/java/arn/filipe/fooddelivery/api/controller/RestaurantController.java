@@ -1,5 +1,9 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.api.assembler.RestaurantInputDisassembler;
+import arn.filipe.fooddelivery.api.assembler.RestaurantModelAssembler;
+import arn.filipe.fooddelivery.api.model.RestaurantModel;
+import arn.filipe.fooddelivery.api.model.input.RestaurantInput;
 import arn.filipe.fooddelivery.core.validation.ValidationException;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.KitchenNotFoundException;
@@ -33,13 +37,20 @@ public class RestaurantController {
     @Autowired
     private RestaurantService restaurantService;
 
-    @GetMapping
-    public List<Restaurant> listAll(){
-        return restaurantService.listAll();
-    }
-
     @Autowired
     private SmartValidator validator;
+
+    @Autowired
+    private RestaurantInputDisassembler restaurantInputDisassembler;
+
+    @Autowired
+    private RestaurantModelAssembler restaurantModelAssembler;
+
+    @GetMapping
+    public List<RestaurantModel> listAll(){
+        return restaurantModelAssembler.toCollectionModel(restaurantService.listAll());
+    }
+
 
     @GetMapping("/{id}")
     public Restaurant findById(@PathVariable Long id){
@@ -51,9 +62,9 @@ public class RestaurantController {
         return restaurantService.findByNameAndKitchen(name, kitchenId);
     }
 
-    @GetMapping("/name-and-freighRate")
-    public List<Restaurant> findByNameAndfreighRate(String name, BigDecimal freighRateInicial, BigDecimal freighRateFinal){
-        return restaurantService.findByNameAndfreighRate(name, freighRateInicial, freighRateFinal);
+    @GetMapping("/name-and-freightRate")
+    public List<Restaurant> findByNameAndFreightRate(String name, BigDecimal freightRateInitial, BigDecimal freightRateFinal){
+        return restaurantService.findByNameAndFreightRate(name, freightRateInitial, freightRateFinal);
     }
 
     @GetMapping("/free-shipping")
@@ -72,34 +83,40 @@ public class RestaurantController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurant save(@RequestBody @Valid Restaurant restaurant){
+    public RestaurantModel save(@RequestBody @Valid RestaurantInput restaurantInput){
         try{
-            return restaurantService.save(restaurant);
+            Restaurant restaurant = restaurantInputDisassembler.toDomainObject(restaurantInput);
+
+            return restaurantModelAssembler.toModel(restaurantService.save(restaurant));
         } catch (KitchenNotFoundException e){
             throw new BusinessException(e.getMessage(), e);
         }
     }
 
     @PutMapping("/{id}")
-    public Restaurant update(@PathVariable Long id, @RequestBody @Valid Restaurant restaurant){
+    public RestaurantModel update(@PathVariable Long id, @RequestBody @Valid RestaurantInput restaurantInput){
         try{
-            return restaurantService.update(id, restaurant);
+            Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(id);
+
+            restaurantInputDisassembler.copyToDomainObject(restaurantInput, restaurant);
+
+            return restaurantModelAssembler.toModel(restaurantService.save(restaurant));
         } catch (KitchenNotFoundException e){
         throw new BusinessException(e.getMessage(), e);
         }
     }
 
-    @PatchMapping("/{id}")
-    public Restaurant partialUpdate(@PathVariable Long id,
-                                        @RequestBody Map<String, Object> fields, HttpServletRequest request) {
-        Restaurant actualRestaurant = restaurantService.findById(id);
-
-        merge(fields, actualRestaurant, request);
-
-        validate(actualRestaurant, "restaurant");
-
-        return update(id, actualRestaurant);
-    }
+//    @PatchMapping("/{id}")
+//    public RestaurantModel partialUpdate(@PathVariable Long id,
+//                                        @RequestBody Map<String, Object> fields, HttpServletRequest request) {
+//        Restaurant actualRestaurant = restaurantService.findById(id);
+//
+//        merge(fields, actualRestaurant, request);
+//
+//        validate(actualRestaurant, "restaurant");
+//
+//        return restaurantModelAssembler.toModel(update(id, actualRestaurant));
+//    }
 
     private void validate(Restaurant restaurant, String objectName) {
 

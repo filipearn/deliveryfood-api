@@ -10,8 +10,8 @@ import java.util.List;
 public interface CustomizedRestaurantRespositoryImpl {
 
     List<Restaurant> customizedFind(String name,
-                          BigDecimal freighRateInitial,
-                          BigDecimal freighRateFinal);
+                          BigDecimal freightRateInitial,
+                          BigDecimal freightRateFinal);
 
     List<Restaurant> withFreeShipping(String name);
 }
