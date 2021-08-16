@@ -30,17 +30,13 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Column(nullable = false)
     private String name;
 
-    @PositiveOrZero(message = "{FreightRate.invalid}")
-    @FreightRate
-    @NotNull
     @Column(nullable = false)
     private BigDecimal freightRate;
 
-    private Boolean active;
+    private Boolean active = Boolean.TRUE;
 
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
@@ -50,9 +46,6 @@ public class Restaurant {
     @Column(nullable = false, columnDefinition = "datetime")
     private OffsetDateTime updateDate;
 
-    @Valid
-    @ConvertGroup(from = Default.class, to= Groups.KitchenId.class)
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "kitchen_id", nullable = false)
     private Kitchen kitchen;
@@ -68,4 +61,12 @@ public class Restaurant {
     joinColumns = @JoinColumn(name = "restaurant_id"),
     inverseJoinColumns = @JoinColumn(name = "payment_way_id"))
     private List<PaymentWay> paymentWay = new ArrayList<>();
+
+    public void activate(){
+        setActive(true);
+    }
+
+    public void deactivate(){
+        setActive(false);
+    }
 }

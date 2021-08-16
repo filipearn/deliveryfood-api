@@ -47,20 +47,6 @@ public class CityService {
     }
 
     @Transactional
-    public City update(Long id, City city){
-        Long stateId = city.getState().getId();
-        State state = stateService.findById(stateId);
-
-        City cityToUpdate = verifyIfExistsOrThrow(id);
-
-        city.setState(state);
-
-        BeanUtils.copyProperties(city, cityToUpdate, "id");
-
-        return cityRepository.save(cityToUpdate);
-    }
-
-    @Transactional
     public void delete(Long id){
         try {
             cityRepository.deleteById(id);

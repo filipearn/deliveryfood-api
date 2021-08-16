@@ -38,15 +38,6 @@ public class KitchenService {
         return verifyIfExistsOrThrow(id);
     }
 
-
-    @Transactional
-    public Kitchen update(Long id, Kitchen kitchen){
-        Kitchen kitchenToUpdate = verifyIfExistsOrThrow(id);
-
-        BeanUtils.copyProperties(kitchen, kitchenToUpdate, "id");
-        return kitchenRepository.save(kitchenToUpdate);
-    }
-
     @Transactional
     public void delete(Long id) {
         try {

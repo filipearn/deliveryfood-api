@@ -13,6 +13,7 @@ public class RestaurantModel {
     private Long id;
     private String name;
     private BigDecimal freightRate;
-    private Long kitchenId;
+    private KitchenModel kitchen;
+    private Boolean active;
 
 }

@@ -35,15 +35,6 @@ public class StateService {
     }
 
     @Transactional
-    public State update(Long id, State state) {
-        State stateToUpdate = verifyIfExistsOrThrow(id);
-
-        BeanUtils.copyProperties(state, stateToUpdate, "id");
-
-        return stateRepository.save(stateToUpdate);
-    }
-
-    @Transactional
     public void delete(Long id) {
         try {
             stateRepository.deleteById(id);

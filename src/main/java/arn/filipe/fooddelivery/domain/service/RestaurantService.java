@@ -1,15 +1,10 @@
 package arn.filipe.fooddelivery.domain.service;
 
-import arn.filipe.fooddelivery.api.model.RestaurantModel;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
-import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.RestaurantNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
-import arn.filipe.fooddelivery.domain.repository.KitchenRepository;
 import arn.filipe.fooddelivery.domain.repository.RestaurantRepository;
-import arn.filipe.fooddelivery.infrastructure.repository.spec.RestaurantSpecFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,13 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RestaurantService {
 
     public static final String RESTAURANT_NOT_FOUND = "Restaurant with id %d not found.";
-    public static final String RESTAURANT_IN_USER = "Restaurant with id %d can't be removed. Resource in use.";
+    public static final String RESTAURANT_IN_USE = "Restaurant with id %d can't be removed. Resource in use.";
     @Autowired
     private RestaurantRepository restaurantRepository;
 
@@ -62,17 +56,17 @@ public class RestaurantService {
     }
 
     @Transactional
-    public Restaurant update(Long id, Restaurant restaurant){
-        Long kitchenId = restaurant.getKitchen().getId();
-        Kitchen kitchen = kitchenService.findById(kitchenId);
+    public void activate(Long id){
+        Restaurant restaurant = verifyIfExistsOrThrow(id);
 
-        Restaurant restaurantToUpdate = verifyIfExistsOrThrow(id);
+        restaurant.activate();
+    }
 
-        BeanUtils.copyProperties(restaurant, restaurantToUpdate, "id", "paymentWay", "address", "registrationDate", "products");
+    @Transactional
+    public void deactivate(Long id){
+        Restaurant restaurant = verifyIfExistsOrThrow(id);
 
-        restaurantToUpdate.setKitchen(kitchen);
-
-        return restaurantRepository.save(restaurantToUpdate);
+        restaurant.deactivate();
     }
 
     @Transactional
@@ -84,7 +78,7 @@ public class RestaurantService {
             throw new RestaurantNotFoundException(id);
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(
-                    String.format(RESTAURANT_IN_USER, id));
+                    String.format(RESTAURANT_IN_USE, id));
         }
     }
 
