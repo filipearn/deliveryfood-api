@@ -6,6 +6,7 @@ import arn.filipe.fooddelivery.api.model.RestaurantModel;
 import arn.filipe.fooddelivery.api.model.input.RestaurantInput;
 import arn.filipe.fooddelivery.core.validation.ValidationException;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
+import arn.filipe.fooddelivery.domain.exception.CityNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.KitchenNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
@@ -88,7 +89,7 @@ public class RestaurantController {
             Restaurant restaurant = restaurantInputDisassembler.toDomainObject(restaurantInput);
 
             return restaurantModelAssembler.toModel(restaurantService.save(restaurant));
-        } catch (KitchenNotFoundException e){
+        } catch (KitchenNotFoundException | CityNotFoundException e){
             throw new BusinessException(e.getMessage(), e);
         }
     }
@@ -101,7 +102,7 @@ public class RestaurantController {
             restaurantInputDisassembler.copyToDomainObject(restaurantInput, restaurant);
 
             return restaurantModelAssembler.toModel(restaurantService.save(restaurant));
-        } catch (KitchenNotFoundException e){
+        } catch (KitchenNotFoundException | CityNotFoundException e){
         throw new BusinessException(e.getMessage(), e);
         }
     }

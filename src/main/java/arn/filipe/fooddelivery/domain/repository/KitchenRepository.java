@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface KitchenRepository extends JpaRepository<Kitchen, Long> {
+public interface KitchenRepository extends CustomizedJpaRepository<Kitchen, Long> {
 
     List<Kitchen> findByName(String name);
 

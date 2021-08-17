@@ -3,11 +3,11 @@ package arn.filipe.fooddelivery.api.model;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
-public class CityModel {
+@Getter
+public class KitchenSummaryModel {
 
     private Long id;
     private String name;
-    private StateModel state;
+    private String state;
 }

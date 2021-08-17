@@ -1,6 +1,7 @@
 package arn.filipe.fooddelivery.api.assembler;
 
 import arn.filipe.fooddelivery.api.model.input.RestaurantInput;
+import arn.filipe.fooddelivery.domain.model.City;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import org.modelmapper.ModelMapper;
@@ -21,6 +22,10 @@ public class RestaurantInputDisassembler {
         // To avoid org.hibernate.HibernateException: identifier of an instance of
         // domain.model.kitchen was altered from 1 to 2
         restaurant.setKitchen(new Kitchen());
+
+        if(restaurant.getAddress() != null){
+            restaurant.getAddress().setCity(new City());
+        }
 
         modelMapper.map(restaurantInput, restaurant);
     }

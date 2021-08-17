@@ -2,6 +2,7 @@ package arn.filipe.fooddelivery.domain.service;
 
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.RestaurantNotFoundException;
+import arn.filipe.fooddelivery.domain.model.City;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.repository.RestaurantRepository;
@@ -25,13 +26,20 @@ public class RestaurantService {
     @Autowired
     private KitchenService kitchenService;
 
+    @Autowired
+    private CityService cityService;
+
     @Transactional
     public Restaurant save(Restaurant restaurant){
         Long kitchenId = restaurant.getKitchen().getId();
+        Long cityId = restaurant.getAddress().getCity().getId();
 
         Kitchen kitchen = kitchenService.findById(kitchenId);
+        City city = cityService.findById(cityId);
 
         restaurant.setKitchen(kitchen);
+        restaurant.getAddress().setCity(city);
+
         return restaurantRepository.save(restaurant);
     }
 

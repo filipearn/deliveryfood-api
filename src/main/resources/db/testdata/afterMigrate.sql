@@ -66,3 +66,10 @@ insert into product (name, description, price, active, restaurant_id) values ('B
 insert into product (name, description, price, active, restaurant_id) values ('T-Bone', 'Corte muito saboroso, com um osso em formato de T, sendo de um lado o contrafilé e do outro o filé mignon', 89, 1, 4);
 insert into product (name, description, price, active, restaurant_id) values ('Sanduíche X-Tudo', 'Sandubão com muito queijo, hamburger bovino, bacon, ovo, salada e maionese', 19, 1, 5);
 insert into product (name, description, price, active, restaurant_id) values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
+
+insert into user (name, email, password, registration_date) values ('Filipe Nepomuceno', 'filipearn@yahoo.com.br', '123', utc_timestamp);
+insert into user (name, email, password, registration_date) values ('Jéssica Pessoa', 'jessicasereia@gmail.com.br', '123', utc_timestamp);
+insert into user (name, email, password, registration_date) values ('Marcus Vinícius', 'marcus@yahoo.com.br', '123', utc_timestamp);
+insert into user (name, email, password, registration_date) values ('Leonardo Moyle', 'leo@yahoo.com.br', '123', utc_timestamp);
+
+insert into team (name) values ('Gerente'), ('Vendedor'), ('Secretária'), ('Cadastrador');

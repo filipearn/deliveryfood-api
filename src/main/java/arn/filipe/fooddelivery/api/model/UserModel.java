@@ -5,9 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CityModel {
+public class UserModel {
 
     private Long id;
     private String name;
-    private StateModel state;
+    private String email;
+
 }
