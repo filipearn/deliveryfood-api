@@ -2,7 +2,11 @@ package arn.filipe.fooddelivery.domain.service;
 
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.TeamNotFoundException;
+import arn.filipe.fooddelivery.domain.model.PaymentWay;
+import arn.filipe.fooddelivery.domain.model.Permission;
+import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.model.Team;
+import arn.filipe.fooddelivery.domain.repository.PermissionRepository;
 import arn.filipe.fooddelivery.domain.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,6 +24,9 @@ public class TeamService {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private PermissionService permissionService;
+
     public List<Team> listAll(){
         return teamRepository.findAll();
     }
@@ -31,6 +38,22 @@ public class TeamService {
     @Transactional
     public Team save(Team team){
         return teamRepository.save(team);
+    }
+
+    @Transactional
+    public void associatePermission(Long teamId, Long permissionId){
+        Team team = verifyIfExistsOrThrow(teamId);
+        Permission permission  = permissionService.verifyIfExistsOrThrow(permissionId);
+
+        team.associatePermission(permission);
+    }
+
+    @Transactional
+    public void disassociatePermission(Long teamId, Long permissionId){
+        Team team = verifyIfExistsOrThrow(teamId);
+        Permission permission  = permissionService.verifyIfExistsOrThrow(permissionId);
+
+        team.disassociatePermission(permission);
     }
 
     @Transactional

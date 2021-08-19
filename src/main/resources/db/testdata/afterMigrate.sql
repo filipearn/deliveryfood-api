@@ -12,6 +12,7 @@ delete from restaurant;
 delete from restaurant_payment_way;
 delete from user;
 delete from user_team;
+delete from restaurant_user;
 
 set foreign_key_checks = 1;
 
@@ -24,6 +25,7 @@ alter table permission auto_increment = 1;
 alter table product auto_increment = 1;
 alter table restaurant auto_increment = 1;
 alter table user auto_increment = 1;
+
 
 insert into kitchen (id, name) values (1, 'Tailandesa');
 insert into kitchen (id, name) values (2, 'Indiana');
@@ -40,12 +42,12 @@ insert into city (id, name, state_id) values (3, 'São Paulo', 2);
 insert into city (id, name, state_id) values (4, 'Campinas', 2);
 insert into city (id, name, state_id) values (5, 'Fortaleza', 3);
 
-insert into restaurant (id, name, freight_rate, kitchen_id, address_city_id, address_cep, address_street, address_number, address_district, registration_date, update_date, active) values (1, 'Thai Gourmet', 10, 1, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro', utc_timestamp, utc_timestamp, true);
-insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active) values (2, 'Thai Delivery', 0, 1, utc_timestamp, utc_timestamp, true);
-insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active) values (3, 'Tuk Tuk Comida Indiana', 15, 2, utc_timestamp, utc_timestamp, true);
-insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active) values (4, 'Java Steakhouse', 12, 3, utc_timestamp, utc_timestamp, true);
-insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active) values (5, 'Lanchonete do Tio Sam', 11, 4, utc_timestamp, utc_timestamp, true);
-insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active) values (6, 'Bar da Maria', 6, 4, utc_timestamp, utc_timestamp, true);
+insert into restaurant (id, name, freight_rate, kitchen_id, address_city_id, address_cep, address_street, address_number, address_district, registration_date, update_date, active, opened) values (1, 'Thai Gourmet', 10, 1, 1, '38400-999', 'Rua João Pinheiro', '1000', 'Centro', utc_timestamp, utc_timestamp, true, false);
+insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active, opened) values (2, 'Thai Delivery', 0, 1, utc_timestamp, utc_timestamp, true, false);
+insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active, opened) values (3, 'Tuk Tuk Comida Indiana', 15, 2, utc_timestamp, utc_timestamp, true, false);
+insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active, opened) values (4, 'Java Steakhouse', 12, 3, utc_timestamp, utc_timestamp, true, false);
+insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active, opened) values (5, 'Lanchonete do Tio Sam', 11, 4, utc_timestamp, utc_timestamp, true, false);
+insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active, opened) values (6, 'Bar da Maria', 6, 4, utc_timestamp, utc_timestamp, true, false);
 
 insert into payment_way (id, description) values (1, 'Cartão de crédito');
 insert into payment_way (id, description) values (2, 'Cartão de débito');
@@ -73,3 +75,9 @@ insert into user (name, email, password, registration_date) values ('Marcus Vin�
 insert into user (name, email, password, registration_date) values ('Leonardo Moyle', 'leo@yahoo.com.br', '123', utc_timestamp);
 
 insert into team (name) values ('Gerente'), ('Vendedor'), ('Secretária'), ('Cadastrador');
+
+insert into team_permission (team_id, permission_id) values (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
+
+insert into user_team (user_id, team_id) values (1, 1), (1, 2), (2, 2);
+
+insert into restaurant_user (restaurant_id, user_id) values (1,2), (1,3);

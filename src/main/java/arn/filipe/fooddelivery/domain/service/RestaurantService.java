@@ -2,9 +2,7 @@ package arn.filipe.fooddelivery.domain.service;
 
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.RestaurantNotFoundException;
-import arn.filipe.fooddelivery.domain.model.City;
-import arn.filipe.fooddelivery.domain.model.Kitchen;
-import arn.filipe.fooddelivery.domain.model.Restaurant;
+import arn.filipe.fooddelivery.domain.model.*;
 import arn.filipe.fooddelivery.domain.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,6 +26,15 @@ public class RestaurantService {
 
     @Autowired
     private CityService cityService;
+
+    @Autowired
+    private PaymentWayService paymentWayService;
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private UserService userService;
 
     @Transactional
     public Restaurant save(Restaurant restaurant){
@@ -71,10 +78,82 @@ public class RestaurantService {
     }
 
     @Transactional
+    public void activate(List<Long> restaurantIds){
+        restaurantIds.forEach(this::activate);
+    }
+
+    @Transactional
+    public void deactivate(List<Long> restaurantIds){
+        restaurantIds.forEach(this::deactivate);
+    }
+
+    @Transactional
     public void deactivate(Long id){
         Restaurant restaurant = verifyIfExistsOrThrow(id);
 
         restaurant.deactivate();
+    }
+
+    @Transactional
+    public void opening(Long id){
+        Restaurant restaurant = verifyIfExistsOrThrow(id);
+
+        restaurant.open();
+    }
+
+    @Transactional
+    public void closure(Long id){
+        Restaurant restaurant = verifyIfExistsOrThrow(id);
+
+        restaurant.close();
+    }
+
+    @Transactional
+    public void associatePaymentWay(Long restaurantId, Long paymentWayId){
+        Restaurant restaurant = verifyIfExistsOrThrow(restaurantId);
+        PaymentWay paymentWay = paymentWayService.verifyIfExistsOrThrow(paymentWayId);
+
+        restaurant.associatePaymentWay(paymentWay);
+    }
+
+    @Transactional
+    public void disassociatePaymentWay(Long restaurantId, Long paymentWayId){
+        Restaurant restaurant = verifyIfExistsOrThrow(restaurantId);
+        PaymentWay paymentWay = paymentWayService.verifyIfExistsOrThrow(paymentWayId);
+
+        restaurant.disassociatePaymentWay(paymentWay);
+    }
+
+    @Transactional
+    public void associateProduct(Long restaurantId, Long productId){
+        Restaurant restaurant = verifyIfExistsOrThrow(restaurantId);
+        Product product = productService.verifyIfExistsOrThrow(restaurantId, productId);
+
+        restaurant.associateProduct(product);
+    }
+
+    @Transactional
+    public void disassociateProduct(Long restaurantId, Long productId){
+        Restaurant restaurant = verifyIfExistsOrThrow(restaurantId);
+        Product product = productService.verifyIfExistsOrThrow(restaurantId, productId);
+
+        restaurant.disassociateProduct(product);
+    }
+
+    @Transactional
+    public void associateUser(Long restaurantId, Long userId){
+        Restaurant restaurant = verifyIfExistsOrThrow(restaurantId);
+        User user = userService.verifyIfExistsOrThrow(userId);
+
+        restaurant.associateUser(user);
+    }
+
+    @Transactional
+    public void disassociateUser(Long restaurantId, Long userId){
+        Restaurant restaurant = verifyIfExistsOrThrow(restaurantId);
+        User user = userService.verifyIfExistsOrThrow(userId);
+
+        restaurant.disassociateUser(user);
     }
 
     @Transactional

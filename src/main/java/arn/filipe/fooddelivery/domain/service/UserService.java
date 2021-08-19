@@ -6,6 +6,8 @@ import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.StateNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.UserNotFoundException;
+import arn.filipe.fooddelivery.domain.model.Permission;
+import arn.filipe.fooddelivery.domain.model.Team;
 import arn.filipe.fooddelivery.domain.model.User;
 import arn.filipe.fooddelivery.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TeamService teamService;
 
     public List<User> listAll(){
         return userRepository.findAll();
@@ -56,6 +61,22 @@ public class UserService {
         }
 
         user.setPassword(newPassword);
+    }
+
+    @Transactional
+    public void associateTeam(Long userId, Long teamId){
+        User user = verifyIfExistsOrThrow(userId);
+        Team team = teamService.verifyIfExistsOrThrow(teamId);
+
+        user.associateTeam(team);
+    }
+
+    @Transactional
+    public void disassociateTeam(Long userId, Long teamId){
+        User user = verifyIfExistsOrThrow(userId);
+        Team team = teamService.verifyIfExistsOrThrow(teamId);
+
+        user.disassociateTeam(team);
     }
 
 //    @Transactional

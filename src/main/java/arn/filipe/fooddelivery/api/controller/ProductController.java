@@ -1,15 +1,14 @@
 package arn.filipe.fooddelivery.api.controller;
 
-import arn.filipe.fooddelivery.domain.exception.BusinessException;
-import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
-import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
-import arn.filipe.fooddelivery.domain.exception.RestaurantNotFoundException;
+import arn.filipe.fooddelivery.api.assembler.ProductInputDisassembler;
+import arn.filipe.fooddelivery.api.assembler.ProductModelAssembler;
+import arn.filipe.fooddelivery.api.model.ProductModel;
+import arn.filipe.fooddelivery.api.model.input.ProductInput;
 import arn.filipe.fooddelivery.domain.model.Product;
-import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.ProductService;
+import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,33 +20,18 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping
-    public List<Product> listAll(){
-        return productService.listAll();
-    }
+    @Autowired
+    private ProductModelAssembler productModelAssembler;
 
-    @GetMapping("/{id}")
-    public Product findById(@PathVariable Long id){
-        return productService.findById(id);
-    }
+    @Autowired
+    ProductInputDisassembler productInputDisassembler;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Product save(@RequestBody Product product){
-        try{
-            return productService.save(product);
-        } catch (RestaurantNotFoundException e){
-            throw new BusinessException(e.getMessage(), e);
-        }
-    }
+    public ProductModel save(@RequestBody ProductInput productInput){
+        Product product = productInputDisassembler.toDomainObject(productInput);
 
-    @PutMapping("/{id}")
-    public Product update(@PathVariable Long id, @RequestBody Product product){
-        try{
-            return productService.update(id, product);
-        } catch (RestaurantNotFoundException e){
-            throw new BusinessException(e.getMessage(), e);
-        }
+        return productModelAssembler.toModel(productService.save(product));
     }
 
     @DeleteMapping("/{id}")

@@ -1,7 +1,5 @@
 package arn.filipe.fooddelivery.domain.model;
 
-import arn.filipe.fooddelivery.core.validation.FreightRate;
-import arn.filipe.fooddelivery.core.validation.Groups;
 import arn.filipe.fooddelivery.core.validation.ZeroValueIncludeDescription;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,15 +7,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.*;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 import java.math.BigDecimal;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @ZeroValueIncludeDescription(valueField = "FreightRate", descriptionField = "name", requiredDescription = "Free shipping")
 @Entity
@@ -51,7 +46,7 @@ public class Restaurant {
     private Kitchen kitchen;
 
     @OneToMany(mappedBy = "restaurant")
-    private List<Product> products = new ArrayList<>();
+    private Set<Product> products = new HashSet<>();
 
     @Embedded
     private Address address;
@@ -60,7 +55,16 @@ public class Restaurant {
     @JoinTable(name = "restaurant_payment_way",
     joinColumns = @JoinColumn(name = "restaurant_id"),
     inverseJoinColumns = @JoinColumn(name = "payment_way_id"))
-    private List<PaymentWay> paymentWay = new ArrayList<>();
+    private Set<PaymentWay> paymentWays = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "restaurant_user",
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> users = new HashSet<>();
+
+    @NotNull
+    private boolean opened;
 
     public void activate(){
         setActive(true);
@@ -68,5 +72,41 @@ public class Restaurant {
 
     public void deactivate(){
         setActive(false);
+    }
+
+    public void open(){
+        setOpened(true);
+    }
+
+    public void close(){
+        setOpened(false);
+    }
+
+    public boolean associatePaymentWay(PaymentWay paymentWay){
+        return this.getPaymentWays().add(paymentWay);
+    }
+
+    public boolean disassociatePaymentWay(PaymentWay paymentWay){
+        return this.getPaymentWays().remove(paymentWay);
+    }
+
+    public boolean containsProduct(Product product){
+        return this.getPaymentWays().contains(product);
+    }
+
+    public boolean associateProduct(Product product){
+        return this.getProducts().add(product);
+    }
+
+    public boolean disassociateProduct(Product product){
+        return this.getProducts().remove(product);
+    }
+
+    public boolean associateUser(User user){
+        return this.getUsers().add(user);
+    }
+
+    public boolean disassociateUser(User user){
+        return this.getUsers().remove(user);
     }
 }

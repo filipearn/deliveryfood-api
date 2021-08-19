@@ -1,5 +1,7 @@
 package arn.filipe.fooddelivery.domain.service;
 
+import arn.filipe.fooddelivery.api.model.ProductModel;
+import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.ProductNotFoundException;
@@ -29,38 +31,9 @@ public class ProductService {
     @Autowired
     private RestaurantService restaurantService;
 
-    public List<Product> listAll() {
-        return productRepository.findAll();
-    }
-
-    public Product findById(Long id) {
-        return verifyIfExistsOrThrow(id);
-    }
-
     @Transactional
     public Product save(Product product) {
-        Long restaurantId = product.getRestaurant().getId();
-
-        Restaurant restaurant = restaurantService.findById(restaurantId);
-
-        product.setRestaurant(restaurant);
-
-        return productRepository.save(product);
-    }
-
-    @Transactional
-    public Product update(Long id, Product product) {
-        Long restaurantId = product.getRestaurant().getId();
-
-        Restaurant restaurant = restaurantService.findById(restaurantId);
-
-        Product productToUpdate = verifyIfExistsOrThrow(id);
-
-        BeanUtils.copyProperties(product, productToUpdate, "id");
-
-        productToUpdate.setRestaurant(restaurant);
-
-        return productRepository.save(productToUpdate);
+       return productRepository.save(product);
     }
 
     @Transactional
@@ -76,9 +49,10 @@ public class ProductService {
         }
     }
 
-    public Product verifyIfExistsOrThrow(Long id) {
-        return productRepository.findById(id)
+    public Product verifyIfExistsOrThrow(Long restaurantId, Long productId) {
+
+        return productRepository.findById(restaurantId, productId)
                 .orElseThrow(() -> new ProductNotFoundException(
-                        String.format("Product with id %d not found.", id)));
+                        String.format("Product with id %d not found.", productId)));
     }
 }

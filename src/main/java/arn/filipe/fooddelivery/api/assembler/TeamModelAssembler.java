@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public class TeamModelAssembler {
         return modelMapper.map(Team, TeamModel.class);
     }
 
-    public List<TeamModel> toCollectionModel(List<Team> teams){
+    public List<TeamModel> toCollectionModel(Collection<Team> teams){
         return teams.stream()
                 .map(team -> toModel(team))
                 .collect(Collectors.toList());

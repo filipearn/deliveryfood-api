@@ -7,7 +7,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -36,7 +38,7 @@ public class User {
     @JoinTable(name = "user_team",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "team_id"))
-    private List<Team> teams = new ArrayList<>();
+    private Set<Team> teams = new HashSet<>();
 
     public boolean passwordMatch(String newPassword){
         return this.getPassword().equals(newPassword);
@@ -44,5 +46,13 @@ public class User {
 
     public boolean passwordNotMatch(String newPassword){
         return !passwordMatch(newPassword);
+    }
+
+    public boolean associateTeam(Team team){
+        return this.getTeams().add(team);
+    }
+
+    public boolean disassociateTeam(Team team){
+        return this.getTeams().remove(team);
     }
 }

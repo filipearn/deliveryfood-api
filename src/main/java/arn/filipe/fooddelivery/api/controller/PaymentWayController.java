@@ -5,7 +5,9 @@ import arn.filipe.fooddelivery.api.assembler.PaymentWayModelAssembler;
 import arn.filipe.fooddelivery.api.model.PaymentWayModel;
 import arn.filipe.fooddelivery.api.model.input.PaymentWayInput;
 import arn.filipe.fooddelivery.domain.model.PaymentWay;
+import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.PaymentWayService;
+import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,14 +28,12 @@ public class PaymentWayController {
     @Autowired
     private PaymentWayModelAssembler paymentWayModelAssembler;
 
-    @GetMapping
-    public List<PaymentWayModel> listAll(){
-        return paymentWayModelAssembler.toCollectionModel(paymentWayService.listAll());
-    }
+    @Autowired
+    private RestaurantService restaurantService;
 
-    @GetMapping("/{id}")
-    public PaymentWayModel list(@PathVariable Long id){
-        return paymentWayModelAssembler.toModel(paymentWayService.findById(id));
+    @GetMapping
+    public List<PaymentWayModel> listAll(@PathVariable Long id){
+        return paymentWayModelAssembler.toCollectionModel(paymentWayService.listAll());
     }
 
     @PostMapping
