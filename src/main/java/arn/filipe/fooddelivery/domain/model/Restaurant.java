@@ -91,7 +91,11 @@ public class Restaurant {
     }
 
     public boolean containsProduct(Product product){
-        return this.getPaymentWays().contains(product);
+        return this.getProducts().contains(product);
+    }
+
+    public boolean containsPaymentWay(PaymentWay paymentWay){
+        return this.getPaymentWays().contains(paymentWay);
     }
 
     public boolean associateProduct(Product product){

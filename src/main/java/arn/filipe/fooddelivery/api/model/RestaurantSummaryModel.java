@@ -1,14 +1,14 @@
 package arn.filipe.fooddelivery.api.model;
 
-import arn.filipe.fooddelivery.api.model.input.StateIdInput;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
-public class CityModel {
+public class RestaurantSummaryModel {
 
     private Long id;
     private String name;
-    private StateModel state;
 }

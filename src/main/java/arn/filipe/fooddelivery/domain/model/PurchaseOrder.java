@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.domain.model;
 
+import arn.filipe.fooddelivery.api.model.input.PurchaseOrderInput;
 import arn.filipe.fooddelivery.domain.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -50,18 +51,30 @@ public class PurchaseOrder {
     private User client;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "purchase_order")
-    private List<ItemOrder> item = new ArrayList<>();
+    @OneToMany(mappedBy = "purchase_order", cascade = CascadeType.ALL)
+    private List<ItemOrder> items = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_way_id", nullable = false)
     private PaymentWay paymentWay;
 
     @Column(nullable = false)
-    private OrderStatus status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status = OrderStatus.CREATED;
+
+    public void calculateTotalValue() {
+        getItems().forEach(ItemOrder::calculateTotalPrice);
+
+        this.subTotal = getItems().stream()
+                .map(item -> item.getTotalPrice())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        this.totalValue = this.subTotal.add(this.freightRate);
+    }
+
 
 }

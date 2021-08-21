@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.model.input;
 
+import arn.filipe.fooddelivery.api.model.CitySummaryModel;
 import arn.filipe.fooddelivery.domain.model.City;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,5 +29,5 @@ public class AddressInput {
 
     @Valid
     @NotNull
-    private CityIdInput city;
+    private CitySummaryModel city;
 }

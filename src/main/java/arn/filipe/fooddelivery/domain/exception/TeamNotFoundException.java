@@ -1,6 +1,7 @@
 package arn.filipe.fooddelivery.domain.exception;
 
 public class TeamNotFoundException extends EntityNotFoundException{
+    private static final long serialVersionUID = 1L;
     public TeamNotFoundException(String message) {
         super(message);
     }

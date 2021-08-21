@@ -13,5 +13,5 @@ public class AddressModel {
     private String number;
     private String complement;
     private String district;
-    private CityModel city;
+    private CitySummaryModel city;
 }

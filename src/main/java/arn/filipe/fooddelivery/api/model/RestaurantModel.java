@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,5 +18,6 @@ public class RestaurantModel {
     private Boolean active;
     private Boolean opened;
     private AddressModel address;
+    private List<PaymentWayModel> paymentWays;
 
 }

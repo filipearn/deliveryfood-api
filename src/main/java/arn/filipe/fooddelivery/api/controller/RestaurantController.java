@@ -8,6 +8,7 @@ import arn.filipe.fooddelivery.core.validation.ValidationException;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.CityNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.KitchenNotFoundException;
+import arn.filipe.fooddelivery.domain.exception.RestaurantNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -54,8 +55,8 @@ public class RestaurantController {
 
 
     @GetMapping("/{id}")
-    public Restaurant findById(@PathVariable Long id){
-            return restaurantService.findById(id);
+    public RestaurantModel findById(@PathVariable Long id){
+            return restaurantModelAssembler.toModel(restaurantService.findById(id));
     }
 
     @GetMapping("/name-and-kitchen")
@@ -117,6 +118,27 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deactivate(@PathVariable Long id){
         restaurantService.deactivate(id);
+    }
+
+    @PutMapping("/activations")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void multipleActivation(@RequestBody List<Long> ids){
+        try{
+            restaurantService.activate(ids);
+        } catch (RestaurantNotFoundException e){
+            throw new BusinessException(e.getMessage(), e);
+        }
+
+    }
+
+    @DeleteMapping("/activations")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void multipleDeactivation(@RequestBody List<Long> ids){
+        try{
+            restaurantService.deactivate(ids);
+        } catch (RestaurantNotFoundException e){
+            throw new BusinessException(e.getMessage(), e);
+        }
     }
 
     @PutMapping("/{id}/opening")
