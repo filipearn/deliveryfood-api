@@ -53,9 +53,9 @@ public class PurchaseOrderController {
         return purchaseOrderSummaryModelAssembler.toCollectionModel(purchaseOrderService.listAll());
     }
 
-    @GetMapping("/{id}")
-    public PurchaseOrderModel findById(@PathVariable Long id){
-        return purchaseOrderModelAssembler.toModel(purchaseOrderService.findById(id));
+    @GetMapping("/{code}")
+    public PurchaseOrderModel findByCode(@PathVariable String code){
+        return purchaseOrderModelAssembler.toModel(purchaseOrderService.findByCode(code));
     }
 
     @PostMapping

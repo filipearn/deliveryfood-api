@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 public class PurchaseOrderSummaryModel {
-    private Long id;
+    private String code;
 
     private BigDecimal subTotal;
 

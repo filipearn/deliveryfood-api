@@ -7,6 +7,7 @@ import arn.filipe.fooddelivery.domain.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -38,8 +39,12 @@ public class PurchaseOrderService {
         return purchaseOrderRepository.findAll();
     }
 
-    public PurchaseOrder findById(Long id){
-        return verifyIfExistsOrThrow(id);
+//    public PurchaseOrder findById(Long id){
+//        return verifyIfExistsOrThrow(id);
+//    }
+
+    public PurchaseOrder findByCode(String code){
+        return verifyIfExistsOrThrow(code);
     }
 
     @Transactional
@@ -54,10 +59,15 @@ public class PurchaseOrderService {
 
     }
 
-    public PurchaseOrder verifyIfExistsOrThrow(Long id) {
-        return purchaseOrderRepository.findById(id)
-                .orElseThrow(() -> new PurchaseOrderNotFoundException(id));
+    public PurchaseOrder verifyIfExistsOrThrow(String code) {
+        return purchaseOrderRepository.findByCode(code)
+                .orElseThrow(() -> new PurchaseOrderNotFoundException(code));
     }
+
+//    public PurchaseOrder verifyIfExistsOrThrow(Long id) {
+//        return purchaseOrderRepository.findById(id)
+//                .orElseThrow(() -> new PurchaseOrderNotFoundException(id));
+//    }
 
     private void itemsValidation(PurchaseOrder purchaseOrder){
         purchaseOrder.getItems().forEach(

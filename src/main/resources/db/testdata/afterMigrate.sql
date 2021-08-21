@@ -86,10 +86,10 @@ insert into user_team (user_id, team_id) values (1, 1), (1, 2), (2, 2);
 
 insert into restaurant_user (restaurant_id, user_id) values (1,2), (1,3);
 
-insert into purchase_order (id, restaurant_id, user_client_id, payment_way_id, address_city_id, address_cep,
+insert into purchase_order (id, code, restaurant_id, user_client_id, payment_way_id, address_city_id, address_cep,
     address_street, address_number, address_complement, address_district,
     status, registration_date, sub_total, freight_rate, total_value)
-values (1, 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
+values (1, '9197a815-51b9-4fd1-9f74-6e0c55a683d7', 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
 'CREATED', utc_timestamp, 298.90, 10, 308.90);
 
 insert into item_order (id, purchase_order_id, product_id, quantity, unit_price, total_price, observation)
@@ -98,10 +98,10 @@ values (1, 1, 1, 1, 78.9, 78.9, null);
 insert into item_order (id, purchase_order_id, product_id, quantity, unit_price, total_price, observation)
 values (2, 1, 2, 2, 110, 220, 'Menos picante, por favor');
 
-insert into purchase_order (id, restaurant_id, user_client_id, payment_way_id, address_city_id, address_cep,
+insert into purchase_order (id, code, restaurant_id, user_client_id, payment_way_id, address_city_id, address_cep,
     address_street, address_number, address_complement, address_district,
     status, registration_date, sub_total, freight_rate, total_value)
-values (2, 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
+values (2, '8c103b75-5eee-45ba-8d38-6babff83e644', 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
 'CREATED', utc_timestamp, 79, 0, 79);
 
 insert into item_order (id, purchase_order_id, product_id, quantity, unit_price, total_price, observation)

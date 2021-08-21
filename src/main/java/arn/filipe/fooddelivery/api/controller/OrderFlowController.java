@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/purchase-orders/{purchaseOrderId}")
+@RequestMapping("/api/v1/purchase-orders/{purchaseOrderCode}")
 public class OrderFlowController {
 
     @Autowired
@@ -14,19 +14,19 @@ public class OrderFlowController {
 
     @PutMapping("/confirmation")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void confirmation(@PathVariable Long purchaseOrderId){
-            orderFlowService.confirm(purchaseOrderId);
+    public void confirmation(@PathVariable String purchaseOrderCode){
+            orderFlowService.confirm(purchaseOrderCode);
     }
 
     @PutMapping("/delivery")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delivery(@PathVariable Long purchaseOrderId){
-        orderFlowService.delivery(purchaseOrderId);
+    public void delivery(@PathVariable String purchaseOrderCode){
+        orderFlowService.delivery(purchaseOrderCode);
     }
 
     @PutMapping("/cancellation")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void cancellation(@PathVariable Long purchaseOrderId){
-        orderFlowService.cancel(purchaseOrderId);
+    public void cancellation(@PathVariable String purchaseOrderCode){
+        orderFlowService.cancel(purchaseOrderCode);
     }
 }
