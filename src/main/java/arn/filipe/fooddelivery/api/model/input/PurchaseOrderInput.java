@@ -1,14 +1,11 @@
 package arn.filipe.fooddelivery.api.model.input;
 
-import arn.filipe.fooddelivery.api.model.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 @Getter
