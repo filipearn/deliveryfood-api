@@ -4,7 +4,10 @@ import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.PurchaseOrderNotFoundException;
 import arn.filipe.fooddelivery.domain.model.*;
 import arn.filipe.fooddelivery.domain.repository.PurchaseOrderRepository;
+import arn.filipe.fooddelivery.domain.repository.filter.PurchaseOrderFilter;
+import arn.filipe.fooddelivery.infrastructure.repository.spec.PurchaseOrderSpecFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -99,4 +102,7 @@ public class PurchaseOrderService {
     }
 
 
+    public List<PurchaseOrder> findAll(PurchaseOrderFilter filter) {
+        return purchaseOrderRepository.findAll(PurchaseOrderSpecFactory.usingFilter(filter));
+    }
 }

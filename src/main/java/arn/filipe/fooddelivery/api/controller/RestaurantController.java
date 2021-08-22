@@ -4,6 +4,7 @@ import arn.filipe.fooddelivery.api.assembler.RestaurantInputDisassembler;
 import arn.filipe.fooddelivery.api.assembler.RestaurantModelAssembler;
 import arn.filipe.fooddelivery.api.model.RestaurantModel;
 import arn.filipe.fooddelivery.api.model.input.RestaurantInput;
+import arn.filipe.fooddelivery.api.model.view.RestaurantView;
 import arn.filipe.fooddelivery.core.validation.ValidationException;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.CityNotFoundException;
@@ -11,6 +12,7 @@ import arn.filipe.fooddelivery.domain.exception.KitchenNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.RestaurantNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -51,6 +53,19 @@ public class RestaurantController {
     @GetMapping
     public List<RestaurantModel> listAll(){
         return restaurantModelAssembler.toCollectionModel(restaurantService.listAll());
+    }
+
+
+    @JsonView(RestaurantView.Summary.class)
+    @GetMapping(params = "projection=summary")
+    public List<RestaurantModel> listAllSummary(){
+        return listAll();
+    }
+
+    @JsonView(RestaurantView.OnlyName.class)
+    @GetMapping(params = "projection=only-name")
+    public List<RestaurantModel> listAllOnlyName(){
+        return listAll();
     }
 
 

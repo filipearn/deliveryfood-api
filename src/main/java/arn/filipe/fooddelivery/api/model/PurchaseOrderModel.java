@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.model;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;

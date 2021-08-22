@@ -6,10 +6,12 @@ import arn.filipe.fooddelivery.api.model.input.*;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.*;
+import arn.filipe.fooddelivery.domain.repository.filter.PurchaseOrderFilter;
 import arn.filipe.fooddelivery.domain.service.ItemOrderService;
 import arn.filipe.fooddelivery.domain.service.PaymentWayService;
 import arn.filipe.fooddelivery.domain.service.PurchaseOrderService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
+import arn.filipe.fooddelivery.infrastructure.repository.spec.PurchaseOrderSpecFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -46,11 +48,10 @@ public class PurchaseOrderController {
     @Autowired
     private ItemOrderService itemOrderService;
 
-
-
     @GetMapping
-    public List<PurchaseOrderSummaryModel> listAll(){
-        return purchaseOrderSummaryModelAssembler.toCollectionModel(purchaseOrderService.listAll());
+    public List<PurchaseOrderModel> find(PurchaseOrderFilter filter){
+        List<PurchaseOrder> purchaseOrders = purchaseOrderService.findAll(filter);
+        return purchaseOrderModelAssembler.toCollectionModel(purchaseOrders);
     }
 
     @GetMapping("/{code}")
