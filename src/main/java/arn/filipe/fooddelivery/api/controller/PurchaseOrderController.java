@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.controller;
 import arn.filipe.fooddelivery.api.assembler.*;
 import arn.filipe.fooddelivery.api.model.*;
 import arn.filipe.fooddelivery.api.model.input.*;
+import arn.filipe.fooddelivery.core.data.PageableTranslator;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.*;
@@ -12,6 +13,7 @@ import arn.filipe.fooddelivery.domain.service.PaymentWayService;
 import arn.filipe.fooddelivery.domain.service.PurchaseOrderService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import arn.filipe.fooddelivery.infrastructure.repository.spec.PurchaseOrderSpecFactory;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -53,6 +55,9 @@ public class PurchaseOrderController {
 
     @GetMapping
     public Page<PurchaseOrderModel> find(PurchaseOrderFilter filter, Pageable pageable){
+
+        pageable = translatePageable(pageable);
+
         Page<PurchaseOrder> purchaseOrders = purchaseOrderService.findAll(filter, pageable);
 
         List<PurchaseOrderModel> purchaseOrdersModel = purchaseOrderModelAssembler.toCollectionModel(purchaseOrders.getContent());
@@ -83,5 +88,15 @@ public class PurchaseOrderController {
             throw new BusinessException(e.getMessage(), e);
         }
 
+    }
+
+    private Pageable translatePageable(Pageable apiPageable){
+        var mapping = ImmutableMap.of(
+                "code", "code",
+                "clientName", "client.name",
+                "restaurant.name", "restaurant.name",
+                "totalValue", "totalValue"
+        );
+        return PageableTranslator.translate(apiPageable, mapping);
     }
 }
