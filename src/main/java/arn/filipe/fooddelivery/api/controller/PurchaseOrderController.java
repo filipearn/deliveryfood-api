@@ -7,12 +7,11 @@ import arn.filipe.fooddelivery.core.data.PageableTranslator;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.*;
-import arn.filipe.fooddelivery.domain.repository.filter.PurchaseOrderFilter;
+import arn.filipe.fooddelivery.domain.filter.PurchaseOrderFilter;
 import arn.filipe.fooddelivery.domain.service.ItemOrderService;
 import arn.filipe.fooddelivery.domain.service.PaymentWayService;
 import arn.filipe.fooddelivery.domain.service.PurchaseOrderService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
-import arn.filipe.fooddelivery.infrastructure.repository.spec.PurchaseOrderSpecFactory;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/purchase-orders")

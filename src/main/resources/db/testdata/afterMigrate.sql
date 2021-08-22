@@ -131,7 +131,7 @@ insert into purchase_order (id, code, restaurant_id, user_client_id, payment_way
     address_street, address_number, address_complement, address_district,
     status, registration_date, confirmation_date, delivery_date, sub_total, freight_rate, total_value)
 values (5, '8d774bcf-b238-42f3-aef1-5fb388754d63', 1, 3, 2, 1, '38400-200', 'Rua 10', '930', 'Casa 20', 'Martins',
-        'DELIVERED', '2019-11-02 21:00:30', '2019-11-02 21:01:21', '2019-11-02 21:20:10', 87.2, 10, 97.2);
+        'DELIVERED', '2019-11-03 00:01:30', '2019-11-02 21:01:21', '2019-11-02 21:20:10', 87.2, 10, 97.2);
 
 insert into item_order (id, purchase_order_id, product_id, quantity, unit_price, total_price, observation)
 values (6, 5, 3, 1, 87.2, 87.2, null);

@@ -1,7 +1,7 @@
 package arn.filipe.fooddelivery.infrastructure.repository.spec;
 
 import arn.filipe.fooddelivery.domain.model.PurchaseOrder;
-import arn.filipe.fooddelivery.domain.repository.filter.PurchaseOrderFilter;
+import arn.filipe.fooddelivery.domain.filter.PurchaseOrderFilter;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;

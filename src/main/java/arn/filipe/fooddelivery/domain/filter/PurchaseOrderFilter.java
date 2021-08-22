@@ -1,4 +1,4 @@
-package arn.filipe.fooddelivery.domain.repository.filter;
+package arn.filipe.fooddelivery.domain.filter;
 
 import lombok.Getter;
 import lombok.Setter;
