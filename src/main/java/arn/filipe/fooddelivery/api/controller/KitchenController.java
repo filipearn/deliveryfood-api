@@ -9,6 +9,10 @@ import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.service.KitchenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +34,14 @@ public class KitchenController {
     private KitchenModelAssembler kitchenModelAssembler;
 
     @GetMapping
-    public List<KitchenModel> listAll(){
-        return kitchenModelAssembler.toCollectionModel(kitchenService.listAll());
+    public Page<KitchenModel> listAll(@PageableDefault(size = 10) Pageable pageable){
+        Page<Kitchen> kitchens = kitchenService.listAll(pageable);
+
+        List<KitchenModel> kitchensModel = kitchenModelAssembler.toCollectionModel(kitchens.getContent());
+
+        Page<KitchenModel> kitchensModelPage = new PageImpl<>(kitchensModel, pageable, kitchens.getTotalElements());
+
+        return kitchensModelPage;
     }
 
     @GetMapping("/{id}")

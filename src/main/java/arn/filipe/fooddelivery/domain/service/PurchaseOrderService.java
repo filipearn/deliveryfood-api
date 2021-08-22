@@ -7,6 +7,8 @@ import arn.filipe.fooddelivery.domain.repository.PurchaseOrderRepository;
 import arn.filipe.fooddelivery.domain.repository.filter.PurchaseOrderFilter;
 import arn.filipe.fooddelivery.infrastructure.repository.spec.PurchaseOrderSpecFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,7 +104,7 @@ public class PurchaseOrderService {
     }
 
 
-    public List<PurchaseOrder> findAll(PurchaseOrderFilter filter) {
-        return purchaseOrderRepository.findAll(PurchaseOrderSpecFactory.usingFilter(filter));
+    public Page<PurchaseOrder> findAll(PurchaseOrderFilter filter, Pageable pageable) {
+        return purchaseOrderRepository.findAll(PurchaseOrderSpecFactory.usingFilter(filter), pageable);
     }
 }

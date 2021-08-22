@@ -13,6 +13,9 @@ import arn.filipe.fooddelivery.domain.service.PurchaseOrderService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import arn.filipe.fooddelivery.infrastructure.repository.spec.PurchaseOrderSpecFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,9 +52,14 @@ public class PurchaseOrderController {
     private ItemOrderService itemOrderService;
 
     @GetMapping
-    public List<PurchaseOrderModel> find(PurchaseOrderFilter filter){
-        List<PurchaseOrder> purchaseOrders = purchaseOrderService.findAll(filter);
-        return purchaseOrderModelAssembler.toCollectionModel(purchaseOrders);
+    public Page<PurchaseOrderModel> find(PurchaseOrderFilter filter, Pageable pageable){
+        Page<PurchaseOrder> purchaseOrders = purchaseOrderService.findAll(filter, pageable);
+
+        List<PurchaseOrderModel> purchaseOrdersModel = purchaseOrderModelAssembler.toCollectionModel(purchaseOrders.getContent());
+
+        Page<PurchaseOrderModel> purchaseOrdersModelPage = new PageImpl<>(purchaseOrdersModel, pageable, purchaseOrders.getTotalElements());
+
+        return purchaseOrdersModelPage;
     }
 
     @GetMapping("/{code}")

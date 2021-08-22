@@ -12,10 +12,12 @@ public class PurchaseOrderSpecFactory {
     public static Specification<PurchaseOrder> usingFilter(PurchaseOrderFilter filter){
         return (root, query, builder) -> {
 
-            root.fetch("restaurant").fetch("kitchen");
-            root.fetch("client");
-            root.fetch("paymentWay");
-            root.fetch("items");
+            if(PurchaseOrder.class.equals(query.getResultType())){
+                root.fetch("restaurant").fetch("kitchen");
+                root.fetch("client");
+                root.fetch("paymentWay");
+                root.fetch("items");
+            }
 
             var predicates = new ArrayList<Predicate>();
 
