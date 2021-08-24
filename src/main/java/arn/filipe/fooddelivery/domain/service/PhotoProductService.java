@@ -43,6 +43,7 @@ public class PhotoProductService {
 
         PhotoStorageService.NewPhoto newPhoto = PhotoStorageService.NewPhoto.builder()
                         .fileName(photoProduct.getFileName())
+                        .contentType(photoProduct.getContentType())
                         .inputStream(inputStream)
                         .build();
 
@@ -55,12 +56,10 @@ public class PhotoProductService {
         PhotoProduct photoProduct = productRepository.findPhotoById(restaurantId, productId)
                 .orElseThrow(() -> new PhotoProductNotFound(restaurantId, productId));
 
-        InputStream inputStream = photoStorageService.recover(photoProduct.getFileName());
-
         return photoProduct;
     }
 
-    public InputStream servePhoto(Long restaurantId, Long productId) throws Exception {
+    public PhotoStorageService.RecoveredPhoto servePhoto(Long restaurantId, Long productId) throws Exception {
         PhotoProduct photoProduct = productRepository.findPhotoById(restaurantId, productId)
                 .orElseThrow(() -> new PhotoProductNotFound(restaurantId, productId));
 

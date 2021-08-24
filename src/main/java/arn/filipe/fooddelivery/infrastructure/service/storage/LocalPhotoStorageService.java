@@ -1,28 +1,32 @@
 package arn.filipe.fooddelivery.infrastructure.service.storage;
 
+import arn.filipe.fooddelivery.core.storage.StorageProperties;
 import arn.filipe.fooddelivery.domain.service.PhotoStorageService;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-@Service
+
 public class LocalPhotoStorageService implements PhotoStorageService {
 
-    @Value("${fooddelivery.storage.local.photos-directory}")
-    private Path photosDirectory;
+    @Autowired
+    private StorageProperties storageProperties;
 
     @Override
-    public InputStream recover(String fileName) {
+    public RecoveredPhoto recover(String fileName) {
         try {
             Path filePath = getFilePath(fileName);
+            RecoveredPhoto recoveredPhoto = RecoveredPhoto.builder()
+                    .inputStream(Files.newInputStream(filePath))
+                    .build();
 
-            return Files.newInputStream(filePath);
+            return recoveredPhoto;
         } catch (FileNotFoundException e) {
             throw new StorageException("File not found", e);
         } catch (IOException e) {
@@ -55,6 +59,6 @@ public class LocalPhotoStorageService implements PhotoStorageService {
     }
 
     private Path getFilePath(String fileName){
-        return photosDirectory.resolve(Path.of(fileName));
+        return storageProperties.getLocal().getPhotosDirectory().resolve(Path.of(fileName));
     }
 }

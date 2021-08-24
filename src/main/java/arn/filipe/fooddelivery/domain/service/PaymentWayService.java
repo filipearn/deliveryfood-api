@@ -1,11 +1,8 @@
 package arn.filipe.fooddelivery.domain.service;
 
-import arn.filipe.fooddelivery.api.model.PaymentWayModel;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.PaymentWayNotFoundException;
-import arn.filipe.fooddelivery.domain.exception.RestaurantNotFoundException;
 import arn.filipe.fooddelivery.domain.model.PaymentWay;
-import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.repository.PaymentWayRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
