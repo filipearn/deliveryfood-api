@@ -2,12 +2,15 @@ package arn.filipe.fooddelivery.domain.model;
 
 import arn.filipe.fooddelivery.api.model.input.PurchaseOrderInput;
 import arn.filipe.fooddelivery.domain.enums.OrderStatus;
+import arn.filipe.fooddelivery.domain.event.PurchaseOrderCancelledEvent;
+import arn.filipe.fooddelivery.domain.event.PurchaseOrderConfirmedEvent;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -17,9 +20,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class PurchaseOrder {
+public class PurchaseOrder extends AbstractAggregateRoot<PurchaseOrder> {
 
     @EqualsAndHashCode.Include
     @Id
@@ -83,11 +86,16 @@ public class PurchaseOrder {
     public void confirm(){
         setStatus(OrderStatus.CONFIRMED);
         setConfirmationDate(OffsetDateTime.now());
+
+        registerEvent(new PurchaseOrderConfirmedEvent(this));
+
     }
 
     public void cancel(){
         setStatus(OrderStatus.CANCELLED);
         setCancellationDate(OffsetDateTime.now());
+
+        registerEvent(new PurchaseOrderCancelledEvent(this));
     }
 
     public void delivery(){

@@ -74,7 +74,7 @@ insert into product (name, description, price, active, restaurant_id) values ('T
 insert into product (name, description, price, active, restaurant_id) values ('Sanduíche X-Tudo', 'Sandubão com muito queijo, hamburger bovino, bacon, ovo, salada e maionese', 19, 1, 5);
 insert into product (name, description, price, active, restaurant_id) values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
 
-insert into user (name, email, password, registration_date) values ('Filipe Nepomuceno', 'monografiasufop@gmail.com', '123', utc_timestamp);
+insert into user (name, email, password, registration_date) values ('Filipe Nepomuceno', 'filipearnepomuceno@gmail.com', '123', utc_timestamp);
 insert into user (name, email, password, registration_date) values ('Jéssica Pessoa', 'jessicasereia@gmail.com.br', '123', utc_timestamp);
 insert into user (name, email, password, registration_date) values ('Marcus Vinícius', 'marcus@yahoo.com.br', '123', utc_timestamp);
 insert into user (name, email, password, registration_date) values ('Leonardo Moyle', 'leo@yahoo.com.br', '123', utc_timestamp);

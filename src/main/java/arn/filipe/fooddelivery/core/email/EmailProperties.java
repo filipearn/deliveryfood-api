@@ -15,6 +15,21 @@ import javax.validation.constraints.NotNull;
 @ConfigurationProperties("fooddelivery.email")
 public class EmailProperties {
 
+    private Sandbox sandbox = new Sandbox();
+
     @NotNull
     private String sender;
+
+    @NotNull
+    private EmailImpl impl = EmailImpl.FAKE;
+
+    public enum EmailImpl{
+        FAKE, SMTP, SANDBOX
+    }
+
+    @Getter
+    @Setter
+    public class Sandbox {
+        private String recipient;
+    }
 }
