@@ -32,7 +32,7 @@ public class PaymentWayController {
     private RestaurantService restaurantService;
 
     @GetMapping
-    public List<PaymentWayModel> listAll(@PathVariable Long id){
+    public List<PaymentWayModel> listAll(){
         return paymentWayModelAssembler.toCollectionModel(paymentWayService.listAll());
     }
 
