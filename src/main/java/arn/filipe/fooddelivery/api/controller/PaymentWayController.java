@@ -9,11 +9,18 @@ import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.PaymentWayService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
+import javax.servlet.ServletRequest;
 import javax.validation.Valid;
+import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/v1/payment-ways")
@@ -32,8 +39,50 @@ public class PaymentWayController {
     private RestaurantService restaurantService;
 
     @GetMapping
-    public List<PaymentWayModel> listAll(){
-        return paymentWayModelAssembler.toCollectionModel(paymentWayService.listAll());
+    public ResponseEntity<List<PaymentWayModel>> listAll(ServletWebRequest request){
+        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+
+        String eTag = "0";
+
+        OffsetDateTime lastUpdateDate = paymentWayService.getLastUpdateDate();
+
+        if(lastUpdateDate != null){
+            eTag = String.valueOf(lastUpdateDate.toEpochSecond());
+        }
+
+        if(request.checkNotModified(eTag)){
+            return null;
+        }
+
+        List<PaymentWayModel> paymentWaysModel =  paymentWayModelAssembler.toCollectionModel(paymentWayService.listAll());
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .eTag(eTag)
+                .body(paymentWaysModel);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PaymentWayModel> findById(@PathVariable Long id, ServletWebRequest request){
+        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+
+        String eTag = "0";
+
+        OffsetDateTime lastUpdateDate = paymentWayService.getLastUpdateDateById(id);
+
+        if(lastUpdateDate != null){
+            eTag = String.valueOf(lastUpdateDate.toEpochSecond());
+        }
+
+        if(request.checkNotModified(eTag)){
+            return null;
+        }
+
+        PaymentWayModel paymentWayModel = paymentWayModelAssembler.toModel(paymentWayService.findById(id));
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .body(paymentWayModel);
     }
 
     @PostMapping

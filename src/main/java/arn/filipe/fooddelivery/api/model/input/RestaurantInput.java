@@ -1,7 +1,6 @@
 package arn.filipe.fooddelivery.api.model.input;
 
 
-import arn.filipe.fooddelivery.api.model.PaymentWayModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,8 +28,4 @@ public class RestaurantInput {
     @Valid
     @NotNull
     private AddressInput address;
-
-    @Valid
-    @NotNull
-    private PaymentWayModel paymentWay;
 }

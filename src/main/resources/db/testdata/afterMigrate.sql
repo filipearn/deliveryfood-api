@@ -54,9 +54,9 @@ insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, u
 insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active, opened) values (5, 'Lanchonete do Tio Sam', 11, 4, utc_timestamp, utc_timestamp, true, false);
 insert into restaurant (id, name, freight_rate, kitchen_id, registration_date, update_date, active, opened) values (6, 'Bar da Maria', 6, 4, utc_timestamp, utc_timestamp, true, false);
 
-insert into payment_way (id, description) values (1, 'Cartão de crédito');
-insert into payment_way (id, description) values (2, 'Cartão de débito');
-insert into payment_way (id, description) values (3, 'Dinheiro');
+insert into payment_way (id, description, update_date) values (1, 'Cartão de crédito', utc_timestamp);
+insert into payment_way (id, description, update_date) values (2, 'Cartão de débito', utc_timestamp);
+insert into payment_way (id, description, update_date) values (3, 'Dinheiro', utc_timestamp);
 
 insert into permission (id, name, description) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 insert into permission (id, name, description) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');

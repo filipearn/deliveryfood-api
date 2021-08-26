@@ -2,8 +2,10 @@ package arn.filipe.fooddelivery.domain.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.OffsetDateTime;
 
 @Entity(name = "payment_way")
 @Data
@@ -17,4 +19,7 @@ public class PaymentWay {
 
     @Column(nullable = false)
     private String description;
+
+    @UpdateTimestamp
+    private OffsetDateTime updateDate;
 }

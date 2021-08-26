@@ -24,6 +24,7 @@ public class RestaurantModel {
 
     @JsonView(RestaurantView.Summary.class)
     private KitchenModel kitchen;
+
     private Boolean active;
     private Boolean opened;
     private AddressModel address;
