@@ -2,20 +2,22 @@ package arn.filipe.fooddelivery.api.controller;
 
 import arn.filipe.fooddelivery.api.assembler.TeamInputDisassembler;
 import arn.filipe.fooddelivery.api.assembler.TeamModelAssembler;
+import arn.filipe.fooddelivery.api.openapi.controller.TeamControllerOpenApi;
 import arn.filipe.fooddelivery.api.model.TeamModel;
 import arn.filipe.fooddelivery.api.model.input.TeamInput;
 import arn.filipe.fooddelivery.domain.model.Team;
 import arn.filipe.fooddelivery.domain.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/teams")
-public class TeamController {
+@RequestMapping(path = "/api/v1/teams", produces = MediaType.APPLICATION_JSON_VALUE)
+public class TeamController implements TeamControllerOpenApi {
 
     @Autowired
     private TeamService teamService;

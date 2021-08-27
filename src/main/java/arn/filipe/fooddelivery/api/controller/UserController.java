@@ -6,18 +6,20 @@ import arn.filipe.fooddelivery.api.model.UserModel;
 import arn.filipe.fooddelivery.api.model.input.PasswordInput;
 import arn.filipe.fooddelivery.api.model.input.UserInput;
 import arn.filipe.fooddelivery.api.model.input.UserWithPasswordInput;
+import arn.filipe.fooddelivery.api.openapi.controller.UserControllerOpenApi;
 import arn.filipe.fooddelivery.domain.model.User;
 import arn.filipe.fooddelivery.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/users")
-public class UserController {
+@RequestMapping(path = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
+public class UserController implements UserControllerOpenApi {
 
     @Autowired
     private UserService userService;
@@ -60,10 +62,6 @@ public class UserController {
     public void changePassword(@PathVariable Long id, @RequestBody @Valid PasswordInput passwordInput){
         userService.changePassword(id, passwordInput.getActualPassword(), passwordInput.getNewPassword());
     }
-
-//    public void delete(Long id){
-//        userService.delete(id);
-//    }
 
 
 

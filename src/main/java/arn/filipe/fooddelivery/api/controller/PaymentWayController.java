@@ -4,6 +4,7 @@ import arn.filipe.fooddelivery.api.assembler.PaymentWayInputDisassembler;
 import arn.filipe.fooddelivery.api.assembler.PaymentWayModelAssembler;
 import arn.filipe.fooddelivery.api.model.PaymentWayModel;
 import arn.filipe.fooddelivery.api.model.input.PaymentWayInput;
+import arn.filipe.fooddelivery.api.openapi.controller.PaymentWayControllerOpenApi;
 import arn.filipe.fooddelivery.domain.model.PaymentWay;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.PaymentWayService;
@@ -11,6 +12,7 @@ import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -23,8 +25,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/api/v1/payment-ways")
-public class PaymentWayController {
+@RequestMapping(path = "/api/v1/payment-ways", produces = MediaType.APPLICATION_JSON_VALUE)
+public class PaymentWayController implements PaymentWayControllerOpenApi {
 
     @Autowired
     private PaymentWayService paymentWayService;

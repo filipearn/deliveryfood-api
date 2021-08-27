@@ -4,20 +4,22 @@ import arn.filipe.fooddelivery.api.assembler.PermissionInputDisassembler;
 import arn.filipe.fooddelivery.api.assembler.PermissionModelAssembler;
 import arn.filipe.fooddelivery.api.model.PermissionModel;
 import arn.filipe.fooddelivery.api.model.input.PermissionInput;
+import arn.filipe.fooddelivery.api.openapi.controller.TeamPermissionControllerOpenApi;
 import arn.filipe.fooddelivery.domain.model.Permission;
 import arn.filipe.fooddelivery.domain.model.Team;
 import arn.filipe.fooddelivery.domain.service.PermissionService;
 import arn.filipe.fooddelivery.domain.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/teams/{teamId}/permissions")
-public class TeamPermissionController {
+@RequestMapping(path = "/api/v1/teams/{teamId}/permissions", produces = MediaType.APPLICATION_JSON_VALUE)
+public class TeamPermissionController implements TeamPermissionControllerOpenApi {
 
     @Autowired
     private TeamService teamService;

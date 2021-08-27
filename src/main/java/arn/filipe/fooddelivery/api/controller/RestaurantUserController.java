@@ -5,19 +5,21 @@ import arn.filipe.fooddelivery.api.assembler.UserModelAssembler;
 import arn.filipe.fooddelivery.api.model.UserModel;
 import arn.filipe.fooddelivery.api.model.input.UserInput;
 import arn.filipe.fooddelivery.api.model.input.UserWithPasswordInput;
+import arn.filipe.fooddelivery.api.openapi.controller.RestaurantUserControllerOpenApi;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.model.User;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import arn.filipe.fooddelivery.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/restaurants/{restaurantId}/responsible")
-public class RestaurantUserController {
+@RequestMapping(path = "/api/v1/restaurants/{restaurantId}/responsible", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestaurantUserController implements RestaurantUserControllerOpenApi {
 
     @Autowired
     private RestaurantService restaurantService;
@@ -36,15 +38,6 @@ public class RestaurantUserController {
         Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(restaurantId);
 
         return userModelAssembler.toCollectionModel(restaurant.getUsers());
-    }
-
-    @PostMapping
-    public UserModel save(@PathVariable Long restaurantId, @RequestBody @Valid UserWithPasswordInput userInput){
-        Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(restaurantId);
-        User user = userInputDisassembler.toDomainObject(userInput);
-        restaurant.associateUser(user);
-
-        return userModelAssembler.toModel(userService.save(user));
     }
 
     @PutMapping("/{userId}")

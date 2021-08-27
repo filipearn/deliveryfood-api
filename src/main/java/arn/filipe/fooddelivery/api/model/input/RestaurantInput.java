@@ -1,6 +1,7 @@
 package arn.filipe.fooddelivery.api.model.input;
 
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,9 +15,11 @@ import java.math.BigDecimal;
 @Getter
 public class RestaurantInput {
 
+    @ApiModelProperty(example = "Komb espeteria", required = true)
     @NotBlank
     private String name;
 
+    @ApiModelProperty(example = "9.99", required = true)
     @NotNull
 	@PositiveOrZero
     private BigDecimal freightRate;

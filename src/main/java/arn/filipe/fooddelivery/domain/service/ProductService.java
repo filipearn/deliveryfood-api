@@ -37,7 +37,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         try {
             productRepository.deleteById(id);
             productRepository.flush();

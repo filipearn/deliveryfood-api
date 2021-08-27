@@ -4,6 +4,7 @@ import arn.filipe.fooddelivery.api.assembler.StateInputDisassembler;
 import arn.filipe.fooddelivery.api.assembler.StateModelAssembler;
 import arn.filipe.fooddelivery.api.model.StateModel;
 import arn.filipe.fooddelivery.api.model.input.StateInput;
+import arn.filipe.fooddelivery.api.openapi.controller.StateControllerOpenApi;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
@@ -12,6 +13,7 @@ import arn.filipe.fooddelivery.domain.model.State;
 import arn.filipe.fooddelivery.domain.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +21,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/states")
-public class StateController {
+@RequestMapping(path = "/api/v1/states", produces = MediaType.APPLICATION_JSON_VALUE)
+public class StateController implements StateControllerOpenApi {
 
     @Autowired
     private StateService stateService;

@@ -4,6 +4,7 @@ import arn.filipe.fooddelivery.api.assembler.KitchenInputDisassembler;
 import arn.filipe.fooddelivery.api.assembler.KitchenModelAssembler;
 import arn.filipe.fooddelivery.api.model.KitchenModel;
 import arn.filipe.fooddelivery.api.model.input.KitchenInput;
+import arn.filipe.fooddelivery.api.openapi.controller.KitchenControllerOpenApi;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +23,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/kitchens")
-public class KitchenController {
+@RequestMapping(path = "/api/v1/kitchens", produces = MediaType.APPLICATION_JSON_VALUE)
+public class KitchenController implements KitchenControllerOpenApi {
 
     @Autowired
     private KitchenService kitchenService;
@@ -44,14 +46,14 @@ public class KitchenController {
         return kitchensModelPage;
     }
 
-    @GetMapping("/{id}")
-    public KitchenModel findById(@PathVariable Long id){
-         return kitchenModelAssembler.toModel(kitchenService.findById(id));
-    }
-
     @GetMapping("/by-name")
     public List<KitchenModel> findByNameContaining(String name){
         return kitchenModelAssembler.toCollectionModel(kitchenService.findByNameContaining(name));
+    }
+
+    @GetMapping("/{id}")
+    public KitchenModel findById(@PathVariable Long id){
+         return kitchenModelAssembler.toModel(kitchenService.findById(id));
     }
 
     @PostMapping

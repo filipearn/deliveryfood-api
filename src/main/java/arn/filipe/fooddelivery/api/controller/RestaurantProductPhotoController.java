@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.controller;
 import arn.filipe.fooddelivery.api.assembler.PhotoProductModelAssembler;
 import arn.filipe.fooddelivery.api.model.PhotoProductModel;
 import arn.filipe.fooddelivery.api.model.input.PhotoProductInput;
+import arn.filipe.fooddelivery.api.openapi.controller.RestaurantProductPhotoControllerOpenApi;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.PhotoProduct;
 import arn.filipe.fooddelivery.domain.model.Product;
@@ -19,14 +20,16 @@ import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/restaurants/{restaurantId}/products/{productId}/photo")
-public class RestaurantProductPhotoController {
+@RequestMapping(path = "/api/v1/restaurants/{restaurantId}/products/{productId}/photo",
+produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestaurantProductPhotoController implements RestaurantProductPhotoControllerOpenApi {
 
     @Autowired
     private ProductService productService;
@@ -37,7 +40,7 @@ public class RestaurantProductPhotoController {
     @Autowired
     private PhotoProductModelAssembler photoProductModelAssembler;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public PhotoProductModel find(@PathVariable Long restaurantId,
                                   @PathVariable Long productId) throws Exception {
         Product product = productService.verifyIfExistsOrThrow(restaurantId, productId);
@@ -47,7 +50,7 @@ public class RestaurantProductPhotoController {
         return photoProductModelAssembler.toModel(photoProduct);
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.ALL_VALUE)
     public ResponseEntity<?> servePhoto(@PathVariable Long restaurantId,
                                                           @PathVariable Long productId,
                                                           @RequestHeader(name = "accept") String acceptHeader) throws Exception {
@@ -109,7 +112,7 @@ public class RestaurantProductPhotoController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updatePhoto(@PathVariable Long restaurantId,
+    public void deletePhoto(@PathVariable Long restaurantId,
                                          @PathVariable Long productId){
         photoProductService.deletePhoto(restaurantId, productId);
     }

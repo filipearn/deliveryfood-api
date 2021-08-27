@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.controller;
 import arn.filipe.fooddelivery.api.assembler.*;
 import arn.filipe.fooddelivery.api.model.*;
 import arn.filipe.fooddelivery.api.model.input.*;
+import arn.filipe.fooddelivery.api.openapi.controller.PurchaseOrderControllerOpenApi;
 import arn.filipe.fooddelivery.core.data.PageableTranslator;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
@@ -13,19 +14,22 @@ import arn.filipe.fooddelivery.domain.service.PaymentWayService;
 import arn.filipe.fooddelivery.domain.service.PurchaseOrderService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import com.google.common.collect.ImmutableMap;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/purchase-orders")
-public class PurchaseOrderController {
+@RequestMapping(path = "/api/v1/purchase-orders", produces = MediaType.APPLICATION_JSON_VALUE)
+public class PurchaseOrderController implements PurchaseOrderControllerOpenApi {
 
     @Autowired
     private PurchaseOrderService purchaseOrderService;

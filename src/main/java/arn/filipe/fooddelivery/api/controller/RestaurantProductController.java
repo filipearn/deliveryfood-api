@@ -4,6 +4,7 @@ import arn.filipe.fooddelivery.api.assembler.ProductInputDisassembler;
 import arn.filipe.fooddelivery.api.assembler.ProductModelAssembler;
 import arn.filipe.fooddelivery.api.model.ProductModel;
 import arn.filipe.fooddelivery.api.model.input.ProductInput;
+import arn.filipe.fooddelivery.api.openapi.controller.RestaurantProductControllerOpenApi;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.model.Product;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
@@ -11,14 +12,15 @@ import arn.filipe.fooddelivery.domain.service.ProductService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/restaurants/{restaurantId}/products")
-public class RestaurantProductController {
+@RequestMapping(path = "/api/v1/restaurants/{restaurantId}/products", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestaurantProductController implements RestaurantProductControllerOpenApi {
 
     @Autowired
     private ProductModelAssembler productModelAssembler;
@@ -87,6 +89,6 @@ public class RestaurantProductController {
         Product product = productService.verifyIfExistsOrThrow(restaurantId, productId);
 
         restaurantService.disassociateProduct(restaurantId, productId);
-        productService.delete(productId);
+        productService.deleteById(productId);
     }
 }

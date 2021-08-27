@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.model;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,8 +8,13 @@ import lombok.Setter;
 @Setter
 public class UserModel {
 
+    @ApiModelProperty(example = "1")
     private Long id;
+
+    @ApiModelProperty(example = "Filipe")
     private String name;
+
+    @ApiModelProperty(example = "filipearn@yahoo.com.br")
     private String email;
 
 }

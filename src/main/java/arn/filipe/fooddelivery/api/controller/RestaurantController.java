@@ -5,6 +5,7 @@ import arn.filipe.fooddelivery.api.assembler.RestaurantModelAssembler;
 import arn.filipe.fooddelivery.api.model.RestaurantModel;
 import arn.filipe.fooddelivery.api.model.input.RestaurantInput;
 import arn.filipe.fooddelivery.api.model.view.RestaurantView;
+import arn.filipe.fooddelivery.api.openapi.controller.RestaurantControllerOpenApi;
 import arn.filipe.fooddelivery.core.validation.ValidationException;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.CityNotFoundException;
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -35,8 +37,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/restaurants")
-public class RestaurantController {
+@RequestMapping(path = "/api/v1/restaurants", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestaurantController implements RestaurantControllerOpenApi {
 
     @Autowired
     private RestaurantService restaurantService;

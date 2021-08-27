@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.api.openapi.controller.StatisticsControllerOpenApi;
 import arn.filipe.fooddelivery.domain.filter.DailySaleFilter;
 import arn.filipe.fooddelivery.domain.model.dto.DailySale;
 import arn.filipe.fooddelivery.domain.service.SaleQueryService;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/v1/statistics")
-public class StatisticsController {
+public class StatisticsController implements StatisticsControllerOpenApi {
 
     @Autowired
     private SaleReportService saleReportService;
