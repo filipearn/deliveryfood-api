@@ -6,6 +6,7 @@ import arn.filipe.fooddelivery.api.model.input.PasswordInput;
 import arn.filipe.fooddelivery.api.model.input.UserInput;
 import arn.filipe.fooddelivery.api.model.input.UserWithPasswordInput;
 import io.swagger.annotations.*;
+import org.springframework.hateoas.CollectionModel;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public interface UserControllerOpenApi {
 
     @ApiOperation("List the users")
-    List<UserModel> listAll();
+    CollectionModel<UserModel> listAll();
 
     @ApiOperation("List a user by id")
     @ApiResponses({

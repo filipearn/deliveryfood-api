@@ -10,6 +10,7 @@ import arn.filipe.fooddelivery.api.openapi.controller.UserControllerOpenApi;
 import arn.filipe.fooddelivery.domain.model.User;
 import arn.filipe.fooddelivery.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class UserController implements UserControllerOpenApi {
     private UserModelAssembler userModelAssembler;
 
     @GetMapping
-    public List<UserModel> listAll(){
+    public CollectionModel<UserModel> listAll(){
         return userModelAssembler.toCollectionModel(userService.listAll());
     }
 

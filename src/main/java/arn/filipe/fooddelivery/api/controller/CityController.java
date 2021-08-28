@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.api.ResourceUriHelper;
 import arn.filipe.fooddelivery.api.assembler.CityModelAssembler;
 import arn.filipe.fooddelivery.api.assembler.CityInputDisassembler;
 import arn.filipe.fooddelivery.api.openapi.controller.CityControllerOpenApi;
@@ -11,11 +12,19 @@ import arn.filipe.fooddelivery.domain.model.City;
 import arn.filipe.fooddelivery.domain.service.CityService;
 import arn.filipe.fooddelivery.domain.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -35,7 +44,7 @@ public class CityController implements CityControllerOpenApi {
     private StateService stateService;
 
     @GetMapping
-    public List<CityModel> listAll(){
+    public CollectionModel<CityModel> listAll(){
         return cityInputAssembler.toCollectionModel(cityService.listAll());
     }
 
@@ -50,7 +59,11 @@ public class CityController implements CityControllerOpenApi {
         try{
             City city = cityInputDisassembler.toDomainObject(cityInput);
 
-            return cityInputAssembler.toModel(cityService.save(city));
+            CityModel cityModel = cityInputAssembler.toModel(cityService.save(city));
+
+            ResourceUriHelper.addUriInResponseHeader(cityModel.getId());
+
+            return cityModel;
         } catch (StateNotFoundException e){
             throw new BusinessException(e.getMessage(), e);
         }

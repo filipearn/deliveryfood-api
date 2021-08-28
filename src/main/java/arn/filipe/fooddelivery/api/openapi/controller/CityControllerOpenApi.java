@@ -4,6 +4,7 @@ import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
 import arn.filipe.fooddelivery.api.model.CityModel;
 import arn.filipe.fooddelivery.api.model.input.CityInput;
 import io.swagger.annotations.*;
+import org.springframework.hateoas.CollectionModel;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public interface CityControllerOpenApi {
 
     @ApiOperation("List the cities")
-    List<CityModel> listAll();
+    CollectionModel<CityModel> listAll();
 
     @ApiOperation("Find a city by id")
     @ApiResponses({
