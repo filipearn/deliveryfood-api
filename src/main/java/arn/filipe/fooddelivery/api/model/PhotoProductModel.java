@@ -3,10 +3,13 @@ package arn.filipe.fooddelivery.api.model;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
+@Relation(collectionRelation = "photos")
 @Getter
 @Setter
-public class PhotoProductModel {
+public class PhotoProductModel extends RepresentationModel<PhotoProductModel> {
 
     @ApiModelProperty(example = "Chorizzo.png")
     private String fileName;

@@ -7,6 +7,7 @@ import arn.filipe.fooddelivery.api.model.input.CityInput;
 import arn.filipe.fooddelivery.api.model.input.PaymentWayInput;
 import arn.filipe.fooddelivery.domain.model.PaymentWay;
 import io.swagger.annotations.*;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 public interface PaymentWayControllerOpenApi {
 
     @ApiOperation("List the payment ways")
-    ResponseEntity<List<PaymentWayModel>> listAll(ServletWebRequest request);
+    ResponseEntity<CollectionModel<PaymentWayModel>> listAll(ServletWebRequest request);
 
     @ApiOperation("Find a payment way by id")
     @ApiResponses({

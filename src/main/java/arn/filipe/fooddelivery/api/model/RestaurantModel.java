@@ -6,13 +6,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
 @Setter
-public class RestaurantModel {
+public class RestaurantModel extends RepresentationModel<RestaurantModel> {
 
     @ApiModelProperty(example = "1")
     @JsonView({RestaurantView.Summary.class, RestaurantView.OnlyName.class})

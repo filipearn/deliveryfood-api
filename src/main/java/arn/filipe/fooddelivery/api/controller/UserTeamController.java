@@ -10,6 +10,7 @@ import arn.filipe.fooddelivery.domain.model.User;
 import arn.filipe.fooddelivery.domain.service.TeamService;
 import arn.filipe.fooddelivery.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class UserTeamController implements UserTeamControllerOpenApi {
     private TeamInputDisassembler teamInputDisassembler;
 
     @GetMapping
-    public List<TeamModel> listAll(@PathVariable Long userId) {
+    public CollectionModel<TeamModel> listAll(@PathVariable Long userId) {
         User user = userService.verifyIfExistsOrThrow(userId);
 
         return teamModelAssembler.toCollectionModel(user.getTeams());

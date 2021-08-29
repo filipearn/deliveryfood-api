@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.api.BuildLinks;
 import arn.filipe.fooddelivery.api.assembler.PaymentWayInputDisassembler;
 import arn.filipe.fooddelivery.api.assembler.PaymentWayModelAssembler;
 import arn.filipe.fooddelivery.api.model.PaymentWayModel;
@@ -10,8 +11,10 @@ import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.PaymentWayService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -33,23 +36,41 @@ public class RestaurantPaymentWayController implements RestaurantPaymentWayContr
     @Autowired
     private RestaurantService restaurantService;
 
+    @Autowired
+    private BuildLinks buildLinks;
+
     @GetMapping
-    public List<PaymentWayModel> listAll(@PathVariable Long restaurantId){
+    public CollectionModel<PaymentWayModel> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(restaurantId);
-        return paymentWayModelAssembler.toCollectionModel(restaurant.getPaymentWays());
+        CollectionModel<PaymentWayModel> paymentWaysModel
+                = paymentWayModelAssembler.toCollectionModel(restaurant.getPaymentWays())
+                .removeLinks()
+                .add(buildLinks.linkToPaymentWayRestaurant(restaurantId))
+                .add(buildLinks.linkToRestaurantPaymentWayAssociation(restaurantId, "associate"));
+
+        paymentWaysModel.getContent().forEach(
+            paymentWayModel -> {
+                paymentWayModel.add(buildLinks.linkToRestaurantPaymentWayDisassociation(
+                                restaurantId, paymentWayModel.getId(), "disassociate"));
+            }
+        );
+
+        return paymentWaysModel;
     }
 
     @PutMapping("/{paymentWayId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void associate(@PathVariable Long restaurantId, @PathVariable Long paymentWayId){
+    public ResponseEntity<Void> associate(@PathVariable Long restaurantId, @PathVariable Long paymentWayId){
 
         restaurantService.associatePaymentWay(restaurantId, paymentWayId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{paymentWayId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void disassociate(@PathVariable Long restaurantId, @PathVariable Long paymentWayId){
+    public ResponseEntity<Void> disassociate(@PathVariable Long restaurantId, @PathVariable Long paymentWayId){
 
         restaurantService.disassociatePaymentWay(restaurantId, paymentWayId);
+        return ResponseEntity.noContent().build();
     }
 }

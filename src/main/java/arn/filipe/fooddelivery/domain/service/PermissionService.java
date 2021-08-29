@@ -15,6 +15,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class PermissionService {
 
@@ -22,6 +24,10 @@ public class PermissionService {
 
     @Autowired
     private PermissionRepository permissionRepository;
+
+    public List<Permission> listAll(){
+        return permissionRepository.findAll();
+    }
 
     public Permission save(Permission permission){
         return permissionRepository.save(permission);

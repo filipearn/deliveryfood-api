@@ -2,7 +2,11 @@ package arn.filipe.fooddelivery.api.controller;
 
 import arn.filipe.fooddelivery.api.assembler.RestaurantInputDisassembler;
 import arn.filipe.fooddelivery.api.assembler.RestaurantModelAssembler;
+import arn.filipe.fooddelivery.api.assembler.RestaurantOnlyNameModelAssembler;
+import arn.filipe.fooddelivery.api.assembler.RestaurantSummaryModelAssembler;
 import arn.filipe.fooddelivery.api.model.RestaurantModel;
+import arn.filipe.fooddelivery.api.model.RestaurantOnlyNameModel;
+import arn.filipe.fooddelivery.api.model.RestaurantSummaryModel;
 import arn.filipe.fooddelivery.api.model.input.RestaurantInput;
 import arn.filipe.fooddelivery.api.model.view.RestaurantView;
 import arn.filipe.fooddelivery.api.openapi.controller.RestaurantControllerOpenApi;
@@ -19,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -52,22 +57,27 @@ public class RestaurantController implements RestaurantControllerOpenApi {
     @Autowired
     private RestaurantModelAssembler restaurantModelAssembler;
 
+    @Autowired
+    private RestaurantSummaryModelAssembler restaurantSummaryModelAssembler;
+
+    @Autowired
+    private RestaurantOnlyNameModelAssembler restaurantOnlyNameModelAssembler;
+
     @GetMapping
-    public List<RestaurantModel> listAll(){
+    public CollectionModel<RestaurantModel> listAll(){
         return restaurantModelAssembler.toCollectionModel(restaurantService.listAll());
     }
 
-
-    @JsonView(RestaurantView.Summary.class)
+    //@JsonView(RestaurantView.Summary.class)
     @GetMapping(params = "projection=summary")
-    public List<RestaurantModel> listAllSummary(){
-        return listAll();
+    public CollectionModel<RestaurantSummaryModel> listAllSummary(){
+        return restaurantSummaryModelAssembler.toCollectionModel(restaurantService.listAll());
     }
 
-    @JsonView(RestaurantView.OnlyName.class)
+    //@JsonView(RestaurantView.OnlyName.class)
     @GetMapping(params = "projection=only-name")
-    public List<RestaurantModel> listAllOnlyName(){
-        return listAll();
+    public CollectionModel<RestaurantOnlyNameModel> listAllOnlyName(){
+        return restaurantOnlyNameModelAssembler.toCollectionModel(restaurantService.listAll());
     }
 
 
@@ -125,16 +135,18 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         }
     }
 
-    @PutMapping("/{id}/active")
+    @PutMapping("/{id}/activate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void activate(@PathVariable Long id){
+    public ResponseEntity<Void> activate(@PathVariable Long id){
         restaurantService.activate(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}/active")
+    @PutMapping("/{id}/deactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deactivate(@PathVariable Long id){
+    public ResponseEntity<Void> deactivate(@PathVariable Long id){
         restaurantService.deactivate(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/activations")
@@ -160,14 +172,17 @@ public class RestaurantController implements RestaurantControllerOpenApi {
 
     @PutMapping("/{id}/opening")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void opening(@PathVariable Long id){
+    public ResponseEntity<Void> opening(@PathVariable Long id){
         restaurantService.opening(id);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/closure")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void closure(@PathVariable Long id){
+    public ResponseEntity<Void> closure(@PathVariable Long id){
         restaurantService.closure(id);
+        return ResponseEntity.noContent().build();
     }
 
 

@@ -73,6 +73,18 @@ public class PurchaseOrder extends AbstractAggregateRoot<PurchaseOrder> {
     @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.CREATED;
 
+    public boolean canBeConfirmed(){
+        return getStatus().canChangeTo(OrderStatus.CONFIRMED);
+    }
+
+    public boolean canBeCancelled(){
+        return getStatus().canChangeTo(OrderStatus.CANCELLED);
+    }
+
+    public boolean canBeDelivered(){
+        return getStatus().canChangeTo(OrderStatus.DELIVERED);
+    }
+
     public void calculateTotalValue() {
         getItems().forEach(ItemOrder::calculateTotalPrice);
 

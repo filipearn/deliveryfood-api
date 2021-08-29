@@ -66,6 +66,22 @@ public class Restaurant {
     @NotNull
     private boolean opened;
 
+    public boolean isOpen() {
+        return this.opened;
+    }
+
+    public boolean isClose() {
+        return !isOpen();
+    }
+
+    public boolean isActivated(){
+        return this.active;
+    }
+
+    public boolean isDeactivated(){
+        return !isActivated();
+    }
+
     public void activate(){
         setActive(true);
     }
@@ -80,6 +96,22 @@ public class Restaurant {
 
     public void close(){
         setOpened(false);
+    }
+
+    public boolean allowedOpen() {
+        return isActivated() && isClose();
+    }
+
+    public boolean allowedActivation() {
+        return isDeactivated();
+    }
+
+    public boolean allowedDeactivation() {
+        return isActivated();
+    }
+
+    public boolean allowedClosure() {
+        return isOpened();
     }
 
     public boolean associatePaymentWay(PaymentWay paymentWay){

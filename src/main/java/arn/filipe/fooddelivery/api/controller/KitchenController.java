@@ -14,6 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,19 +38,21 @@ public class KitchenController implements KitchenControllerOpenApi {
     @Autowired
     private KitchenModelAssembler kitchenModelAssembler;
 
+    @Autowired
+    private PagedResourcesAssembler<Kitchen> pagedResourcesAssembler;
+
     @GetMapping
-    public Page<KitchenModel> listAll(@PageableDefault(size = 10) Pageable pageable){
-        Page<Kitchen> kitchens = kitchenService.listAll(pageable);
+    public PagedModel<KitchenModel> listAll(@PageableDefault(size = 10) Pageable pageable){
+        Page<Kitchen> kitchensPage = kitchenService.listAll(pageable);
 
-        List<KitchenModel> kitchensModel = kitchenModelAssembler.toCollectionModel(kitchens.getContent());
+        PagedModel<KitchenModel> kitchensPagedModel = pagedResourcesAssembler
+                .toModel(kitchensPage, kitchenModelAssembler);
 
-        Page<KitchenModel> kitchensModelPage = new PageImpl<>(kitchensModel, pageable, kitchens.getTotalElements());
-
-        return kitchensModelPage;
+        return kitchensPagedModel;
     }
 
     @GetMapping("/by-name")
-    public List<KitchenModel> findByNameContaining(String name){
+    public CollectionModel<KitchenModel> findByNameContaining(String name){
         return kitchenModelAssembler.toCollectionModel(kitchenService.findByNameContaining(name));
     }
 

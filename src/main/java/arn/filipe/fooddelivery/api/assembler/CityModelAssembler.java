@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.assembler;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import arn.filipe.fooddelivery.api.BuildLinks;
 import arn.filipe.fooddelivery.api.controller.CityController;
 import arn.filipe.fooddelivery.api.controller.StateController;
 import arn.filipe.fooddelivery.api.model.CityModel;
@@ -20,6 +21,9 @@ public class CityModelAssembler extends RepresentationModelAssemblerSupport<City
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private BuildLinks buildLinks;
+
     public CityModelAssembler(){
         super(CityController.class, CityModel.class);
     }
@@ -30,11 +34,9 @@ public class CityModelAssembler extends RepresentationModelAssemblerSupport<City
 
         modelMapper.map(city, cityModel);
 
-        cityModel.add(linkTo(methodOn(CityController.class)
-                .listAll()).withRel("cities"));
+        cityModel.add(buildLinks.linkToCity("cities"));
 
-        cityModel.getState().add(linkTo(methodOn(StateController.class)
-                .findById(cityModel.getState().getId())).withSelfRel());
+        cityModel.getState().add(buildLinks.linkToState(cityModel.getState().getId(), "state"));
 
         return cityModel;
     }

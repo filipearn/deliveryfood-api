@@ -1,28 +1,42 @@
 package arn.filipe.fooddelivery.api.assembler;
 
+import arn.filipe.fooddelivery.api.BuildLinks;
+import arn.filipe.fooddelivery.api.controller.PaymentWayController;
 import arn.filipe.fooddelivery.api.model.PaymentWayModel;
 import arn.filipe.fooddelivery.domain.model.PaymentWay;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
-public class PaymentWayModelAssembler {
+public class PaymentWayModelAssembler extends RepresentationModelAssemblerSupport<PaymentWay, PaymentWayModel> {
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public PaymentWayModel toModel(PaymentWay paymentWay){
-        return modelMapper.map(paymentWay, PaymentWayModel.class);
+    @Autowired
+    private BuildLinks buildLinks;
+
+    public PaymentWayModelAssembler(){
+        super(PaymentWayController.class, PaymentWayModel.class);
     }
 
-    public List<PaymentWayModel> toCollectionModel(Collection<PaymentWay> paymentWays){
-        return paymentWays.stream()
-                .map(paymentWay -> toModel(paymentWay))
-                .collect(Collectors.toList());
+    public PaymentWayModel toModel(PaymentWay paymentWay){
+        PaymentWayModel paymentWayModel = createModelWithId(paymentWay.getId(), paymentWay);
+
+        modelMapper.map(paymentWay, paymentWayModel);
+
+        paymentWayModel.add(buildLinks.linkToRestaurantPaymentWay("paymentWay"));
+
+        return paymentWayModel;
+    }
+
+    @Override
+    public CollectionModel<PaymentWayModel> toCollectionModel(Iterable<? extends PaymentWay> entities) {
+        return super.toCollectionModel(entities)
+                .add(buildLinks.linkToPaymentWay());
     }
 }

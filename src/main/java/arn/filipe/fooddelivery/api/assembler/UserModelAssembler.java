@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.assembler;
 
+import arn.filipe.fooddelivery.api.BuildLinks;
 import arn.filipe.fooddelivery.api.controller.UserController;
 import arn.filipe.fooddelivery.api.model.UserModel;
 import arn.filipe.fooddelivery.domain.model.User;
@@ -19,6 +20,9 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport <Use
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private BuildLinks buildLinks;
+
     public UserModelAssembler() {
         super(UserController.class, UserModel.class);
     }
@@ -28,10 +32,9 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport <Use
 
         modelMapper.map(user, userModel);
 
-        userModel.add(linkTo(UserController.class).withRel("users"));
+        userModel.add(buildLinks.linkToUser("users"));
 
-        userModel.add(linkTo(methodOn(UserController.class)
-                .findById(user.getId())).withRel("teams-user"));
+        userModel.add(buildLinks.linkToTeamUser(user.getId(), "teams-user"));
 
         return userModel;
     }

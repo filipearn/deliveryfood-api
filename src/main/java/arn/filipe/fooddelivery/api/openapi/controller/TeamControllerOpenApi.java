@@ -4,13 +4,15 @@ import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
 import arn.filipe.fooddelivery.api.model.TeamModel;
 import arn.filipe.fooddelivery.api.model.input.TeamInput;
 import io.swagger.annotations.*;
+import org.springframework.hateoas.CollectionModel;
+
 import java.util.List;
 
 @Api(tags = "Teams")
 public interface TeamControllerOpenApi {
 
     @ApiOperation("List the teams")
-    List<TeamModel> listAll();
+    CollectionModel<TeamModel> listAll();
 
     @ApiOperation("List a team by id")
     @ApiResponses({

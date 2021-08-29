@@ -4,6 +4,8 @@ import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
 import arn.filipe.fooddelivery.api.model.PermissionModel;
 import arn.filipe.fooddelivery.api.model.input.PermissionInput;
 import io.swagger.annotations.*;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -11,7 +13,7 @@ import java.util.List;
 public interface TeamPermissionControllerOpenApi {
 
     @ApiOperation("List the teams permissions")
-    List<PermissionModel> listAll(@ApiParam(value = "Team id", example = "1", required = true) Long teamId);
+    CollectionModel<PermissionModel> listAll(@ApiParam(value = "Team id", example = "1", required = true) Long teamId);
 
     @ApiOperation("Register a new team permission")
     @ApiResponses({
@@ -25,13 +27,13 @@ public interface TeamPermissionControllerOpenApi {
     @ApiResponses({
             @ApiResponse(code = 404, message = "Team not found", response = ApiError.class)
     })
-    void associate(@ApiParam(value = "Team id", example = "1", required = true) Long teamId,
-                   @ApiParam(value = "Team id", example = "1", required = true) Long permissionId);
+    ResponseEntity<Void> associate(@ApiParam(value = "Team id", example = "1", required = true) Long teamId,
+                                   @ApiParam(value = "Team id", example = "1", required = true) Long permissionId);
 
     @ApiOperation("Disassociate a permission with a team")
     @ApiResponses({
             @ApiResponse(code = 404, message = "Team not found", response = ApiError.class)
     })
-    void disassociate(@ApiParam(value = "Team id", example = "1", required = true) Long teamId,
+    ResponseEntity<Void> disassociate(@ApiParam(value = "Team id", example = "1", required = true) Long teamId,
                       @ApiParam(value = "Team id", example = "1", required = true) Long permissionId);
 }

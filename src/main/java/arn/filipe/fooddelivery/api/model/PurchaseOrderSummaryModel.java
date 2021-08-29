@@ -2,13 +2,16 @@ package arn.filipe.fooddelivery.api.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+@Relation(collectionRelation = "purchaseOrders")
 @Getter
 @Setter
-public class PurchaseOrderSummaryModel {
+public class PurchaseOrderSummaryModel extends RepresentationModel<PurchaseOrderSummaryModel> {
     private String code;
 
     private BigDecimal subTotal;

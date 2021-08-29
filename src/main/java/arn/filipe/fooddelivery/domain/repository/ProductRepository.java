@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ProductRepository extends CustomizedJpaRepository<Product, Long>, ProductRepositoryQueries {
@@ -23,4 +24,9 @@ public interface ProductRepository extends CustomizedJpaRepository<Product, Long
     @Query("select photo from PhotoProduct photo join photo.product p " +
             "where p.restaurant.id= :restaurantId and photo.product.id= :productId")
     Optional<PhotoProduct> findPhotoById(Long restaurantId, Long productId);
+
+    List<Product> findAllByRestaurant(Restaurant restaurant);
+
+    @Query("from Product p where p.active = true and p.restaurant = :restaurant")
+    List<Product> findActiveByRestaurant(Restaurant restaurant);
 }

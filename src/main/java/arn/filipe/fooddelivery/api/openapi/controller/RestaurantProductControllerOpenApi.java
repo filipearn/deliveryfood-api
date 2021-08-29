@@ -4,6 +4,7 @@ import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
 import arn.filipe.fooddelivery.api.model.ProductModel;
 import arn.filipe.fooddelivery.api.model.input.ProductInput;
 import io.swagger.annotations.*;
+import org.springframework.hateoas.CollectionModel;
 
 import java.util.List;
 
@@ -15,7 +16,9 @@ public interface RestaurantProductControllerOpenApi {
             @ApiResponse(code = 400, message = "Invalid restaurant id", response = ApiError.class),
             @ApiResponse(code = 404, message = "Restaurant not found", response = ApiError.class)
     })
-    List<ProductModel> listAll(@ApiParam(value = "Restaurant id", example = "1", required = true) Long restaurantId);
+    CollectionModel<ProductModel> listAll(@ApiParam(value = "Restaurant id", example = "1", required = true) Long restaurantId,
+                                          @ApiParam(value = "Indicated if must include inactive products on result list",
+                                                  example = "false", defaultValue = "false") Boolean includeInactivated);
 
     @ApiOperation(value = "Find restaurant's product by id")
     @ApiResponses({

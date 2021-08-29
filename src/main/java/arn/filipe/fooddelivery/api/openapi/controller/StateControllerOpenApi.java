@@ -4,6 +4,7 @@ import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
 import arn.filipe.fooddelivery.api.model.StateModel;
 import arn.filipe.fooddelivery.api.model.input.StateInput;
 import io.swagger.annotations.*;
+import org.springframework.hateoas.CollectionModel;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public interface StateControllerOpenApi {
 
     @ApiOperation("List the states")
-    List<StateModel> listAll();
+    CollectionModel<StateModel> listAll();
 
     @ApiOperation("Find a state by id")
     @ApiResponses({

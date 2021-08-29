@@ -3,13 +3,17 @@ package arn.filipe.fooddelivery.api.model;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+@Relation(collectionRelation = "purchaseOrders")
 @Getter
 @Setter
-public class PurchaseOrderModel {
+public class PurchaseOrderModel extends RepresentationModel<PurchaseOrderModel> {
 
     @ApiModelProperty(example = "9197a815-51b9-4fd1-9f74-6e0c55a683d7")
     private String code;

@@ -3,6 +3,8 @@ package arn.filipe.fooddelivery.api.openapi.controller;
 import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
 import arn.filipe.fooddelivery.api.model.TeamModel;
 import io.swagger.annotations.*;
+import org.springframework.hateoas.CollectionModel;
+
 import java.util.List;
 
 @Api(tags = "Users")
@@ -13,7 +15,7 @@ public interface UserTeamControllerOpenApi {
             @ApiResponse(code = 400, message = "Invalid user id", response = ApiError.class),
             @ApiResponse(code = 404, message = "User not found", response = ApiError.class)
     })
-    List<TeamModel> listAll(@ApiParam(value = "User id", example = "1", required = true) Long userId);
+    CollectionModel<TeamModel> listAll(@ApiParam(value = "User id", example = "1", required = true) Long userId);
 
     @ApiOperation("Associate a team with a user")
     @ApiResponses({

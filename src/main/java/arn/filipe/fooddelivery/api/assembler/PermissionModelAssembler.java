@@ -1,9 +1,15 @@
 package arn.filipe.fooddelivery.api.assembler;
 
+import arn.filipe.fooddelivery.api.BuildLinks;
+import arn.filipe.fooddelivery.api.controller.TeamPermissionController;
 import arn.filipe.fooddelivery.api.model.PermissionModel;
+import arn.filipe.fooddelivery.api.model.PhotoProductModel;
 import arn.filipe.fooddelivery.domain.model.Permission;
+import arn.filipe.fooddelivery.domain.model.PhotoProduct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -11,18 +17,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class PermissionModelAssembler {
+public class PermissionModelAssembler extends RepresentationModelAssemblerSupport<Permission, PermissionModel> {
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public PermissionModel toModel(Permission permission){
-        return modelMapper.map(permission, PermissionModel.class);
+    @Autowired
+    private BuildLinks buildLinks;
+
+    public PermissionModelAssembler(){
+        super(TeamPermissionController.class, PermissionModel.class);
     }
 
-    public List<PermissionModel> toCollectionModel(Collection<Permission> permissions){
-        return permissions.stream()
-                .map(permission -> toModel(permission))
-                .collect(Collectors.toList());
+    public PermissionModel toModel(Permission permission){
+        PermissionModel permissionModel = modelMapper.map(permission, PermissionModel.class);
+
+        return permissionModel;
+    }
+
+    @Override
+    public CollectionModel<PermissionModel> toCollectionModel(Iterable<? extends Permission> entities) {
+        return super.toCollectionModel(entities);
     }
 }

@@ -12,6 +12,7 @@ import arn.filipe.fooddelivery.domain.model.State;
 
 import arn.filipe.fooddelivery.domain.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class StateController implements StateControllerOpenApi {
     private StateModelAssembler stateModelAssembler;
 
     @GetMapping
-    public List<StateModel> listAll(){
+    public CollectionModel<StateModel> listAll(){
         return stateModelAssembler.toCollectionModel(stateService.findAll());
     }
 

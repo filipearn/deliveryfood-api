@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ProductService {
@@ -47,6 +48,14 @@ public class ProductService {
             throw new EntityInUseException(
                     String.format(PRODUCT_IN_USE, id));
         }
+    }
+
+    public List<Product> findAllByRestaurant(Restaurant restaurant){
+        return productRepository.findAllByRestaurant(restaurant);
+    }
+
+    public List<Product> findActiveByRestaurant(Restaurant restaurant){
+        return productRepository.findActiveByRestaurant(restaurant);
     }
 
     public Product verifyIfExistsOrThrow(Long restaurantId, Long productId) {

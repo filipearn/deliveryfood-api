@@ -2,12 +2,15 @@ package arn.filipe.fooddelivery.api.openapi.controller;
 
 import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
 import arn.filipe.fooddelivery.api.model.RestaurantModel;
+import arn.filipe.fooddelivery.api.model.RestaurantOnlyNameModel;
+import arn.filipe.fooddelivery.api.model.RestaurantSummaryModel;
 import arn.filipe.fooddelivery.api.model.input.RestaurantInput;
 import arn.filipe.fooddelivery.api.model.view.RestaurantView;
 import arn.filipe.fooddelivery.api.openapi.model.RestaurantSummaryModelOpenApi;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.*;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,13 +23,13 @@ public interface RestaurantControllerOpenApi {
             @ApiImplicitParam(value = "Purchase order projection name", allowableValues = "only-name",
                     name = "projection", paramType = "query", type = "string")
     })
-    List<RestaurantModel> listAll();
+    CollectionModel<RestaurantModel> listAll();
 
-    @JsonView(RestaurantView.Summary.class)
-    List<RestaurantModel> listAllSummary();
+    //@JsonView(RestaurantView.Summary.class)
+    CollectionModel<RestaurantSummaryModel> listAllSummary();
 
     @ApiOperation(value = "List restaurants", hidden = true)
-    List<RestaurantModel> listAllOnlyName();
+    CollectionModel<RestaurantOnlyNameModel> listAllOnlyName();
 
 
     @ApiOperation("Find a restaurant by id")
@@ -74,14 +77,14 @@ public interface RestaurantControllerOpenApi {
             @ApiResponse(code = 204, message = "Restaurant activated with success"),
             @ApiResponse(code = 404, message = "Restaurant not found", response = ApiError.class)
     })
-    void activate(@ApiParam(value = "Restaurant id", example = "1", required = true) Long id);
+    ResponseEntity<Void> activate(@ApiParam(value = "Restaurant id", example = "1", required = true) Long id);
 
     @ApiOperation("Deactivate a restaurant by id")
     @ApiResponses({
             @ApiResponse(code = 204, message = "Restaurant deactivated with success"),
             @ApiResponse(code = 404, message = "Restaurant not found", response = ApiError.class)
     })
-    void deactivate(@ApiParam(value = "Restaurant id", example = "1", required = true) Long id);
+    ResponseEntity<Void> deactivate(@ApiParam(value = "Restaurant id", example = "1", required = true) Long id);
 
     @ApiOperation("Activate multiple restaurants by ids list")
     @ApiResponses({
@@ -101,13 +104,13 @@ public interface RestaurantControllerOpenApi {
     @ApiResponses({
             @ApiResponse(code = 404, message = "Restaurant not found", response = ApiError.class)
     })
-    void opening(@ApiParam(value = "Restaurant id", example = "1", required = true) Long id);
+    ResponseEntity<Void> opening(@ApiParam(value = "Restaurant id", example = "1", required = true) Long id);
 
     @ApiOperation("Close a restaurant by id")
     @ApiResponses({
             @ApiResponse(code = 404, message = "Restaurant not found", response = ApiError.class)
     })
-    void closure(@ApiParam(value = "Restaurant id", example = "1", required = true) Long id);
+    ResponseEntity<Void> closure(@ApiParam(value = "Restaurant id", example = "1", required = true) Long id);
 
     @ApiOperation("Delete a restaurant by id")
     @ApiResponses({

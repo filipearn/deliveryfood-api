@@ -8,6 +8,7 @@ import arn.filipe.fooddelivery.api.model.input.TeamInput;
 import arn.filipe.fooddelivery.domain.model.Team;
 import arn.filipe.fooddelivery.domain.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class TeamController implements TeamControllerOpenApi {
     private TeamModelAssembler TeamModelAssembler;
 
     @GetMapping
-    public List<TeamModel> listAll(){
+    public CollectionModel<TeamModel> listAll(){
         return TeamModelAssembler.toCollectionModel(teamService.listAll());
     }
 

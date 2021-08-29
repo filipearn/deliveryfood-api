@@ -5,8 +5,8 @@ import arn.filipe.fooddelivery.api.model.PurchaseOrderModel;
 import arn.filipe.fooddelivery.api.model.input.PurchaseOrderInput;
 import arn.filipe.fooddelivery.domain.filter.PurchaseOrderFilter;
 import io.swagger.annotations.*;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 @Api(tags = "Purchase orders")
 public interface PurchaseOrderControllerOpenApi {
@@ -19,7 +19,7 @@ public interface PurchaseOrderControllerOpenApi {
     @ApiResponses({
             @ApiResponse(code = 404, message = "Purchased order not found", response = ApiError.class)
     })
-    Page<PurchaseOrderModel> find(PurchaseOrderFilter filter, Pageable pageable);
+    PagedModel<PurchaseOrderModel> find(PurchaseOrderFilter filter, Pageable pageable);
 
     @ApiOperation("Find a purchase order by code")
     @ApiImplicitParams({

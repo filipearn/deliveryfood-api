@@ -4,18 +4,20 @@ import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
 import arn.filipe.fooddelivery.api.model.KitchenModel;
 import arn.filipe.fooddelivery.api.model.input.KitchenInput;
 import io.swagger.annotations.*;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
+
 import java.util.List;
 
 @Api(tags = "Kitchens")
 public interface KitchenControllerOpenApi {
 
     @ApiOperation("List the kitchens with pagination")
-    Page<KitchenModel> listAll(Pageable pageable);
+    PagedModel<KitchenModel> listAll(Pageable pageable);
 
     @ApiOperation("List the kitchens with name containing")
-    List<KitchenModel> findByNameContaining(@ApiParam(value = "Kitchen name", example = "Brasileira") String name);
+    CollectionModel<KitchenModel> findByNameContaining(@ApiParam(value = "Kitchen name", example = "Brasileira") String name);
 
     @ApiOperation("Find a kitchen by id")
     @ApiResponses({

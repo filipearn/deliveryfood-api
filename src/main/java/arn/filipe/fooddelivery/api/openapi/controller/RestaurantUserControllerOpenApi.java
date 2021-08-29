@@ -5,6 +5,7 @@ import arn.filipe.fooddelivery.api.model.UserModel;
 import arn.filipe.fooddelivery.api.model.input.UserWithPasswordInput;
 import io.swagger.annotations.*;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -24,8 +25,8 @@ public interface RestaurantUserControllerOpenApi {
             @ApiResponse(code = 400, message = "Invalid resource id", response = ApiError.class),
             @ApiResponse(code = 404, message = "Restaurant not found", response = ApiError.class)
     })
-    void associateUser(@ApiParam(value = "Restaurant id", example = "1", required = true) Long restaurantId,
-                       @ApiParam(value = "User id", example = "1", required = true) Long userId);
+    ResponseEntity<Void> associateUser(@ApiParam(value = "Restaurant id", example = "1", required = true) Long restaurantId,
+                                       @ApiParam(value = "User id", example = "1", required = true) Long userId);
 
     @ApiOperation("Disassociate a user with a restaurant")
     @ApiResponses({
@@ -33,6 +34,6 @@ public interface RestaurantUserControllerOpenApi {
             @ApiResponse(code = 400, message = "Invalid resource id", response = ApiError.class),
             @ApiResponse(code = 404, message = "Restaurant not found", response = ApiError.class)
     })
-    void disassociateUser(@ApiParam(value = "Restaurant id", example = "1", required = true) Long restaurantId,
+    ResponseEntity<Void> disassociateUser(@ApiParam(value = "Restaurant id", example = "1", required = true) Long restaurantId,
                           @ApiParam(value = "User id", example = "1", required = true) Long userId);
 }

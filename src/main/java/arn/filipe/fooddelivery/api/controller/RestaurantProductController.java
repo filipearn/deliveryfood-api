@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.api.BuildLinks;
 import arn.filipe.fooddelivery.api.assembler.ProductInputDisassembler;
 import arn.filipe.fooddelivery.api.assembler.ProductModelAssembler;
 import arn.filipe.fooddelivery.api.model.ProductModel;
@@ -11,12 +12,14 @@ import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.ProductService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(path = "/api/v1/restaurants/{restaurantId}/products", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,11 +37,35 @@ public class RestaurantProductController implements RestaurantProductControllerO
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private BuildLinks buildLinks;
+
     @GetMapping
-    public List<ProductModel> listAll(@PathVariable Long restaurantId){
+    public CollectionModel<ProductModel> listAll(@PathVariable Long restaurantId,
+                                 @RequestParam(required = false, defaultValue = "false") Boolean includeInactivated){
+
         Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(restaurantId);
 
-        return productModelAssembler.toCollectionModel(restaurant.getProducts());
+        List<Product> allProducts = null;
+
+        if(includeInactivated){
+            allProducts = productService.findAllByRestaurant(restaurant);
+        }
+        else{
+            allProducts = productService.findActiveByRestaurant(restaurant);
+        }
+
+        CollectionModel<ProductModel> productsModel =  productModelAssembler.toCollectionModel(allProducts)
+                .add(buildLinks.linkToRestaurantProducts(restaurantId));
+
+//        productsModel.getContent().forEach(
+//                productModel -> {
+//                    productModel.add(buildLinks.linkToRestaurantProducts(
+//                            restaurantId, "products"));
+//                }
+//        );
+
+        return productsModel;
     }
 
     @GetMapping("/{productId}")

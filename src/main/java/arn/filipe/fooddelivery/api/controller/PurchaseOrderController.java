@@ -4,6 +4,7 @@ import arn.filipe.fooddelivery.api.assembler.*;
 import arn.filipe.fooddelivery.api.model.*;
 import arn.filipe.fooddelivery.api.model.input.*;
 import arn.filipe.fooddelivery.api.openapi.controller.PurchaseOrderControllerOpenApi;
+import arn.filipe.fooddelivery.core.data.PageWrapper;
 import arn.filipe.fooddelivery.core.data.PageableTranslator;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -55,18 +58,20 @@ public class PurchaseOrderController implements PurchaseOrderControllerOpenApi {
     @Autowired
     private ItemOrderService itemOrderService;
 
+    @Autowired
+    private PagedResourcesAssembler<PurchaseOrder> purchaseOrderPagedResourcesAssembler;
+
     @GetMapping
-    public Page<PurchaseOrderModel> find(PurchaseOrderFilter filter, Pageable pageable){
+    public PagedModel<PurchaseOrderModel> find(PurchaseOrderFilter filter, Pageable pageable){
 
-        pageable = translatePageable(pageable);
+        Pageable translatedPageable = translatePageable(pageable);
 
-        Page<PurchaseOrder> purchaseOrders = purchaseOrderService.findAll(filter, pageable);
+        Page<PurchaseOrder> purchaseOrdersPage = purchaseOrderService.findAll(filter, translatedPageable);
 
-        List<PurchaseOrderModel> purchaseOrdersModel = purchaseOrderModelAssembler.toCollectionModel(purchaseOrders.getContent());
+        purchaseOrdersPage = new PageWrapper<>(purchaseOrdersPage, pageable);
 
-        Page<PurchaseOrderModel> purchaseOrdersModelPage = new PageImpl<>(purchaseOrdersModel, pageable, purchaseOrders.getTotalElements());
-
-        return purchaseOrdersModelPage;
+        return purchaseOrderPagedResourcesAssembler
+                .toModel(purchaseOrdersPage, purchaseOrderModelAssembler);
     }
 
     @GetMapping("/{code}")
