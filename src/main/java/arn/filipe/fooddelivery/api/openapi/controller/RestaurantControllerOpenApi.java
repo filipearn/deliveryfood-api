@@ -5,10 +5,8 @@ import arn.filipe.fooddelivery.api.model.RestaurantModel;
 import arn.filipe.fooddelivery.api.model.RestaurantOnlyNameModel;
 import arn.filipe.fooddelivery.api.model.RestaurantSummaryModel;
 import arn.filipe.fooddelivery.api.model.input.RestaurantInput;
-import arn.filipe.fooddelivery.api.model.view.RestaurantView;
-import arn.filipe.fooddelivery.api.openapi.model.RestaurantSummaryModelOpenApi;
+import arn.filipe.fooddelivery.api.openapi.model.RestaurantsSummaryModelOpenApi;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.*;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +16,7 @@ import java.util.List;
 @Api(tags = "Restaurants")
 public interface RestaurantControllerOpenApi {
 
-    @ApiOperation(value = "List restaurants", response = RestaurantSummaryModelOpenApi.class)
+    @ApiOperation(value = "List restaurants", response = RestaurantsSummaryModelOpenApi.class)
     @ApiImplicitParams({
             @ApiImplicitParam(value = "Purchase order projection name", allowableValues = "only-name",
                     name = "projection", paramType = "query", type = "string")

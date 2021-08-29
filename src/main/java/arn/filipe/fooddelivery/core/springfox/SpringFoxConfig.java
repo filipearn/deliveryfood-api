@@ -1,15 +1,16 @@
 package arn.filipe.fooddelivery.core.springfox;
 
 import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
-import arn.filipe.fooddelivery.api.model.KitchenModel;
-import arn.filipe.fooddelivery.api.openapi.model.KitchensModelOpenApi;
-import arn.filipe.fooddelivery.api.openapi.model.PageableModelOpenApi;
+import arn.filipe.fooddelivery.api.model.*;
+import arn.filipe.fooddelivery.api.openapi.model.*;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Links;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -19,6 +20,7 @@ import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseMessageBuilder;
+import springfox.documentation.schema.AlternateTypeRule;
 import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
@@ -62,9 +64,8 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .ignoredParameterTypes(ServletWebRequest.class)
                 .apiInfo(apiInfo())
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
-                .alternateTypeRules(AlternateTypeRules.newRule(
-                        typeResolver.resolve(Page.class, KitchenModel.class),
-                        KitchensModelOpenApi.class))
+                .directModelSubstitute(Links.class, LinksModelOpenApi.class)
+                .alternateTypeRules(alternateTypeRules())
                 .tags(new Tag("Cities", "Manage the cities"),
                         new Tag("Teams","Manage the teams"),
                         new Tag("Kitchens", "Manage the kitchens"),
@@ -156,5 +157,64 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+    private AlternateTypeRule[] alternateTypeRules() {
+        TypeResolver typeResolver = new TypeResolver();
+
+        return Arrays.asList(
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(PagedModel.class, PagedModel.class),
+                        KitchensModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(PagedModel.class, PurchaseOrderSummaryModel.class),
+                        PurchaseOrdersSummaryModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(PagedModel.class, PurchaseOrderModel.class),
+                        PurchaseOrdersModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, CityModel.class),
+                        CitiesModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, StateModel.class),
+                        StatesModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, PaymentWayModel.class),
+                        PaymentWaysModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, TeamModel.class),
+                        TeamsModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, PermissionModel.class),
+                        PermissionsModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, ProductModel.class),
+                        ProductsModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, RestaurantModel.class),
+                        RestaurantsModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, RestaurantSummaryModel.class),
+                        RestaurantsSummaryModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, RestaurantOnlyNameModel.class),
+                        RestaurantsOnlyNameModelOpenApi.class
+                ),
+                AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, UserModel.class),
+                        UsersModelOpenApi.class
+                )
+        ).toArray(new AlternateTypeRule[0]);
     }
 }

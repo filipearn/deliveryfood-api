@@ -5,6 +5,7 @@ import arn.filipe.fooddelivery.api.model.CityModel;
 import arn.filipe.fooddelivery.api.model.PaymentWayModel;
 import arn.filipe.fooddelivery.api.model.input.CityInput;
 import arn.filipe.fooddelivery.api.model.input.PaymentWayInput;
+import arn.filipe.fooddelivery.api.openapi.model.PaymentWaysModelOpenApi;
 import arn.filipe.fooddelivery.domain.model.PaymentWay;
 import io.swagger.annotations.*;
 import org.springframework.hateoas.CollectionModel;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @Api(tags = "Payment ways")
 public interface PaymentWayControllerOpenApi {
 
-    @ApiOperation("List the payment ways")
+    @ApiOperation(value = "List the payment ways", response = PaymentWaysModelOpenApi.class)
     ResponseEntity<CollectionModel<PaymentWayModel>> listAll(ServletWebRequest request);
 
     @ApiOperation("Find a payment way by id")
