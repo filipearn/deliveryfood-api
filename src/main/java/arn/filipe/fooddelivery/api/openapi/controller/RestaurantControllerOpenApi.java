@@ -10,6 +10,8 @@ import arn.filipe.fooddelivery.domain.model.Restaurant;
 import io.swagger.annotations.*;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
+import springfox.documentation.annotations.ApiIgnore;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public interface RestaurantControllerOpenApi {
     //@JsonView(RestaurantView.Summary.class)
     CollectionModel<RestaurantSummaryModel> listAllSummary();
 
+    @ApiIgnore
     @ApiOperation(value = "List restaurants", hidden = true)
     CollectionModel<RestaurantOnlyNameModel> listAllOnlyName();
 
