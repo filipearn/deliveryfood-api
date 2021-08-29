@@ -30,11 +30,11 @@ public class PurchaseOrderModelAssembler extends RepresentationModelAssemblerSup
 
     @Override
     public PurchaseOrderModel toModel(PurchaseOrder purchaseOrder){
-        PurchaseOrderModel purchaseOrderModel = createModelWithId(purchaseOrder.getId(), purchaseOrder);
+        PurchaseOrderModel purchaseOrderModel = createModelWithId(purchaseOrder.getCode(), purchaseOrder);
 
         modelMapper.map(purchaseOrder, purchaseOrderModel);
 
-        purchaseOrderModel.add(buildLinks.linkToPurchaseOrder(purchaseOrder.getId(), "purchaseOrders"));
+        purchaseOrderModel.add(buildLinks.linkToPurchaseOrder("purchaseOrders"));
 
         if(purchaseOrder.canBeConfirmed())
         {
@@ -67,12 +67,6 @@ public class PurchaseOrderModelAssembler extends RepresentationModelAssemblerSup
         purchaseOrderModel.getAddress().getCity().add(buildLinks.linkToCity(purchaseOrder.getAddress().getCity().getId()));
 
         return purchaseOrderModel;
-    }
-
-    @Override
-    public CollectionModel<PurchaseOrderModel> toCollectionModel(Iterable<? extends PurchaseOrder> entities) {
-        return super.toCollectionModel(entities)
-                .add(buildLinks.linkToPurchaseOrder());
     }
 
 }

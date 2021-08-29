@@ -15,18 +15,23 @@ public class BuildLinks {
             new TemplateVariable("size", TemplateVariable.VariableType.REQUEST_PARAM),
             new TemplateVariable("sort", TemplateVariable.VariableType.REQUEST_PARAM));
 
-    public Link linkToPurchaseOrder(Long purchaseOrderId, String rel){
 
-        TemplateVariables filterVariables = new TemplateVariables(
-                new TemplateVariable("clientId", TemplateVariable.VariableType.REQUEST_PARAM),
+    public Link linkToStatistics(String rel){
+        return linkTo(StatisticsController.class).withRel(rel);
+    }
+
+    public Link linkToDailySales(String rel){
+
+        TemplateVariables variables = new TemplateVariables(
                 new TemplateVariable("restaurantId", TemplateVariable.VariableType.REQUEST_PARAM),
                 new TemplateVariable("registrationDateInitial", TemplateVariable.VariableType.REQUEST_PARAM),
-                new TemplateVariable("registrationDateFinal", TemplateVariable.VariableType.REQUEST_PARAM)
+                new TemplateVariable("registrationDateFinal", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("timeOffset", TemplateVariable.VariableType.REQUEST_PARAM)
         );
 
-        String purchaseOrdersUrl = linkTo(PurchaseOrderController.class).toUri().toString();
+        String dailySales = linkTo(methodOn(StatisticsController.class).findDailySales(null, null)).toUri().toString();
 
-        return new Link(UriTemplate.of(purchaseOrdersUrl, PAGINATION_VARIABLES.concat(filterVariables)), rel);
+        return new Link(UriTemplate.of(dailySales, PAGINATION_VARIABLES.concat(variables)), rel);
     }
 
     public Link linkToPurchaseOrderConfirmation(String code, String rel){
@@ -44,8 +49,18 @@ public class BuildLinks {
                 .delivery(code)).withRel(rel);
     }
 
-    public Link linkToPurchaseOrder(Long purchaseOrderId){
-        return linkToPurchaseOrder(purchaseOrderId, IanaLinkRelations.SELF.value());
+    public Link linkToPurchaseOrder(String rel){
+
+        TemplateVariables filterVariables = new TemplateVariables(
+                new TemplateVariable("clientId", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("restaurantId", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("registrationDateInitial", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("registrationDateFinal", TemplateVariable.VariableType.REQUEST_PARAM)
+        );
+
+        String purchaseOrdersUrl = linkTo(PurchaseOrderController.class).toUri().toString();
+
+        return new Link(UriTemplate.of(purchaseOrdersUrl, PAGINATION_VARIABLES.concat(filterVariables)), rel);
     }
 
     public Link linkToPurchaseOrder(){
@@ -66,6 +81,10 @@ public class BuildLinks {
         String restaurantUrl = linkTo(RestaurantController.class).toUri().toString();
 
         return new Link(UriTemplate.of(restaurantUrl, projectionVariables), rel);
+    }
+
+    public Link linkToPermission(String rel){
+        return linkTo(PermissionController.class).withRel(rel);
     }
 
     public Link linkToRestaurant(Long restaurantId) {

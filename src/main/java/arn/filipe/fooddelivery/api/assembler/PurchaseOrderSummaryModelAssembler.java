@@ -33,7 +33,7 @@ public class PurchaseOrderSummaryModelAssembler extends RepresentationModelAssem
 
         modelMapper.map(purchaseOrder, purchaseOrderSummaryModel);
 
-        purchaseOrderSummaryModel.add(buildLinks.linkToPurchaseOrder(purchaseOrder.getId()));
+        purchaseOrderSummaryModel.add(buildLinks.linkToPurchaseOrder(purchaseOrder.getCode()));
 
         //Link to restaurant
         purchaseOrderSummaryModel.getRestaurant().add(buildLinks.linkToRestaurant(purchaseOrderSummaryModel.getRestaurant().getId()));

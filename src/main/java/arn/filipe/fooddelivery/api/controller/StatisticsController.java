@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery.api.controller;
 
+import arn.filipe.fooddelivery.api.BuildLinks;
 import arn.filipe.fooddelivery.api.openapi.controller.StatisticsControllerOpenApi;
 import arn.filipe.fooddelivery.domain.filter.DailySaleFilter;
 import arn.filipe.fooddelivery.domain.model.dto.DailySale;
@@ -7,6 +8,7 @@ import arn.filipe.fooddelivery.domain.service.SaleQueryService;
 import arn.filipe.fooddelivery.domain.service.SaleReportService;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,23 @@ public class StatisticsController implements StatisticsControllerOpenApi {
 
     @Autowired
     private SaleQueryService saleQueryService;
+
+    @Autowired
+    private BuildLinks buildLinks;
+
+    private static class StatisticsEntryPointModel extends RepresentationModel<StatisticsEntryPointModel> {
+
+    }
+
+    @GetMapping
+    public StatisticsEntryPointModel root(DailySaleFilter dailySaleFilter,
+                                          @RequestParam(required = false, defaultValue = "+00:00") String timeOffset){
+        var statisticsEntryPointModel = new StatisticsEntryPointModel();
+
+        statisticsEntryPointModel.add(buildLinks.linkToDailySales("daily-sales"));
+
+        return statisticsEntryPointModel;
+    }
 
     @GetMapping(path = "/daily-sales", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<DailySale> findDailySales(DailySaleFilter dailySaleFilter,
