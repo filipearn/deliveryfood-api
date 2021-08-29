@@ -4,6 +4,7 @@ import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
 import arn.filipe.fooddelivery.api.model.TeamModel;
 import io.swagger.annotations.*;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -23,8 +24,8 @@ public interface UserTeamControllerOpenApi {
             @ApiResponse(code = 400, message = "Invalid user or team id", response = ApiError.class),
             @ApiResponse(code = 404, message = "User or team not found", response = ApiError.class)
     })
-    void associate(@ApiParam(value = "User id", example = "1", required = true) Long userId,
-                   @ApiParam(value = "Team id", example = "1", required = true) Long teamId);
+    ResponseEntity<Void> associate(@ApiParam(value = "User id", example = "1", required = true) Long userId,
+                                   @ApiParam(value = "Team id", example = "1", required = true) Long teamId);
 
     @ApiOperation("Disassociate a team with a user")
     @ApiResponses({
@@ -32,6 +33,6 @@ public interface UserTeamControllerOpenApi {
             @ApiResponse(code = 400, message = "Invalid user or team id", response = ApiError.class),
             @ApiResponse(code = 404, message = "User or team not found", response = ApiError.class)
     })
-    void disassociate(@ApiParam(value = "User id", example = "1", required = true) Long userId,
+    ResponseEntity<Void> disassociate(@ApiParam(value = "User id", example = "1", required = true) Long userId,
                       @ApiParam(value = "Team id", example = "1", required = true) Long teamId);
 }

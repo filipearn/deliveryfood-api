@@ -123,6 +123,20 @@ public class BuildLinks {
                 .listAll(userId)).withRel(rel);
     }
 
+    public Link linkToTeamUser(Long userId) {
+        return linkToTeamUser(userId, IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToTeamUserAssociation(Long userId, String rel){
+        return linkTo(methodOn(UserTeamController.class)
+                .associate(userId, null)).withRel(rel);
+    }
+
+    public Link linkToTeamUserDisassociation(Long userId, Long teamId, String rel){
+        return linkTo(methodOn(UserTeamController.class)
+                .disassociate(userId, teamId)).withRel(rel);
+    }
+
     public Link linkToKitchen(Long kitchenId) {
         return linkToKitchen(kitchenId, IanaLinkRelations.SELF.value());
     }
