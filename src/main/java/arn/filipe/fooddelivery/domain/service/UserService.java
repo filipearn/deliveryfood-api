@@ -1,18 +1,11 @@
 package arn.filipe.fooddelivery.domain.service;
 
-import arn.filipe.fooddelivery.api.assembler.UserInputDisassembler;
-import arn.filipe.fooddelivery.api.assembler.UserModelAssembler;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
-import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
-import arn.filipe.fooddelivery.domain.exception.StateNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.UserNotFoundException;
-import arn.filipe.fooddelivery.domain.model.Permission;
 import arn.filipe.fooddelivery.domain.model.Team;
 import arn.filipe.fooddelivery.domain.model.User;
 import arn.filipe.fooddelivery.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

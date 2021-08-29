@@ -1,26 +1,17 @@
 package arn.filipe.fooddelivery.domain.service;
 
-import arn.filipe.fooddelivery.api.model.ProductModel;
-import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
-import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.ProductNotFoundException;
-import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.model.Product;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.repository.ProductRepository;
-import arn.filipe.fooddelivery.domain.repository.RestaurantRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class ProductService {

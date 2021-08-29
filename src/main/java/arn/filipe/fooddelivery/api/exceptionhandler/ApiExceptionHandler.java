@@ -6,6 +6,7 @@ import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -83,7 +84,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ApiErrorType apiErrorType = ApiErrorType.GENERIC_SYSTEM_ERROR;
         String detail = GENERIC_ERROR_MESSAGE;
 
-        ex.printStackTrace();
+        log.error(ex.getMessage(), ex);
 
         ApiError apiError = createApiErrorBuilder(status, apiErrorType, detail)
                 .userMessage(GENERIC_ERROR_MESSAGE)

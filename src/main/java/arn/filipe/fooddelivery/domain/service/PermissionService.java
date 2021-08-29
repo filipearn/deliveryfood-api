@@ -1,12 +1,7 @@
 package arn.filipe.fooddelivery.domain.service;
 
-import arn.filipe.fooddelivery.api.assembler.PermissionInputDisassembler;
-import arn.filipe.fooddelivery.api.model.PermissionModel;
-import arn.filipe.fooddelivery.api.model.input.PermissionInput;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
-import arn.filipe.fooddelivery.domain.exception.PaymentWayNotFoundException;
 import arn.filipe.fooddelivery.domain.exception.PermissionNotFoundException;
-import arn.filipe.fooddelivery.domain.model.PaymentWay;
 import arn.filipe.fooddelivery.domain.model.Permission;
 import arn.filipe.fooddelivery.domain.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,5 @@
 package arn.filipe.fooddelivery.domain.model;
 
-import arn.filipe.fooddelivery.api.model.input.PurchaseOrderInput;
 import arn.filipe.fooddelivery.domain.enums.OrderStatus;
 import arn.filipe.fooddelivery.domain.event.PurchaseOrderCancelledEvent;
 import arn.filipe.fooddelivery.domain.event.PurchaseOrderConfirmedEvent;
@@ -9,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;

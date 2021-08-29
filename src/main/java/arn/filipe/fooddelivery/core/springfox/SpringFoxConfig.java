@@ -1,8 +1,10 @@
 package arn.filipe.fooddelivery.core.springfox;
 
 import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
-import arn.filipe.fooddelivery.api.model.*;
-import arn.filipe.fooddelivery.api.openapi.model.*;
+import arn.filipe.fooddelivery.api.v1.model.*;
+import arn.filipe.fooddelivery.api.v1.openapi.model.*;
+import arn.filipe.fooddelivery.api.v1.model.*;
+import arn.filipe.fooddelivery.api.v2.model.CityModelV2;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.AlternateTypeRule;
@@ -40,12 +43,14 @@ import java.util.List;
 public class SpringFoxConfig implements WebMvcConfigurer {
 
     @Bean
-    public Docket apiDocket(){
+    public Docket apiDocketV1(){
         var typeResolver = new TypeResolver() ;
 
         return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("V1")
                 .select()
                     .apis(RequestHandlerSelectors.basePackage("arn.filipe.fooddelivery.api"))
+                    .paths(PathSelectors.ant("/api/v1/**"))
                     .build()
                 .useDefaultResponseMessages(false)
                 .globalResponseMessage(RequestMethod.GET, globalGetResponseMessages())
@@ -62,10 +67,52 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 //                ))
                 .additionalModels(typeResolver.resolve(ApiError.class))
                 .ignoredParameterTypes(ServletWebRequest.class)
-                .apiInfo(apiInfo())
+                .apiInfo(apiInfoV1())
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
                 .directModelSubstitute(Links.class, LinksModelOpenApi.class)
                 .alternateTypeRules(alternateTypeRules())
+                .tags(new Tag("Cities", "Manage the cities"),
+                        new Tag("Teams","Manage the teams"),
+                        new Tag("Kitchens", "Manage the kitchens"),
+                        new Tag("Payment ways", "Manage the payment ways"),
+                        new Tag("Purchase orders", "Manage the purchase orders"),
+                        new Tag("Restaurants", "Manage the restaurants"),
+                        new Tag("States", "Manage the states"),
+                        new Tag("Products", "Manage the restaurants' products"),
+                        new Tag("Users", "Manage the users"),
+                        new Tag("Statistics", "Manage the statistics"),
+                        new Tag("Permissions", "Manage the permissions"));
+
+    }
+
+    @Bean
+    public Docket apiDocketV2(){
+        var typeResolver = new TypeResolver() ;
+
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("V2")
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("arn.filipe.fooddelivery.api"))
+                .paths(PathSelectors.ant("/api/v2/**"))
+                .build()
+                .useDefaultResponseMessages(false)
+                .globalResponseMessage(RequestMethod.GET, globalGetResponseMessages())
+                .globalResponseMessage(RequestMethod.POST, globalPostPutResponseMessages())
+                .globalResponseMessage(RequestMethod.PUT, globalPostPutResponseMessages())
+                .globalResponseMessage(RequestMethod.DELETE, globalDeleteResponseMessages())
+//                .globalOperationParameters(Arrays.asList(
+//                        new ParameterBuilder()
+//                                .name("fields")
+//                                .description("Properties name to filter the answer, separated by comma")
+//                                .parameterType("query")
+//                                .modelRef(new ModelRef("string"))
+//                                .build()
+//                ))
+                .additionalModels(typeResolver.resolve(ApiError.class))
+                .ignoredParameterTypes(ServletWebRequest.class)
+                .apiInfo(apiInfoV2())
+                .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+                .directModelSubstitute(Links.class, LinksModelOpenApi.class)
                 .tags(new Tag("Cities", "Manage the cities"),
                         new Tag("Teams","Manage the teams"),
                         new Tag("Kitchens", "Manage the kitchens"),
@@ -141,11 +188,20 @@ public class SpringFoxConfig implements WebMvcConfigurer {
         );
     }
 
-    private ApiInfo apiInfo(){
+    private ApiInfo apiInfoV1(){
         return new ApiInfoBuilder()
                 .title("Food Delivery API")
                 .description("OPEN API FOR CLIENTS AND RESTAURANTS")
                 .version("1")
+                .contact(new Contact("FILIPE", "www.pagodedosinal.com.br", "contato@filipearn.com.br"))
+                .build();
+    }
+
+    private ApiInfo apiInfoV2(){
+        return new ApiInfoBuilder()
+                .title("Food Delivery API")
+                .description("OPEN API FOR CLIENTS AND RESTAURANTS")
+                .version("2")
                 .contact(new Contact("FILIPE", "www.pagodedosinal.com.br", "contato@filipearn.com.br"))
                 .build();
     }

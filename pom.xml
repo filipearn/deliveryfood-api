@@ -21,6 +21,7 @@
 		<jasperreports-functions.version>6.17.0</jasperreports-functions.version>
 		<aws-java-sdk-s3.version>1.12.52</aws-java-sdk-s3.version>
 		<springfox.version>2.9.2</springfox.version>
+		<logback-ext-loggly.version>0.1.5</logback-ext-loggly.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -60,6 +61,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 			<version>2.5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.logback-extensions</groupId>
+			<artifactId>logback-ext-loggly</artifactId>
+			<version>${logback-ext-loggly.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
 		<dependency>
@@ -129,6 +135,15 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-freemarker</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

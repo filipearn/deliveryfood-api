@@ -1,13 +1,9 @@
 package arn.filipe.fooddelivery.domain.service;
 
-import arn.filipe.fooddelivery.api.assembler.KitchenModelAssembler;
-import arn.filipe.fooddelivery.api.model.KitchenModel;
-import arn.filipe.fooddelivery.api.model.input.KitchenInput;
 import arn.filipe.fooddelivery.domain.exception.EntityInUseException;
 import arn.filipe.fooddelivery.domain.exception.KitchenNotFoundException;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import arn.filipe.fooddelivery.domain.repository.KitchenRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
