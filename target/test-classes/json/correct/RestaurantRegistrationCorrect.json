@@ -1,0 +1,7 @@
+{
+  "name" : "O PASSO",
+  "freightRate": "10",
+  "kitchen": {
+    "id": 2
+  }
+}

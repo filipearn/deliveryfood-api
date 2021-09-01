@@ -1,0 +1,82 @@
+{
+  "groups": [
+    {
+      "name": "fooddelivery.email",
+      "type": "arn.filipe.fooddelivery.core.email.EmailProperties",
+      "sourceType": "arn.filipe.fooddelivery.core.email.EmailProperties"
+    },
+    {
+      "name": "fooddelivery.email.sandbox",
+      "type": "arn.filipe.fooddelivery.core.email.EmailProperties$Sandbox",
+      "sourceType": "arn.filipe.fooddelivery.core.email.EmailProperties"
+    },
+    {
+      "name": "fooddelivery.storage",
+      "type": "arn.filipe.fooddelivery.core.storage.StorageProperties",
+      "sourceType": "arn.filipe.fooddelivery.core.storage.StorageProperties"
+    },
+    {
+      "name": "fooddelivery.storage.local",
+      "type": "arn.filipe.fooddelivery.core.storage.StorageProperties$Local",
+      "sourceType": "arn.filipe.fooddelivery.core.storage.StorageProperties"
+    },
+    {
+      "name": "fooddelivery.storage.s3",
+      "type": "arn.filipe.fooddelivery.core.storage.StorageProperties$S3",
+      "sourceType": "arn.filipe.fooddelivery.core.storage.StorageProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "fooddelivery.email.impl",
+      "type": "arn.filipe.fooddelivery.core.email.EmailProperties$EmailImpl",
+      "sourceType": "arn.filipe.fooddelivery.core.email.EmailProperties"
+    },
+    {
+      "name": "fooddelivery.email.sandbox.recipient",
+      "type": "java.lang.String",
+      "sourceType": "arn.filipe.fooddelivery.core.email.EmailProperties$Sandbox"
+    },
+    {
+      "name": "fooddelivery.email.sender",
+      "type": "java.lang.String",
+      "sourceType": "arn.filipe.fooddelivery.core.email.EmailProperties"
+    },
+    {
+      "name": "fooddelivery.storage.local.photos-directory",
+      "type": "java.nio.file.Path",
+      "sourceType": "arn.filipe.fooddelivery.core.storage.StorageProperties$Local"
+    },
+    {
+      "name": "fooddelivery.storage.s3.bucket",
+      "type": "java.lang.String",
+      "sourceType": "arn.filipe.fooddelivery.core.storage.StorageProperties$S3"
+    },
+    {
+      "name": "fooddelivery.storage.s3.id-access-key",
+      "type": "java.lang.String",
+      "sourceType": "arn.filipe.fooddelivery.core.storage.StorageProperties$S3"
+    },
+    {
+      "name": "fooddelivery.storage.s3.photos-directory",
+      "type": "java.lang.String",
+      "sourceType": "arn.filipe.fooddelivery.core.storage.StorageProperties$S3"
+    },
+    {
+      "name": "fooddelivery.storage.s3.region",
+      "type": "com.amazonaws.regions.Regions",
+      "sourceType": "arn.filipe.fooddelivery.core.storage.StorageProperties$S3"
+    },
+    {
+      "name": "fooddelivery.storage.s3.secret-access-key",
+      "type": "java.lang.String",
+      "sourceType": "arn.filipe.fooddelivery.core.storage.StorageProperties$S3"
+    },
+    {
+      "name": "fooddelivery.storage.type",
+      "type": "arn.filipe.fooddelivery.core.storage.StorageProperties$StorageType",
+      "sourceType": "arn.filipe.fooddelivery.core.storage.StorageProperties"
+    }
+  ],
+  "hints": []
+}
