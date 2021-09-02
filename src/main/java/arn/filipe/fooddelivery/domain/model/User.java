@@ -55,4 +55,8 @@ public class User {
     public boolean disassociateTeam(Team team){
         return this.getTeams().remove(team);
     }
+
+    public boolean isNew() {
+        return getId() == null;
+    }
 }
