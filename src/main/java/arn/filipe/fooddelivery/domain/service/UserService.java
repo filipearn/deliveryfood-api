@@ -6,6 +6,7 @@ import arn.filipe.fooddelivery.domain.model.Team;
 import arn.filipe.fooddelivery.domain.model.User;
 import arn.filipe.fooddelivery.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,9 @@ public class UserService {
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<User> listAll(){
         return userRepository.findAll();
@@ -42,6 +46,10 @@ public class UserService {
                     String.format("Already exist a user registered with email '%s'", user.getEmail()));
         }
 
+        if (user.isNew()) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
         return userRepository.save(user);
     }
 
@@ -49,11 +57,11 @@ public class UserService {
     public void changePassword(Long id, String actualPassword, String newPassword){
         User user = verifyIfExistsOrThrow(id);
 
-        if(user.passwordNotMatch(actualPassword)){
+        if (!passwordEncoder.matches(actualPassword, user.getPassword())) {
             throw new BusinessException("Actual password doesn't match the old password.");
         }
 
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
     }
 
     @Transactional
