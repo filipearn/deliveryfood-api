@@ -1,5 +1,6 @@
 package arn.filipe.fooddelivery;
 
+import arn.filipe.fooddelivery.core.io.Base64ProtocolResolver;
 import arn.filipe.fooddelivery.domain.repository.CustomizedJpaRepository;
 import arn.filipe.fooddelivery.infrastructure.repository.CustomizedJpaRepositoryImpl;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +18,10 @@ public class FooddeliveryApiApplication {
 	public static void main(String[] args) {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
-		SpringApplication.run(FooddeliveryApiApplication.class, args);
+		var app = new SpringApplication(FooddeliveryApiApplication.class);
+		app.addListeners(new Base64ProtocolResolver());
+		app.run(args);
+//		SpringApplication.run(FooddeliveryApiApplication.class, args);
 	}
 
 }

@@ -3,8 +3,6 @@ package arn.filipe.fooddelivery.core.springfox;
 import arn.filipe.fooddelivery.api.exceptionhandler.ApiError;
 import arn.filipe.fooddelivery.api.v1.model.*;
 import arn.filipe.fooddelivery.api.v1.openapi.model.*;
-import arn.filipe.fooddelivery.api.v1.model.*;
-import arn.filipe.fooddelivery.api.v2.model.CityModelV2;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,18 +17,13 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.builders.ResponseMessageBuilder;
+import springfox.documentation.builders.*;
 import springfox.documentation.schema.AlternateTypeRule;
 import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.schema.ModelRef;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.ResponseMessage;
-import springfox.documentation.service.Tag;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -67,6 +60,11 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 //                ))
                 .additionalModels(typeResolver.resolve(ApiError.class))
                 .ignoredParameterTypes(ServletWebRequest.class)
+
+                .securitySchemes(Arrays.asList(securityScheme()))
+                .securityContexts(Arrays.asList(securityContext()))
+
+
                 .apiInfo(apiInfoV1())
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
                 .directModelSubstitute(Links.class, LinksModelOpenApi.class)
@@ -125,6 +123,36 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                         new Tag("Statistics", "Manage the statistics"),
                         new Tag("Permissions", "Manage the permissions"));
 
+    }
+
+    private SecurityScheme securityScheme(){
+        return new OAuthBuilder()
+                .name("FoodDelivery")
+                .grantTypes(grandTypes())
+                .scopes(scopes())
+                .build();
+    }
+
+    public SecurityContext securityContext(){
+        var securityReference = SecurityReference.builder()
+                .reference("FoodDelivery")
+                .scopes(scopes().toArray(new AuthorizationScope[0]))
+                .build();
+
+        return SecurityContext.builder()
+                .securityReferences(Arrays.asList(securityReference))
+                .forPaths(PathSelectors.any())
+                .build();
+    }
+
+    private List<GrantType> grandTypes(){
+        return Arrays.asList(new ResourceOwnerPasswordCredentialsGrant("/oauth/token"));
+    }
+
+    private List<AuthorizationScope> scopes(){
+        return Arrays.asList(
+                new AuthorizationScope("READ", "Read access"),
+                new AuthorizationScope("WRITE", "Write access"));
     }
 
     private List<ResponseMessage> globalPostPutResponseMessages() {

@@ -1,5 +1,9 @@
 package arn.filipe.fooddelivery.core.security.authorizationserver;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.RSAKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +25,8 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import javax.sql.DataSource;
+import java.security.KeyPair;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
 @Configuration
@@ -75,6 +81,16 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Bean
+    public JWKSet jwkSet(){
+        RSAKey.Builder builder = new RSAKey.Builder((RSAPublicKey) keyPair().getPublic())
+                .keyUse(KeyUse.SIGNATURE)
+                .algorithm(JWSAlgorithm.RS256)
+                .keyID("fooddelivery-key-id");
+
+        return new JWKSet((builder.build()));
+    }
+
+    @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter(){
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
 
@@ -85,12 +101,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 //        var keyStorePass = "123456";
 //        var keyPairAlias = "fooddelivery";
 
-        var keyStoreKeyFactory = new KeyStoreKeyFactory(jwtKeyStoreProperties.getJksLocation(), jwtKeyStoreProperties.getPassword().toCharArray());
-        var keyPair = keyStoreKeyFactory.getKeyPair(jwtKeyStoreProperties.getKeypairAlias());
-
-        jwtAccessTokenConverter.setKeyPair(keyPair);
+        jwtAccessTokenConverter.setKeyPair(keyPair());
 
         return jwtAccessTokenConverter;
+    }
+
+    private KeyPair keyPair(){
+        var keyStorePass = jwtKeyStoreProperties.getPassword();
+        var keyPairAlias = jwtKeyStoreProperties.getKeypairAlias();
+
+        var keyStoreKeyFactory = new KeyStoreKeyFactory(jwtKeyStoreProperties.getJksLocation(), keyStorePass.toCharArray());
+        return keyStoreKeyFactory.getKeyPair(jwtKeyStoreProperties.getKeypairAlias());
     }
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
