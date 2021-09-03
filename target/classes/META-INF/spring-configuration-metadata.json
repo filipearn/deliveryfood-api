@@ -11,6 +11,11 @@
       "sourceType": "arn.filipe.fooddelivery.core.email.EmailProperties"
     },
     {
+      "name": "fooddelivery.jwt.keystore",
+      "type": "arn.filipe.fooddelivery.core.security.authorizationserver.JwtKeyStoreProperties",
+      "sourceType": "arn.filipe.fooddelivery.core.security.authorizationserver.JwtKeyStoreProperties"
+    },
+    {
       "name": "fooddelivery.storage",
       "type": "arn.filipe.fooddelivery.core.storage.StorageProperties",
       "sourceType": "arn.filipe.fooddelivery.core.storage.StorageProperties"
@@ -41,6 +46,21 @@
       "name": "fooddelivery.email.sender",
       "type": "java.lang.String",
       "sourceType": "arn.filipe.fooddelivery.core.email.EmailProperties"
+    },
+    {
+      "name": "fooddelivery.jwt.keystore.jks-location",
+      "type": "org.springframework.core.io.Resource",
+      "sourceType": "arn.filipe.fooddelivery.core.security.authorizationserver.JwtKeyStoreProperties"
+    },
+    {
+      "name": "fooddelivery.jwt.keystore.keypair-alias",
+      "type": "java.lang.String",
+      "sourceType": "arn.filipe.fooddelivery.core.security.authorizationserver.JwtKeyStoreProperties"
+    },
+    {
+      "name": "fooddelivery.jwt.keystore.password",
+      "type": "java.lang.String",
+      "sourceType": "arn.filipe.fooddelivery.core.security.authorizationserver.JwtKeyStoreProperties"
     },
     {
       "name": "fooddelivery.storage.local.photos-directory",
