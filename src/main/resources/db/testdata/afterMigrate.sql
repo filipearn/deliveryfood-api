@@ -1,5 +1,10 @@
 set foreign_key_checks = 0;
 
+lock tables city write, kitchen  write, state  write, payment_way  write, team  write, team_permission  write,
+            permission  write, product  write, restaurant  write, restaurant_payment_way  write, user  write,
+            user_team  write, restaurant_user  write, purchase_order  write, item_order  write,
+            photo_product  write, oauth_client_details  write;
+
 delete from city;
 delete from kitchen;
 delete from state;
@@ -177,7 +182,7 @@ insert into oauth_client_details (
   access_token_validity, refresh_token_validity, autoapprove
 )
 values (
-  'foodanalytics', null, '$2y$12$fahbH37S2pyk1RPuIHKP.earzFmgAJJGo26rE.59vf4wwiiTKHnzO',
+  'foodanalytics', null, '$2b$10$lZcEA086JspCQOQdYeBD0elXf5eoFvpC8/q1PsxHWLw6x06xmB6iC',
   'READ,WRITE', 'authorization_code', 'http://www.foodanalytics.local:8082', null,
   null, null, false
 );
@@ -192,3 +197,5 @@ values (
   'READ,WRITE', 'client_credentials', null, 'FIND_PURCHASE_ORDERS,GENERATE_REPORTS',
   null, null, false
 );
+
+unlock tables;
