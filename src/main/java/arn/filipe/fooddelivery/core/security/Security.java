@@ -39,5 +39,20 @@ public class Security {
         return purchaseOrderRepository.isPurchaseOrderManagedBy(code, getUserId());
     }
 
+    public boolean isUserAuthenticatedEqualsTo(Long userId) {
+        return getUserId() != null && userId != null
+                && getUserId().equals(userId);
+    }
+
+    public boolean hasAuthority(String authorityName){
+        return getAuthentication().getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals(authorityName));
+    }
+
+    public boolean canManagePurchaseOrders(String code){
+        return hasAuthority("SCOPE_WRITE") && (hasAuthority("MANAGE_PURCHASE_ORDERS")
+                || managePurchaseOrderRestaurant(code));
+    }
+
 
 }

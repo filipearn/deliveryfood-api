@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.v1.assembler;
 import arn.filipe.fooddelivery.api.v1.BuildLinks;
 import arn.filipe.fooddelivery.api.v1.model.PurchaseOrderModel;
 import arn.filipe.fooddelivery.api.v1.controller.PurchaseOrderController;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.model.PurchaseOrder;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class PurchaseOrderModelAssembler extends RepresentationModelAssemblerSup
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     public PurchaseOrderModelAssembler(){
         super(PurchaseOrderController.class, PurchaseOrderModel.class);
     }
@@ -30,18 +34,21 @@ public class PurchaseOrderModelAssembler extends RepresentationModelAssemblerSup
 
         purchaseOrderModel.add(buildLinks.linkToPurchaseOrder("purchaseOrders"));
 
-        if(purchaseOrder.canBeConfirmed())
-        {
-            purchaseOrderModel.add(buildLinks.linkToPurchaseOrderConfirmation(purchaseOrder.getCode(), "confirm"));
+        if(security.canManagePurchaseOrders(purchaseOrder.getCode())){
+            if(purchaseOrder.canBeConfirmed())
+            {
+                purchaseOrderModel.add(buildLinks.linkToPurchaseOrderConfirmation(purchaseOrder.getCode(), "confirm"));
+            }
+
+            if(purchaseOrder.canBeCancelled()){
+                purchaseOrderModel.add(buildLinks.linkToPurchaseOrderCancellation(purchaseOrder.getCode(), "cancel"));
+            }
+
+            if(purchaseOrder.canBeDelivered()){
+                purchaseOrderModel.add(buildLinks.linkToPurchaseOrderDelivery(purchaseOrder.getCode(), "delivery"));
+            }
         }
 
-        if(purchaseOrder.canBeCancelled()){
-            purchaseOrderModel.add(buildLinks.linkToPurchaseOrderCancellation(purchaseOrder.getCode(), "cancel"));
-        }
-
-        if(purchaseOrder.canBeDelivered()){
-            purchaseOrderModel.add(buildLinks.linkToPurchaseOrderDelivery(purchaseOrder.getCode(), "delivery"));
-        }
 
         //Link to restaurant
         purchaseOrderModel.getRestaurant().add(buildLinks.linkToRestaurant(purchaseOrder.getRestaurant().getId()));
