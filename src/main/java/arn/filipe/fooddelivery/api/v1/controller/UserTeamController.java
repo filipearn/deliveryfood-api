@@ -6,6 +6,7 @@ import arn.filipe.fooddelivery.api.v1.assembler.TeamModelAssembler;
 import arn.filipe.fooddelivery.api.v1.model.TeamModel;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.UserTeamControllerOpenApi;
 import arn.filipe.fooddelivery.core.security.CheckSecurity;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.model.User;
 import arn.filipe.fooddelivery.domain.service.TeamService;
 import arn.filipe.fooddelivery.domain.service.UserService;
@@ -35,6 +36,9 @@ public class UserTeamController implements UserTeamControllerOpenApi {
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     @CheckSecurity.UsersTeamsPermissions.CanFind
     @Override
     @GetMapping
@@ -43,14 +47,17 @@ public class UserTeamController implements UserTeamControllerOpenApi {
 
         CollectionModel<TeamModel> teamsModel =
                 teamModelAssembler.toCollectionModel(user.getTeams())
-                    .removeLinks()
-                    .add(buildLinks.linkToTeamUser(userId))
+                    .removeLinks();
+
+        if(security.canEditUsersTeamsPermissions()){
+            teamsModel.add(buildLinks.linkToTeamUser(userId))
                     .add(buildLinks.linkToTeamUserAssociation(userId, "associate"));
 
-        teamsModel.getContent().forEach(teamModel -> {
-            teamModel.add(buildLinks.linkToTeamUserDisassociation(
-                    userId, teamModel.getId(), "disassociate"));
-        });
+            teamsModel.getContent().forEach(teamModel -> {
+                teamModel.add(buildLinks.linkToTeamUserDisassociation(
+                        userId, teamModel.getId(), "disassociate"));
+            });
+        }
 
         return teamsModel;
     }

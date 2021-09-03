@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.v1.assembler;
 import arn.filipe.fooddelivery.api.v1.BuildLinks;
 import arn.filipe.fooddelivery.api.v1.controller.RestaurantController;
 import arn.filipe.fooddelivery.api.v1.model.RestaurantModel;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class RestaurantModelAssembler extends RepresentationModelAssemblerSuppor
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     public RestaurantModelAssembler(){
         super(RestaurantController.class, RestaurantModel.class);
     }
@@ -32,34 +36,50 @@ public class RestaurantModelAssembler extends RepresentationModelAssemblerSuppor
 
         modelMapper.map(restaurant, restaurantModel);
 
-        restaurantModel.add(buildLinks.linkToRestaurant("restaurants"));
-
-        restaurantModel.add(buildLinks.linkToPaymentWayRestaurant(restaurantModel.getId(), "payment-way-restaurant"));
-
-        restaurantModel.add(buildLinks.linkToResponsibleRestaurant(restaurantModel.getId(), "responsible-restaurant"));
-
-        restaurantModel.add(buildLinks.linkToRestaurantProducts(restaurantModel.getId(), "products-restaurant"));
-
-        restaurantModel.getKitchen().add(buildLinks.linkToKitchen(restaurant.getKitchen().getId()));
-
-        if(restaurantModel.getAddress() != null && restaurantModel.getAddress().getCity() != null){
-            restaurantModel.getAddress().getCity().add(buildLinks.linkToCity(restaurant.getAddress().getCity().getId()));
+        if(security.canFindRestaurants()){
+            restaurantModel.add(buildLinks.linkToRestaurant("restaurants"));
         }
 
-        if(restaurant.allowedOpen()){
-            restaurantModel.add(buildLinks.linkToRestaurantOpening(restaurant.getId(), "open"));
+        if(security.canManageRestaurantRegistration()){
+            if(restaurant.allowedActivation()){
+                restaurantModel.add(buildLinks.linkToRestaurantActivation(restaurant.getId(), "activate"));
+            }
+
+            if(restaurant.allowedDeactivation()){
+                restaurantModel.add(buildLinks.linkToRestaurantDeactivation(restaurant.getId(), "deactivate"));
+            }
         }
 
-        if(restaurant.allowedClosure()){
-            restaurantModel.add(buildLinks.linkToRestaurantClosure(restaurant.getId(), "close"));
+        if(security.canManageRestaurantsOperation(restaurant.getId())){
+            if(restaurant.allowedOpen()){
+                restaurantModel.add(buildLinks.linkToRestaurantOpening(restaurant.getId(), "open"));
+            }
+
+            if(restaurant.allowedClosure()){
+                restaurantModel.add(buildLinks.linkToRestaurantClosure(restaurant.getId(), "close"));
+            }
         }
 
-        if(restaurant.allowedActivation()){
-            restaurantModel.add(buildLinks.linkToRestaurantActivation(restaurant.getId(), "activate"));
+        if(security.canFindPaymentWays()) {
+            restaurantModel.add(buildLinks.linkToPaymentWayRestaurant(restaurantModel.getId(), "payment-way-restaurant"));
         }
 
-        if(restaurant.allowedDeactivation()){
-            restaurantModel.add(buildLinks.linkToRestaurantDeactivation(restaurant.getId(), "deactivate"));
+        if(security.canManageRestaurantRegistration()){
+            restaurantModel.add(buildLinks.linkToResponsibleRestaurant(restaurantModel.getId(), "responsible-restaurant"));
+        }
+
+        if(security.canFindRestaurants()) {
+            restaurantModel.add(buildLinks.linkToRestaurantProducts(restaurantModel.getId(), "products-restaurant"));
+        }
+
+        if(security.canFindKitchens()) {
+            restaurantModel.getKitchen().add(buildLinks.linkToKitchen(restaurant.getKitchen().getId()));
+        }
+
+        if(security.canFindCities()){
+            if(restaurantModel.getAddress() != null && restaurantModel.getAddress().getCity() != null){
+                restaurantModel.getAddress().getCity().add(buildLinks.linkToCity(restaurant.getAddress().getCity().getId()));
+            }
         }
 
         return restaurantModel;
@@ -68,7 +88,13 @@ public class RestaurantModelAssembler extends RepresentationModelAssemblerSuppor
 
     @Override
     public CollectionModel<RestaurantModel> toCollectionModel(Iterable<? extends Restaurant> entities) {
-        return super.toCollectionModel(entities)
-                .add(linkTo(RestaurantController.class).withSelfRel());
+        CollectionModel<RestaurantModel> collectionModel = super.toCollectionModel(entities);
+
+        if(security.canFindRestaurants()){
+            collectionModel.add(linkTo(RestaurantController.class).withSelfRel());
+        }
+
+        return collectionModel;
+
     }
 }

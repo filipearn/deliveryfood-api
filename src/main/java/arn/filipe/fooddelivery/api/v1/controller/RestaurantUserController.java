@@ -6,6 +6,7 @@ import arn.filipe.fooddelivery.api.v1.assembler.UserModelAssembler;
 import arn.filipe.fooddelivery.api.v1.model.UserModel;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.RestaurantUserControllerOpenApi;
 import arn.filipe.fooddelivery.core.security.CheckSecurity;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import arn.filipe.fooddelivery.domain.service.UserService;
@@ -35,6 +36,9 @@ public class RestaurantUserController implements RestaurantUserControllerOpenApi
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     @CheckSecurity.Restaurants.CanFind
     @Override
     @GetMapping
@@ -42,16 +46,20 @@ public class RestaurantUserController implements RestaurantUserControllerOpenApi
         Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(restaurantId);
 
         CollectionModel<UserModel> usersModel =  userModelAssembler.toCollectionModel(restaurant.getUsers())
-                .removeLinks()
-                .add(buildLinks.linkToResponsibleRestaurant(restaurantId, "responsibles"))
-                .add(buildLinks.linkToResponsibleRestaurantAssociate(restaurantId, "associate"));
+                .removeLinks();
 
-        usersModel.getContent().forEach(
-                userModel -> {
-                    userModel.add(buildLinks.linkToResponsibleRestaurantDisassociate(
-                            restaurantId, userModel.getId(), "disassociate"));
-                }
-        );
+        if(security.canManageRestaurantRegistration()){
+            usersModel.add(buildLinks.linkToResponsibleRestaurant(restaurantId, "responsibles"))
+                    .add(buildLinks.linkToResponsibleRestaurantAssociate(restaurantId, "associate"));
+
+            usersModel.getContent().forEach(
+                    userModel -> {
+                        userModel.add(buildLinks.linkToResponsibleRestaurantDisassociate(
+                                restaurantId, userModel.getId(), "disassociate"));
+                    }
+            );
+        }
+
 
         return usersModel;
     }

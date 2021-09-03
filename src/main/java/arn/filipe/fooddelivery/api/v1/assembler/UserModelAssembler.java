@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.v1.assembler;
 import arn.filipe.fooddelivery.api.v1.BuildLinks;
 import arn.filipe.fooddelivery.api.v1.controller.UserController;
 import arn.filipe.fooddelivery.api.v1.model.UserModel;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.model.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport <Use
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     public UserModelAssembler() {
         super(UserController.class, UserModel.class);
     }
@@ -31,9 +35,11 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport <Use
 
         modelMapper.map(user, userModel);
 
-        userModel.add(buildLinks.linkToUser("users"));
+        if(security.canFindUsersTeamsPermissions()){
+            userModel.add(buildLinks.linkToUser("users"));
 
-        userModel.add(buildLinks.linkToTeamUser(user.getId(), "teams-user"));
+            userModel.add(buildLinks.linkToTeamUser(user.getId(), "teams-user"));
+        }
 
         return userModel;
     }

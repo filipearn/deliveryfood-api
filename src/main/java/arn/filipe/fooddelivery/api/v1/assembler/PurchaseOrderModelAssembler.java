@@ -32,7 +32,9 @@ public class PurchaseOrderModelAssembler extends RepresentationModelAssemblerSup
 
         modelMapper.map(purchaseOrder, purchaseOrderModel);
 
-        purchaseOrderModel.add(buildLinks.linkToPurchaseOrder("purchaseOrders"));
+        if(security.canFindPurchaseOrders()){
+            purchaseOrderModel.add(buildLinks.linkToPurchaseOrder("purchaseOrders"));
+        }
 
         if(security.canManagePurchaseOrders(purchaseOrder.getCode())){
             if(purchaseOrder.canBeConfirmed())
@@ -49,23 +51,33 @@ public class PurchaseOrderModelAssembler extends RepresentationModelAssemblerSup
             }
         }
 
-
         //Link to restaurant
-        purchaseOrderModel.getRestaurant().add(buildLinks.linkToRestaurant(purchaseOrder.getRestaurant().getId()));
+        if(security.canFindRestaurants()){
+            purchaseOrderModel.getRestaurant().add(buildLinks.linkToRestaurant(purchaseOrder.getRestaurant().getId()));
+        }
 
         //Link to payment way
-        purchaseOrderModel.getPaymentWay().add(buildLinks.linkToPaymentWay(purchaseOrderModel.getPaymentWay().getId()));
+        if(security.canFindPaymentWays()) {
+            purchaseOrderModel.getPaymentWay().add(buildLinks.linkToPaymentWay(purchaseOrderModel.getPaymentWay().getId()));
+        }
 
         //Link to user client
-        purchaseOrderModel.getClient().add(buildLinks.linkToUser(purchaseOrderModel.getClient().getId()));
+        if(security.canFindUsersTeamsPermissions()){
+            purchaseOrderModel.getClient().add(buildLinks.linkToUser(purchaseOrderModel.getClient().getId()));
+        }
 
         //Link to each item
-        purchaseOrderModel.getItems().stream()
-                .forEach(item ->
-                        item.add(buildLinks.linkToRestaurantProducts(purchaseOrderModel.getRestaurant().getId(), item.getProductId(), "product")));
+        if(security.canFindRestaurants()){
+            purchaseOrderModel.getItems().stream()
+                    .forEach(item ->
+                            item.add(buildLinks.linkToRestaurantProducts(purchaseOrderModel.getRestaurant().getId(),
+                                    item.getProductId(), "product")));
+        }
 
         //Link to city
-        purchaseOrderModel.getAddress().getCity().add(buildLinks.linkToCity(purchaseOrder.getAddress().getCity().getId()));
+        if(security.canFindCities()){
+            purchaseOrderModel.getAddress().getCity().add(buildLinks.linkToCity(purchaseOrder.getAddress().getCity().getId()));
+        }
 
         return purchaseOrderModel;
     }

@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.v1.assembler;
 import arn.filipe.fooddelivery.api.v1.BuildLinks;
 import arn.filipe.fooddelivery.api.v1.controller.KitchenController;
 import arn.filipe.fooddelivery.api.v1.model.KitchenModel;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.model.Kitchen;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class KitchenModelAssembler extends RepresentationModelAssemblerSupport<K
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     public KitchenModelAssembler(){
         super(KitchenController.class, KitchenModel.class);
     }
@@ -32,14 +36,21 @@ public class KitchenModelAssembler extends RepresentationModelAssemblerSupport<K
 
         modelMapper.map(kitchen, kitchenModel);
 
-        kitchenModel.add(buildLinks.linkToKitchen("kitchens"));
+        if(security.canFindKitchens()){
+            kitchenModel.add(buildLinks.linkToKitchen("kitchens"));
+        }
 
         return kitchenModel;
     }
 
     @Override
     public CollectionModel<KitchenModel> toCollectionModel(Iterable<? extends Kitchen> entities) {
-        return super.toCollectionModel(entities)
-                .add(linkTo(KitchenController.class).withSelfRel());
+        CollectionModel<KitchenModel> collectionModel =super.toCollectionModel(entities);
+
+        if(security.canFindKitchens()){
+            collectionModel.add(linkTo(KitchenController.class).withSelfRel());
+        }
+
+        return collectionModel;
     }
 }

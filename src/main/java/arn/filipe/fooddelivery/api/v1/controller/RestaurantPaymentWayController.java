@@ -6,6 +6,7 @@ import arn.filipe.fooddelivery.api.v1.assembler.PaymentWayModelAssembler;
 import arn.filipe.fooddelivery.api.v1.model.PaymentWayModel;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.RestaurantPaymentWayControllerOpenApi;
 import arn.filipe.fooddelivery.core.security.CheckSecurity;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.PaymentWayService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
@@ -35,6 +36,9 @@ public class RestaurantPaymentWayController implements RestaurantPaymentWayContr
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     @CheckSecurity.Restaurants.CanFind
     @Override
     @GetMapping
@@ -42,16 +46,19 @@ public class RestaurantPaymentWayController implements RestaurantPaymentWayContr
         Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(restaurantId);
         CollectionModel<PaymentWayModel> paymentWaysModel
                 = paymentWayModelAssembler.toCollectionModel(restaurant.getPaymentWays())
-                .removeLinks()
-                .add(buildLinks.linkToPaymentWayRestaurant(restaurantId))
-                .add(buildLinks.linkToRestaurantPaymentWayAssociation(restaurantId, "associate"));
+                .removeLinks();
 
-        paymentWaysModel.getContent().forEach(
-            paymentWayModel -> {
-                paymentWayModel.add(buildLinks.linkToRestaurantPaymentWayDisassociation(
+        if(security.canManageRestaurantsOperation(restaurantId)){
+            paymentWaysModel.add(buildLinks.linkToPaymentWayRestaurant(restaurantId))
+                    .add(buildLinks.linkToRestaurantPaymentWayAssociation(restaurantId, "associate"));
+
+            paymentWaysModel.getContent().forEach(
+                    paymentWayModel -> {
+                        paymentWayModel.add(buildLinks.linkToRestaurantPaymentWayDisassociation(
                                 restaurantId, paymentWayModel.getId(), "disassociate"));
-            }
-        );
+                    }
+            );
+        }
 
         return paymentWaysModel;
     }

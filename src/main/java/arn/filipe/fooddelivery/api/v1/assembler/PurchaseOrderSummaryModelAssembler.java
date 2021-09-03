@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.v1.assembler;
 import arn.filipe.fooddelivery.api.v1.BuildLinks;
 import arn.filipe.fooddelivery.api.v1.controller.PurchaseOrderController;
 import arn.filipe.fooddelivery.api.v1.model.PurchaseOrderSummaryModel;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.model.PurchaseOrder;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class PurchaseOrderSummaryModelAssembler extends RepresentationModelAssem
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     public PurchaseOrderSummaryModelAssembler(){
         super(PurchaseOrderController.class, PurchaseOrderSummaryModel.class);
     }
@@ -30,13 +34,19 @@ public class PurchaseOrderSummaryModelAssembler extends RepresentationModelAssem
 
         modelMapper.map(purchaseOrder, purchaseOrderSummaryModel);
 
-        purchaseOrderSummaryModel.add(buildLinks.linkToPurchaseOrder(purchaseOrder.getCode()));
+        if(security.canFindPurchaseOrders()){
+            purchaseOrderSummaryModel.add(buildLinks.linkToPurchaseOrder(purchaseOrder.getCode()));
+        }
 
         //Link to restaurant
-        purchaseOrderSummaryModel.getRestaurant().add(buildLinks.linkToRestaurant(purchaseOrderSummaryModel.getRestaurant().getId()));
+        if(security.canFindRestaurants()){
+            purchaseOrderSummaryModel.getRestaurant().add(buildLinks.linkToRestaurant(purchaseOrderSummaryModel.getRestaurant().getId()));
+        }
 
         //Link to user client
-        purchaseOrderSummaryModel.getClient().add(buildLinks.linkToUser(purchaseOrderSummaryModel.getClient().getId()));
+        if(security.canFindUsersTeamsPermissions()){
+            purchaseOrderSummaryModel.getClient().add(buildLinks.linkToUser(purchaseOrderSummaryModel.getClient().getId()));
+        }
 
         return purchaseOrderSummaryModel;
     }

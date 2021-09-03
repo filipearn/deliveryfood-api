@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.v1.assembler;
 import arn.filipe.fooddelivery.api.v1.BuildLinks;
 import arn.filipe.fooddelivery.api.v1.controller.RestaurantProductController;
 import arn.filipe.fooddelivery.api.v1.model.ProductModel;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.model.Product;
 import org.modelmapper.ModelMapper;
@@ -20,6 +21,9 @@ public class ProductModelAssembler extends RepresentationModelAssemblerSupport<P
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     public ProductModelAssembler(){
         super(RestaurantProductController.class, ProductModel.class);
     }
@@ -29,16 +33,18 @@ public class ProductModelAssembler extends RepresentationModelAssemblerSupport<P
 
         modelMapper.map(product, productModel);
 
-        productModel.add(buildLinks.linkToRestaurantProducts(product.getRestaurant().getId(), "products"));
+        if(security.canFindRestaurants()){
+            productModel.add(buildLinks.linkToRestaurantProducts(product.getRestaurant().getId(), "products"));
 
-        try{
-            productModel.add(buildLinks.linkToRestaurantProductPhoto(
-                    product.getRestaurant().getId(), productModel.getId(), "photo"));
+            try{
+                productModel.add(buildLinks.linkToRestaurantProductPhoto(
+                        product.getRestaurant().getId(), productModel.getId(), "photo"));
 
-        } catch (Exception e){
-            throw new BusinessException("Photo error!");
+            } catch (Exception e){
+                throw new BusinessException("Photo error!");
+            }
+
         }
-
 
         return productModel;
     }

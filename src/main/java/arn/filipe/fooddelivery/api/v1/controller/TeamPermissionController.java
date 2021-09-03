@@ -7,6 +7,7 @@ import arn.filipe.fooddelivery.api.v1.model.PermissionModel;
 import arn.filipe.fooddelivery.api.v1.model.input.PermissionInput;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.TeamPermissionControllerOpenApi;
 import arn.filipe.fooddelivery.core.security.CheckSecurity;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.model.Permission;
 import arn.filipe.fooddelivery.domain.model.Team;
 import arn.filipe.fooddelivery.domain.service.PermissionService;
@@ -39,6 +40,9 @@ public class TeamPermissionController implements TeamPermissionControllerOpenApi
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     @CheckSecurity.UsersTeamsPermissions.CanFind
     @Override
     @GetMapping
@@ -47,14 +51,18 @@ public class TeamPermissionController implements TeamPermissionControllerOpenApi
 
         CollectionModel<PermissionModel> permissionsModel
                 = permissionModelAssembler.toCollectionModel(team.getPermissions())
-                .removeLinks()
-                .add(buildLinks.linkToTeamPermission(teamId))
-                .add(buildLinks.linkToTeamPermissionAssociation(teamId, "associate"));
+                .removeLinks();
 
-        permissionsModel.getContent().forEach(permissionModel -> {
-            permissionModel.add(buildLinks.linkToTeamPermissionDisassociation(
-                    teamId, permissionModel.getId(), "disassociate"));
-        });
+        if(security.canEditUsersTeamsPermissions()){
+            permissionsModel
+                    .add(buildLinks.linkToTeamPermission(teamId)) //TODO verify if this link is correct
+                    .add(buildLinks.linkToTeamPermissionAssociation(teamId, "associate"));
+
+            permissionsModel.getContent().forEach(permissionModel -> {
+                permissionModel.add(buildLinks.linkToTeamPermissionDisassociation(
+                        teamId, permissionModel.getId(), "disassociate"));
+            });
+        }
 
         return permissionsModel;
     }

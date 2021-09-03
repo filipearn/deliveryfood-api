@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.v1.assembler;
 import arn.filipe.fooddelivery.api.v1.BuildLinks;
 import arn.filipe.fooddelivery.api.v1.controller.RestaurantProductPhotoController;
 import arn.filipe.fooddelivery.api.v1.model.PhotoProductModel;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.model.PhotoProduct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class PhotoProductModelAssembler extends RepresentationModelAssemblerSupp
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     public PhotoProductModelAssembler(){
         super(RestaurantProductPhotoController.class, PhotoProductModel.class);
     }
@@ -28,19 +32,22 @@ public class PhotoProductModelAssembler extends RepresentationModelAssemblerSupp
     public PhotoProductModel toModel(PhotoProduct photoProduct){
         PhotoProductModel photoProductModel = modelMapper.map(photoProduct, PhotoProductModel.class);
 
-        try {
+        if(security.canFindRestaurants()){
+            try {
+                photoProductModel.add(
+                        buildLinks.linkToRestaurantProductPhoto(
+                                photoProduct.getProduct().getRestaurant().getId(),
+                                photoProduct.getProduct().getId()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             photoProductModel.add(
-                   buildLinks.linkToRestaurantProductPhoto(
-                           photoProduct.getProduct().getRestaurant().getId(),
-                           photoProduct.getProduct().getId()));
-        } catch (Exception e) {
-            e.printStackTrace();
+                    buildLinks.linkToRestaurantProducts(
+                            photoProduct.getProduct().getRestaurant().getId(),
+                            photoProduct.getProduct().getId(), "product"));
         }
 
-        photoProductModel.add(
-                buildLinks.linkToRestaurantProducts(
-                        photoProduct.getProduct().getRestaurant().getId(),
-                        photoProduct.getProduct().getId(), "product"));
         return photoProductModel;
     }
 

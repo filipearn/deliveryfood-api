@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.v1.assembler;
 import arn.filipe.fooddelivery.api.v1.BuildLinks;
 import arn.filipe.fooddelivery.api.v1.controller.RestaurantController;
 import arn.filipe.fooddelivery.api.v1.model.RestaurantOnlyNameModel;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class RestaurantOnlyNameModelAssembler extends RepresentationModelAssembl
     @Autowired
     private BuildLinks buildLinks;
 
+    @Autowired
+    private Security security;
+
     public RestaurantOnlyNameModelAssembler(){
         super(RestaurantController.class, RestaurantOnlyNameModel.class);
     }
@@ -32,11 +36,14 @@ public class RestaurantOnlyNameModelAssembler extends RepresentationModelAssembl
 
         modelMapper.map(restaurant, restaurantOnlyNameModel);
 
-        restaurantOnlyNameModel.add(buildLinks.linkToRestaurant("restaurants"));
+        if(security.canFindRestaurants()){
+            restaurantOnlyNameModel.add(buildLinks.linkToRestaurant("restaurants"));
+            restaurantOnlyNameModel.add(buildLinks.linkToResponsibleRestaurant(restaurantOnlyNameModel.getId(), "responsible-restaurant"));
+        }
 
-        restaurantOnlyNameModel.add(buildLinks.linkToPaymentWayRestaurant(restaurantOnlyNameModel.getId(), "payment-way-restaurant"));
-
-        restaurantOnlyNameModel.add(buildLinks.linkToResponsibleRestaurant(restaurantOnlyNameModel.getId(), "responsible-restaurant"));
+        if(security.canFindPaymentWays()){
+            restaurantOnlyNameModel.add(buildLinks.linkToPaymentWayRestaurant(restaurantOnlyNameModel.getId(), "payment-way-restaurant"));
+        }
 
         return restaurantOnlyNameModel;
     }
@@ -44,7 +51,12 @@ public class RestaurantOnlyNameModelAssembler extends RepresentationModelAssembl
 
     @Override
     public CollectionModel<RestaurantOnlyNameModel> toCollectionModel(Iterable<? extends Restaurant> entities) {
-        return super.toCollectionModel(entities)
-                .add(linkTo(RestaurantController.class).withSelfRel());
+        CollectionModel<RestaurantOnlyNameModel> collectionModel = super.toCollectionModel(entities);
+
+        if(security.canFindRestaurants()) {
+            collectionModel.add(linkTo(RestaurantController.class).withSelfRel());
+        }
+
+        return collectionModel;
     }
 }
