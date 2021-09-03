@@ -65,7 +65,7 @@ public @interface CheckSecurity {
         @Target(ElementType.METHOD)
         public @interface CanCreate { }
 
-        @PreAuthorize("@security.canManagePurchaseOrders(#code))")
+        @PreAuthorize("@security.canManagePurchaseOrders(#code)")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         public @interface CanManage { }
