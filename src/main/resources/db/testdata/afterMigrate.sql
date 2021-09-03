@@ -58,8 +58,16 @@ insert into payment_way (id, description, update_date) values (1, 'Cartão de cr
 insert into payment_way (id, description, update_date) values (2, 'Cartão de débito', utc_timestamp);
 insert into payment_way (id, description, update_date) values (3, 'Dinheiro', utc_timestamp);
 
-insert into permission (id, name, description) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
-insert into permission (id, name, description) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+insert into permission (id, name, description) values (1, 'EDIT_KITCHENS', 'Allow edit kitchens');
+insert into permission (id, name, description) values (2, 'EDIT_PAYMENT_WAYS', 'allow create or edit payment ways');
+insert into permission (id, name, description) values (3, 'EDIT_CITIES', 'Allow create or edit cities');
+insert into permission (id, name, description) values (4, 'EDIT_STATES', 'Allow create or edit states');
+insert into permission (id, name, description) values (5, 'FIND_USERS_TEAMS_PERMISSIONS', 'Allow find users, teams and permissions');
+insert into permission (id, name, description) values (6, 'EDIT_USERS_TEAMS_PERMISSIONS', 'Allow create or edit users, teams and permissions');
+insert into permission (id, name, description) values (7, 'EDIT_RESTAURANTS', 'Allow create, edit or manage restaurants');
+insert into permission (id, name, description) values (8, 'FIND_PURCHASE_ORDERS', 'Allow find purchase orders');
+insert into permission (id, name, description) values (9, 'MANAGE_PURCHASE_ORDERS', 'Allow manage purchase orders');
+insert into permission (id, name, description) values (10, 'GENERATE_REPORTS', 'Allow generate reports');
 
 insert into restaurant_payment_way (restaurant_id, payment_way_id) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3), (4, 1), (4, 2), (5, 1), (5, 2), (6, 3);
 
@@ -75,17 +83,30 @@ insert into product (name, description, price, active, restaurant_id) values ('S
 insert into product (name, description, price, active, restaurant_id) values ('Espetinho de Cupim', 'Acompanha farinha, mandioca e vinagrete', 8, 1, 6);
 
 insert into user (name, email, password, registration_date) values ('filipe', 'filipearn@yahoo.com.br', '$2a$12$FxYCEcw3xG9acyxV89zIP.SZhCDrWkQSyAdsRpSgnC2iyWSgrfEna', utc_timestamp);
-insert into user (name, email, password, registration_date) values ('Jéssica Pessoa', 'jessicasereia@gmail.com.br', '2a$12$FxYCEcw3xG9acyxV89zIP.SZhCDrWkQSyAdsRpSgnC2iyWSgrfEna', utc_timestamp);
+insert into user (name, email, password, registration_date) values ('jessica', 'jessicasereia@gmail.com.br', '$2a$12$FxYCEcw3xG9acyxV89zIP.SZhCDrWkQSyAdsRpSgnC2iyWSgrfEna', utc_timestamp);
 insert into user (name, email, password, registration_date) values ('Marcus Vinícius', 'marcus@yahoo.com.br', '2a$12$FxYCEcw3xG9acyxV89zIP.SZhCDrWkQSyAdsRpSgnC2iyWSgrfEna', utc_timestamp);
-insert into user (name, email, password, registration_date) values ('Leonardo Moyle', 'leo@yahoo.com.br', '2a$12$FxYCEcw3xG9acyxV89zIP.SZhCDrWkQSyAdsRpSgnC2iyWSgrfEna', utc_timestamp);
+insert into user (name, email, password, registration_date) values ('Leonardo Moyle', 'leo@yahoo.com.br', '$2a$12$FxYCEcw3xG9acyxV89zIP.SZhCDrWkQSyAdsRpSgnC2iyWSgrfEna', utc_timestamp);
+insert into user (name, email, password, registration_date) values ('Joao', 'joao@yahoo.com.br', '$2a$12$FxYCEcw3xG9acyxV89zIP.SZhCDrWkQSyAdsRpSgnC2iyWSgrfEna', utc_timestamp);
 
 insert into team (name) values ('Gerente'), ('Vendedor'), ('Secretária'), ('Cadastrador');
 
-insert into team_permission (team_id, permission_id) values (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
+insert into team_permission (team_id, permission_id)
+select 1, id from permission;
 
-insert into user_team (user_id, team_id) values (1, 1), (1, 2), (2, 2);
+insert into team_permission (team_id, permission_id)
+select 2, id from permission where name like 'FIND_%';
 
-insert into restaurant_user (restaurant_id, user_id) values (1,2), (1,3);
+insert into team_permission (team_id, permission_id) values (2, 1);
+
+insert into team_permission (team_id, permission_id)
+select 3, id from permission where name like 'FIND_%';
+
+insert into team_permission (team_id, permission_id)
+select 4, id from permission where name like '%_RESTAURANTS' or name like '%_PRODUCTS';
+
+insert into user_team (user_id, team_id) values (1, 1), (1, 2), (2, 2), (3, 3), (4, 4);
+
+insert into restaurant_user (restaurant_id, user_id) values (1,2), (1,3), (5, 5);
 
 insert into purchase_order (id, code, restaurant_id, user_client_id, payment_way_id, address_city_id, address_cep,
     address_street, address_number, address_complement, address_district,
