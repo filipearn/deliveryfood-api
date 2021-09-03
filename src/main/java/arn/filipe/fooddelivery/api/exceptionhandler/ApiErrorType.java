@@ -11,7 +11,9 @@ public enum ApiErrorType {
     BUSINESS_ERROR("/business-error", "Business exception"),
     INVALID_MESSAGE("/invalid-message", "Invalid sent message"),
     INVALID_PARAMETER("/invalid-parameter", "Invalid parameter"),
+    DENIED_ACCESS("/denied-access", "Denied access"),
     INVALID_DATA("/invalid-data", "Invalid data");
+
 
     private String uri;
     private String title;
