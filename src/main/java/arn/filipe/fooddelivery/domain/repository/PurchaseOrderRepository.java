@@ -16,4 +16,6 @@ public interface PurchaseOrderRepository extends CustomizedJpaRepository<Purchas
     List<PurchaseOrder> findAll();
 
     Optional<PurchaseOrder> findByCode(String code);
+
+    boolean isPurchaseOrderManagedBy(String code, Long userId);
 }

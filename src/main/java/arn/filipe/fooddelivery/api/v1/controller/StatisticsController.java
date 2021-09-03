@@ -2,6 +2,7 @@ package arn.filipe.fooddelivery.api.v1.controller;
 
 import arn.filipe.fooddelivery.api.v1.BuildLinks;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.StatisticsControllerOpenApi;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.domain.filter.DailySaleFilter;
 import arn.filipe.fooddelivery.domain.model.dto.DailySale;
 import arn.filipe.fooddelivery.domain.service.SaleQueryService;
@@ -36,6 +37,7 @@ public class StatisticsController implements StatisticsControllerOpenApi {
 
     }
 
+    @CheckSecurity.Statistics.CanFind
     @GetMapping
     public StatisticsEntryPointModel root(DailySaleFilter dailySaleFilter,
                                           @RequestParam(required = false, defaultValue = "+00:00") String timeOffset){
@@ -46,12 +48,14 @@ public class StatisticsController implements StatisticsControllerOpenApi {
         return statisticsEntryPointModel;
     }
 
+    @CheckSecurity.Statistics.CanFind
     @GetMapping(path = "/daily-sales", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<DailySale> findDailySales(DailySaleFilter dailySaleFilter,
                                           @RequestParam(required = false, defaultValue = "+00:00") String timeOffset){
         return saleQueryService.findDailySales(dailySaleFilter, timeOffset);
     }
 
+    @CheckSecurity.Statistics.CanFind
     @GetMapping(path = "/daily-sales", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> findDailySalesPDF(DailySaleFilter dailySaleFilter,
                                             @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) throws JRException {

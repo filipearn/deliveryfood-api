@@ -6,6 +6,7 @@ import arn.filipe.fooddelivery.api.v1.assembler.ProductModelAssembler;
 import arn.filipe.fooddelivery.api.v1.model.ProductModel;
 import arn.filipe.fooddelivery.api.v1.model.input.ProductInput;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.RestaurantProductControllerOpenApi;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.model.Product;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
@@ -39,6 +40,8 @@ public class RestaurantProductController implements RestaurantProductControllerO
     @Autowired
     private BuildLinks buildLinks;
 
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping
     public CollectionModel<ProductModel> listAll(@PathVariable Long restaurantId,
                                  @RequestParam(required = false, defaultValue = "false") Boolean includeInactivated){
@@ -67,6 +70,8 @@ public class RestaurantProductController implements RestaurantProductControllerO
         return productsModel;
     }
 
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping("/{productId}")
     public ProductModel findById(@PathVariable Long restaurantId, @PathVariable Long productId){
         Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(restaurantId);
@@ -81,6 +86,8 @@ public class RestaurantProductController implements RestaurantProductControllerO
         }
     }
 
+    @CheckSecurity.Restaurants.CanManageOperation
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductModel save(@PathVariable Long restaurantId, @RequestBody @Valid ProductInput productInput){
@@ -94,6 +101,8 @@ public class RestaurantProductController implements RestaurantProductControllerO
         return productModelAssembler.toModel(product);
     }
 
+    @CheckSecurity.Restaurants.CanManageOperation
+    @Override
     @PutMapping("/{productId}")
     public ProductModel update(@PathVariable Long restaurantId,
                                @PathVariable Long productId,

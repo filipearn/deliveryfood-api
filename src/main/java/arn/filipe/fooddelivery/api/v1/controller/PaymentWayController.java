@@ -5,6 +5,7 @@ import arn.filipe.fooddelivery.api.v1.assembler.PaymentWayModelAssembler;
 import arn.filipe.fooddelivery.api.v1.model.PaymentWayModel;
 import arn.filipe.fooddelivery.api.v1.model.input.PaymentWayInput;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.PaymentWayControllerOpenApi;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.domain.model.PaymentWay;
 import arn.filipe.fooddelivery.domain.service.PaymentWayService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
@@ -38,6 +39,8 @@ public class PaymentWayController implements PaymentWayControllerOpenApi {
     @Autowired
     private RestaurantService restaurantService;
 
+    @CheckSecurity.PaymentWays.CanFind
+    @Override
     @GetMapping
     public ResponseEntity<CollectionModel<PaymentWayModel>> listAll(ServletWebRequest request){
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -62,13 +65,15 @@ public class PaymentWayController implements PaymentWayControllerOpenApi {
                 .body(paymentWaysModel);
     }
 
+    @CheckSecurity.PaymentWays.CanFind
+    @Override
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentWayModel> findById(@PathVariable Long id, ServletWebRequest request){
+    public ResponseEntity<PaymentWayModel> findById(@PathVariable Long paymentWayId, ServletWebRequest request){
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 
         String eTag = "0";
 
-        OffsetDateTime lastUpdateDate = paymentWayService.getLastUpdateDateById(id);
+        OffsetDateTime lastUpdateDate = paymentWayService.getLastUpdateDateById(paymentWayId);
 
         if(lastUpdateDate != null){
             eTag = String.valueOf(lastUpdateDate.toEpochSecond());
@@ -78,13 +83,15 @@ public class PaymentWayController implements PaymentWayControllerOpenApi {
             return null;
         }
 
-        PaymentWayModel paymentWayModel = paymentWayModelAssembler.toModel(paymentWayService.findById(id));
+        PaymentWayModel paymentWayModel = paymentWayModelAssembler.toModel(paymentWayService.findById(paymentWayId));
 
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
                 .body(paymentWayModel);
     }
 
+    @CheckSecurity.PaymentWays.CanEdit
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PaymentWayModel save(@RequestBody @Valid PaymentWayInput paymentWayInput){
@@ -93,19 +100,23 @@ public class PaymentWayController implements PaymentWayControllerOpenApi {
         return paymentWayModelAssembler.toModel(paymentWayService.save(paymentWay));
     }
 
+    @CheckSecurity.PaymentWays.CanEdit
+    @Override
     @PutMapping("/{id}")
-    public PaymentWayModel update(@PathVariable Long id, @RequestBody @Valid PaymentWayInput paymentWayInput){
-        PaymentWay paymentWay = paymentWayService.verifyIfExistsOrThrow(id);
+    public PaymentWayModel update(@PathVariable Long paymentWayId, @RequestBody @Valid PaymentWayInput paymentWayInput){
+        PaymentWay paymentWay = paymentWayService.verifyIfExistsOrThrow(paymentWayId);
 
         paymentWayInputDisassembler.copyToDomainObject(paymentWayInput, paymentWay);
 
         return paymentWayModelAssembler.toModel(paymentWayService.save(paymentWay));
     }
 
+    @CheckSecurity.PaymentWays.CanEdit
+    @Override
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id){
-        paymentWayService.delete(id);
+    public void delete(@PathVariable Long paymentWayId){
+        paymentWayService.delete(paymentWayId);
     }
 
 }

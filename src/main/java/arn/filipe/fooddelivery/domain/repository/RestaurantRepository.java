@@ -18,4 +18,6 @@ public interface RestaurantRepository
 
     @Query("from Restaurant r join fetch r.kitchen")
     List<Restaurant> findAll();
+
+    boolean existsResponsible(Long restaurantId, Long userId);
 }

@@ -5,6 +5,7 @@ import arn.filipe.fooddelivery.api.v1.assembler.UserInputDisassembler;
 import arn.filipe.fooddelivery.api.v1.assembler.UserModelAssembler;
 import arn.filipe.fooddelivery.api.v1.model.UserModel;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.RestaurantUserControllerOpenApi;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
 import arn.filipe.fooddelivery.domain.service.UserService;
@@ -34,6 +35,8 @@ public class RestaurantUserController implements RestaurantUserControllerOpenApi
     @Autowired
     private BuildLinks buildLinks;
 
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping
     public CollectionModel<UserModel> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(restaurantId);
@@ -53,6 +56,8 @@ public class RestaurantUserController implements RestaurantUserControllerOpenApi
         return usersModel;
     }
 
+    @CheckSecurity.Restaurants.CanManageRegistration
+    @Override
     @PutMapping("/{userId}")
     public ResponseEntity<Void> associateUser(@PathVariable Long restaurantId, @PathVariable Long userId){
         restaurantService.associateUser(restaurantId, userId);
@@ -60,6 +65,8 @@ public class RestaurantUserController implements RestaurantUserControllerOpenApi
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurants.CanManageRegistration
+    @Override
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> disassociateUser(@PathVariable Long restaurantId, @PathVariable Long userId){
         restaurantService.disassociateUser(restaurantId, userId);

@@ -6,6 +6,7 @@ import arn.filipe.fooddelivery.api.v1.assembler.CityInputDisassembler;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.CityControllerOpenApi;
 import arn.filipe.fooddelivery.api.v1.model.CityModel;
 import arn.filipe.fooddelivery.api.v1.model.input.CityInput;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.core.web.FoodDeliveryMediaTypes;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.StateNotFoundException;
@@ -37,16 +38,22 @@ public class CityController implements CityControllerOpenApi {
     @Autowired
     private StateService stateService;
 
+    @CheckSecurity.Cities.CanFind
+    @Override
     @GetMapping
     public CollectionModel<CityModel> listAll(){
         return cityInputAssembler.toCollectionModel(cityService.listAll());
     }
 
+    @CheckSecurity.Cities.CanFind
+    @Override
     @GetMapping("/{id}")
-    public CityModel findById(@PathVariable Long id){
-        return cityInputAssembler.toModel(cityService.findById(id));
+    public CityModel findById(@PathVariable Long cityId){
+        return cityInputAssembler.toModel(cityService.findById(cityId));
     }
 
+    @CheckSecurity.Cities.CanEdit
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CityModel save(@RequestBody @Valid CityInput cityInput){
@@ -63,11 +70,13 @@ public class CityController implements CityControllerOpenApi {
         }
     }
 
+    @CheckSecurity.Cities.CanEdit
+    @Override
     @PutMapping("/{id}")
-    public CityModel update(@PathVariable Long id,
+    public CityModel update(@PathVariable Long cityId,
                             @RequestBody @Valid CityInput cityInput){
         try{
-            City city = cityService.verifyIfExistsOrThrow(id);
+            City city = cityService.verifyIfExistsOrThrow(cityId);
 
             cityInputDisassembler.copyToDomainObject(cityInput, city);
 
@@ -79,10 +88,12 @@ public class CityController implements CityControllerOpenApi {
         }
     }
 
+    @CheckSecurity.Cities.CanEdit
+    @Override
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id){
-            cityService.delete(id);
+    public void delete(@PathVariable Long cityId){
+            cityService.delete(cityId);
     }
 
 

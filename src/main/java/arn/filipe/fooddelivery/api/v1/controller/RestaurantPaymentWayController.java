@@ -5,6 +5,7 @@ import arn.filipe.fooddelivery.api.v1.assembler.PaymentWayInputDisassembler;
 import arn.filipe.fooddelivery.api.v1.assembler.PaymentWayModelAssembler;
 import arn.filipe.fooddelivery.api.v1.model.PaymentWayModel;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.RestaurantPaymentWayControllerOpenApi;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.domain.model.Restaurant;
 import arn.filipe.fooddelivery.domain.service.PaymentWayService;
 import arn.filipe.fooddelivery.domain.service.RestaurantService;
@@ -34,6 +35,8 @@ public class RestaurantPaymentWayController implements RestaurantPaymentWayContr
     @Autowired
     private BuildLinks buildLinks;
 
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping
     public CollectionModel<PaymentWayModel> listAll(@PathVariable Long restaurantId){
         Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(restaurantId);
@@ -53,6 +56,8 @@ public class RestaurantPaymentWayController implements RestaurantPaymentWayContr
         return paymentWaysModel;
     }
 
+    @CheckSecurity.Restaurants.CanManageOperation
+    @Override
     @PutMapping("/{paymentWayId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associate(@PathVariable Long restaurantId, @PathVariable Long paymentWayId){
@@ -61,6 +66,8 @@ public class RestaurantPaymentWayController implements RestaurantPaymentWayContr
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurants.CanManageOperation
+    @Override
     @DeleteMapping("/{paymentWayId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociate(@PathVariable Long restaurantId, @PathVariable Long paymentWayId){

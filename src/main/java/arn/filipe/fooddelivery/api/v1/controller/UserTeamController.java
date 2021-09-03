@@ -5,6 +5,7 @@ import arn.filipe.fooddelivery.api.v1.assembler.TeamInputDisassembler;
 import arn.filipe.fooddelivery.api.v1.assembler.TeamModelAssembler;
 import arn.filipe.fooddelivery.api.v1.model.TeamModel;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.UserTeamControllerOpenApi;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.domain.model.User;
 import arn.filipe.fooddelivery.domain.service.TeamService;
 import arn.filipe.fooddelivery.domain.service.UserService;
@@ -34,6 +35,8 @@ public class UserTeamController implements UserTeamControllerOpenApi {
     @Autowired
     private BuildLinks buildLinks;
 
+    @CheckSecurity.UsersTeamsPermissions.CanFind
+    @Override
     @GetMapping
     public CollectionModel<TeamModel> listAll(@PathVariable Long userId) {
         User user = userService.verifyIfExistsOrThrow(userId);
@@ -52,6 +55,8 @@ public class UserTeamController implements UserTeamControllerOpenApi {
         return teamsModel;
     }
 
+    @CheckSecurity.UsersTeamsPermissions.CanEdit
+    @Override
     @PutMapping("/{teamId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associate(@PathVariable Long userId, @PathVariable Long teamId){
@@ -60,6 +65,8 @@ public class UserTeamController implements UserTeamControllerOpenApi {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.UsersTeamsPermissions.CanEdit
+    @Override
     @DeleteMapping("/{teamId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociate(@PathVariable Long userId, @PathVariable Long teamId){

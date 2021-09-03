@@ -9,6 +9,7 @@ import arn.filipe.fooddelivery.api.v1.model.RestaurantOnlyNameModel;
 import arn.filipe.fooddelivery.api.v1.model.RestaurantSummaryModel;
 import arn.filipe.fooddelivery.api.v1.model.input.RestaurantInput;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.RestaurantControllerOpenApi;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.core.validation.ValidationException;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.CityNotFoundException;
@@ -61,44 +62,58 @@ public class RestaurantController implements RestaurantControllerOpenApi {
     @Autowired
     private RestaurantOnlyNameModelAssembler restaurantOnlyNameModelAssembler;
 
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping
     public CollectionModel<RestaurantModel> listAll(){
         return restaurantModelAssembler.toCollectionModel(restaurantService.listAll());
     }
 
+    @CheckSecurity.Restaurants.CanFind
     //@JsonView(RestaurantView.Summary.class)
+    @Override
     @GetMapping(params = "projection=summary")
     public CollectionModel<RestaurantSummaryModel> listAllSummary(){
         return restaurantSummaryModelAssembler.toCollectionModel(restaurantService.listAll());
     }
 
+    @CheckSecurity.Restaurants.CanFind
     //@JsonView(RestaurantView.OnlyName.class)
+    @Override
     @GetMapping(params = "projection=only-name")
     public CollectionModel<RestaurantOnlyNameModel> listAllOnlyName(){
         return restaurantOnlyNameModelAssembler.toCollectionModel(restaurantService.listAll());
     }
 
-
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping("/{id}")
-    public RestaurantModel findById(@PathVariable Long id){
-            return restaurantModelAssembler.toModel(restaurantService.findById(id));
+    public RestaurantModel findById(@PathVariable Long restaurantId){
+            return restaurantModelAssembler.toModel(restaurantService.findById(restaurantId));
     }
-
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping("/name-and-kitchen")
     public List<Restaurant> findByNameAndKitchen(String name, Long kitchenId){
         return restaurantService.findByNameAndKitchen(name, kitchenId);
     }
 
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping("/name-and-freightRate")
     public List<Restaurant> findByNameAndFreightRate(String name, BigDecimal freightRateInitial, BigDecimal freightRateFinal){
         return restaurantService.findByNameAndFreightRate(name, freightRateInitial, freightRateFinal);
     }
 
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping("/free-shipping")
     public List<Restaurant> withFreeShipping(String name){
         return restaurantService.withFreeShipping(name);
     }
 
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping("/first")
     public ResponseEntity<?> findFirst(){
         try{
@@ -108,6 +123,8 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         }
     }
 
+    @CheckSecurity.Restaurants.CanManageRegistration
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RestaurantModel save(@RequestBody @Valid RestaurantInput restaurantInput){
@@ -120,10 +137,12 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         }
     }
 
+    @CheckSecurity.Restaurants.CanManageRegistration
+    @Override
     @PutMapping("/{id}")
-    public RestaurantModel update(@PathVariable Long id, @RequestBody @Valid RestaurantInput restaurantInput){
+    public RestaurantModel update(@PathVariable Long restaurantId, @RequestBody @Valid RestaurantInput restaurantInput){
         try{
-            Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(id);
+            Restaurant restaurant = restaurantService.verifyIfExistsOrThrow(restaurantId);
 
             restaurantInputDisassembler.copyToDomainObject(restaurantInput, restaurant);
 
@@ -133,53 +152,65 @@ public class RestaurantController implements RestaurantControllerOpenApi {
         }
     }
 
+    @CheckSecurity.Restaurants.CanManageRegistration
+    @Override
     @PutMapping("/{id}/activate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> activate(@PathVariable Long id){
-        restaurantService.activate(id);
+    public ResponseEntity<Void> activate(@PathVariable Long restaurantId){
+        restaurantService.activate(restaurantId);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurants.CanManageRegistration
+    @Override
     @PutMapping("/{id}/deactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> deactivate(@PathVariable Long id){
-        restaurantService.deactivate(id);
+    public ResponseEntity<Void> deactivate(@PathVariable Long restaurantId){
+        restaurantService.deactivate(restaurantId);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurants.CanManageRegistration
+    @Override
     @PutMapping("/activations")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void multipleActivation(@RequestBody List<Long> ids){
+    public void multipleActivation(@RequestBody List<Long> restaurantIds){
         try{
-            restaurantService.activate(ids);
+            restaurantService.activate(restaurantIds);
         } catch (RestaurantNotFoundException e){
             throw new BusinessException(e.getMessage(), e);
         }
 
     }
 
+    @CheckSecurity.Restaurants.CanManageRegistration
+    @Override
     @DeleteMapping("/activations")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void multipleDeactivation(@RequestBody List<Long> ids){
+    public void multipleDeactivation(@RequestBody List<Long> restaurantIds){
         try{
-            restaurantService.deactivate(ids);
+            restaurantService.deactivate(restaurantIds);
         } catch (RestaurantNotFoundException e){
             throw new BusinessException(e.getMessage(), e);
         }
     }
 
+    @CheckSecurity.Restaurants.CanManageOperation
+    @Override
     @PutMapping("/{id}/opening")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> opening(@PathVariable Long id){
-        restaurantService.opening(id);
+    public ResponseEntity<Void> opening(@PathVariable Long restaurantId){
+        restaurantService.opening(restaurantId);
 
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurants.CanManageOperation
+    @Override
     @PutMapping("/{id}/closure")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> closure(@PathVariable Long id){
-        restaurantService.closure(id);
+    public ResponseEntity<Void> closure(@PathVariable Long restaurantId){
+        restaurantService.closure(restaurantId);
         return ResponseEntity.noContent().build();
     }
 
@@ -236,8 +267,8 @@ public class RestaurantController implements RestaurantControllerOpenApi {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id){
-        restaurantService.delete(id);
+    public void delete(@PathVariable Long restaurantId){
+        restaurantService.delete(restaurantId);
     }
 
 }

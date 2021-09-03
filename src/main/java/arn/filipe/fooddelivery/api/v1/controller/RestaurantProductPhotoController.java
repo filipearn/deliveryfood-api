@@ -4,6 +4,7 @@ import arn.filipe.fooddelivery.api.v1.assembler.PhotoProductModelAssembler;
 import arn.filipe.fooddelivery.api.v1.model.PhotoProductModel;
 import arn.filipe.fooddelivery.api.v1.model.input.PhotoProductInput;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.RestaurantProductPhotoControllerOpenApi;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.PhotoProduct;
 import arn.filipe.fooddelivery.domain.model.Product;
@@ -38,6 +39,8 @@ public class RestaurantProductPhotoController implements RestaurantProductPhotoC
     @Autowired
     private PhotoProductModelAssembler photoProductModelAssembler;
 
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping
     public PhotoProductModel find(@PathVariable Long restaurantId,
                                   @PathVariable Long productId) throws Exception {
@@ -48,6 +51,8 @@ public class RestaurantProductPhotoController implements RestaurantProductPhotoC
         return photoProductModelAssembler.toModel(photoProduct);
     }
 
+    @CheckSecurity.Restaurants.CanFind
+    @Override
     @GetMapping(produces = MediaType.ALL_VALUE)
     public ResponseEntity<?> servePhoto(@PathVariable Long restaurantId,
                                                           @PathVariable Long productId,
@@ -89,6 +94,8 @@ public class RestaurantProductPhotoController implements RestaurantProductPhotoC
         }
     }
 
+    @CheckSecurity.Restaurants.CanManageOperation
+    @Override
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public PhotoProductModel updatePhoto(@PathVariable Long restaurantId,
                                          @PathVariable Long productId,
@@ -108,6 +115,8 @@ public class RestaurantProductPhotoController implements RestaurantProductPhotoC
         return photoProductModelAssembler.toModel(photoProductService.save(photo, file.getInputStream()));
     }
 
+    @CheckSecurity.Restaurants.CanManageOperation
+    @Override
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePhoto(@PathVariable Long restaurantId,

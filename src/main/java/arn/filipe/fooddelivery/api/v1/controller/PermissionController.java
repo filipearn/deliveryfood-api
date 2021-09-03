@@ -3,6 +3,7 @@ package arn.filipe.fooddelivery.api.v1.controller;
 import arn.filipe.fooddelivery.api.v1.assembler.PermissionModelAssembler;
 import arn.filipe.fooddelivery.api.v1.model.PermissionModel;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.PermissionControllerOpenApi;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.domain.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -20,6 +21,7 @@ public class PermissionController implements PermissionControllerOpenApi {
     @Autowired
     private PermissionModelAssembler permissionModelAssembler;
 
+    @CheckSecurity.UsersTeamsPermissions.CanFind
     @Override
     @GetMapping
     public CollectionModel<PermissionModel> listAll(){

@@ -9,6 +9,8 @@ import arn.filipe.fooddelivery.api.v1.model.PurchaseOrderModel;
 import arn.filipe.fooddelivery.api.v1.model.input.PurchaseOrderInput;
 import arn.filipe.fooddelivery.core.data.PageWrapper;
 import arn.filipe.fooddelivery.core.data.PageableTranslator;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
+import arn.filipe.fooddelivery.core.security.Security;
 import arn.filipe.fooddelivery.domain.exception.BusinessException;
 import arn.filipe.fooddelivery.domain.exception.EntityNotFoundException;
 import arn.filipe.fooddelivery.domain.model.*;
@@ -60,6 +62,11 @@ public class PurchaseOrderController implements PurchaseOrderControllerOpenApi {
     @Autowired
     private PagedResourcesAssembler<PurchaseOrder> purchaseOrderPagedResourcesAssembler;
 
+    @Autowired
+    private Security security;
+
+    @CheckSecurity.PurchaseOrders.CanSearch
+    @Override
     @GetMapping
     public PagedModel<PurchaseOrderModel> find(PurchaseOrderFilter filter, Pageable pageable){
 
@@ -73,20 +80,23 @@ public class PurchaseOrderController implements PurchaseOrderControllerOpenApi {
                 .toModel(purchaseOrdersPage, purchaseOrderModelAssembler);
     }
 
+    @CheckSecurity.PurchaseOrders.CanFind
+    @Override
     @GetMapping("/{code}")
     public PurchaseOrderModel findByCode(@PathVariable String code){
         return purchaseOrderModelAssembler.toModel(purchaseOrderService.findByCode(code));
     }
 
+    @CheckSecurity.PurchaseOrders.CanCreate
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PurchaseOrderModel save(@RequestBody @Valid PurchaseOrderInput purchaseOrderInput){
         try{
             PurchaseOrder purchaseOrder = purchaseOrderInputDisassembler.toDomainObject(purchaseOrderInput);
 
-            //TODO get authenticated user
             purchaseOrder.setClient(new User());
-            purchaseOrder.getClient().setId(1L);
+            purchaseOrder.getClient().setId(security.getUserId());
 
             purchaseOrder = purchaseOrderService.registerOrder(purchaseOrder);
             return purchaseOrderModelAssembler.toModel(purchaseOrder);

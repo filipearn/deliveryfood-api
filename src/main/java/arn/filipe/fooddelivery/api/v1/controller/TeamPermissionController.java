@@ -6,6 +6,7 @@ import arn.filipe.fooddelivery.api.v1.assembler.PermissionModelAssembler;
 import arn.filipe.fooddelivery.api.v1.model.PermissionModel;
 import arn.filipe.fooddelivery.api.v1.model.input.PermissionInput;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.TeamPermissionControllerOpenApi;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.domain.model.Permission;
 import arn.filipe.fooddelivery.domain.model.Team;
 import arn.filipe.fooddelivery.domain.service.PermissionService;
@@ -38,6 +39,8 @@ public class TeamPermissionController implements TeamPermissionControllerOpenApi
     @Autowired
     private BuildLinks buildLinks;
 
+    @CheckSecurity.UsersTeamsPermissions.CanFind
+    @Override
     @GetMapping
     public CollectionModel<PermissionModel> listAll(@PathVariable Long teamId){
         Team team = teamService.verifyIfExistsOrThrow(teamId);
@@ -56,6 +59,8 @@ public class TeamPermissionController implements TeamPermissionControllerOpenApi
         return permissionsModel;
     }
 
+    @CheckSecurity.UsersTeamsPermissions.CanEdit
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PermissionModel save(@PathVariable Long teamId, @RequestBody @Valid PermissionInput permissionInput){
@@ -68,6 +73,8 @@ public class TeamPermissionController implements TeamPermissionControllerOpenApi
         return permissionModelAssembler.toModel(permissionService.save(permission));
     }
 
+    @CheckSecurity.UsersTeamsPermissions.CanEdit
+    @Override
     @PutMapping("/{permissionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associate(@PathVariable Long teamId, @PathVariable Long permissionId){
@@ -76,6 +83,8 @@ public class TeamPermissionController implements TeamPermissionControllerOpenApi
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.UsersTeamsPermissions.CanEdit
+    @Override
     @DeleteMapping("/{permissionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociate(@PathVariable Long teamId, @PathVariable Long permissionId){
