@@ -13,4 +13,25 @@
         </query>
     </named-query>
 
+    <named-query name="Restaurant.existsResponsible">
+        <query>
+            select case when count(1) > 0 then true else false end
+            from Restaurant rest
+            join rest.users resp
+            where rest.id = :restaurantId
+            and resp.id = :userId
+        </query>
+    </named-query>
+
+    <named-query name="PurchaseOrder.isPurchaseOrderManagedBy">
+        <query>
+            select case when count(1) > 0 then true else false end
+            from PurchaseOrder p
+            join p.restaurant rest
+            join rest.users responsible
+            where p.code = :code
+            and responsible.id = :userId
+        </query>
+    </named-query>
+
 </entity-mappings>
