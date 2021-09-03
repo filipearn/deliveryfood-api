@@ -7,6 +7,7 @@ import arn.filipe.fooddelivery.api.v1.model.input.PasswordInput;
 import arn.filipe.fooddelivery.api.v1.model.input.UserInput;
 import arn.filipe.fooddelivery.api.v1.model.input.UserWithPasswordInput;
 import arn.filipe.fooddelivery.api.v1.openapi.controller.UserControllerOpenApi;
+import arn.filipe.fooddelivery.core.security.CheckSecurity;
 import arn.filipe.fooddelivery.domain.model.User;
 import arn.filipe.fooddelivery.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +31,22 @@ public class UserController implements UserControllerOpenApi {
     @Autowired
     private UserModelAssembler userModelAssembler;
 
+    @CheckSecurity.UsersTeamsPermissions.CanFind
+    @Override
     @GetMapping
     public CollectionModel<UserModel> listAll(){
         return userModelAssembler.toCollectionModel(userService.listAll());
     }
 
+    @CheckSecurity.UsersTeamsPermissions.CanFind
+    @Override
     @GetMapping("/{id}")
     public UserModel findById(@PathVariable Long id){
         return userModelAssembler.toModel(userService.findById(id));
     }
 
+    @CheckSecurity.UsersTeamsPermissions.CanEdit
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserModel save(@RequestBody @Valid UserWithPasswordInput userInput){
@@ -48,6 +55,8 @@ public class UserController implements UserControllerOpenApi {
         return userModelAssembler.toModel(userService.save(user));
     }
 
+    @CheckSecurity.UsersTeamsPermissions.CanEditUser
+    @Override
     @PutMapping("/{id}")
     public UserModel update(@PathVariable Long id, @RequestBody @Valid UserInput userInput){
         User user = userService.verifyIfExistsOrThrow(id);
@@ -57,6 +66,8 @@ public class UserController implements UserControllerOpenApi {
         return userModelAssembler.toModel(userService.save(user));
     }
 
+    @CheckSecurity.UsersTeamsPermissions.CanChangeOwnPassword
+    @Override
     @PutMapping("/{id}/change-password")
     @ResponseStatus(HttpStatus.OK)
     public void changePassword(@PathVariable Long id, @RequestBody @Valid PasswordInput passwordInput){
